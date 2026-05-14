@@ -29,6 +29,8 @@ targets:
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
+        UIAppFonts:
+          - VT323-Regular.ttf
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.placeholder.trackr
