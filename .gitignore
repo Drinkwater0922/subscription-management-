@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Xcode
+**/xcuserdata/
+*.xcuserstate
+build/
+DerivedData/
+
+# XcodeGen-generated project file. Source of truth is project.yml; regenerate
+# locally with `xcodegen generate`.
+Trackr.xcodeproj/
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Package.resolved
+
+# Visual Companion brainstorming artifacts
+.superpowers/
+
+# Snapshot test failures (kept out of git, only successful baselines committed)
+**/__Snapshots__/**/*.png.failure
+**/FailureDiffs/
+
+# Reference screenshots folder (not source code)
+Orbit ios Jan 2026/
