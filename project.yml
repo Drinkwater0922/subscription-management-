@@ -24,6 +24,8 @@ targets:
       path: Trackr/Info.plist
       properties:
         CFBundleDisplayName: Trackr
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
