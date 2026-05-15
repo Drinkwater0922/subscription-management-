@@ -17,6 +17,7 @@ struct HomeView: View {
 
     @State private var showingAdd = false
     @State private var showingSettings = false
+    @State private var showingInsights = false
     @State private var selected: Subscription?
 
     /// Resolved lazily — `SettingsRepository` creates the row on first access.
@@ -79,6 +80,12 @@ struct HomeView: View {
                 .modelContext(context)
                 .environment(entitlement)
         }
+        .sheet(isPresented: $showingInsights) {
+            InsightsView()
+                .modelContext(context)
+                .environment(entitlement)
+                .environment(paywallTrigger)
+        }
     }
 
     private var topBar: some View {
@@ -89,9 +96,12 @@ struct HomeView: View {
             }
             Spacer()
             HStack(spacing: 14) {
-                Color.clear.frame(width: 32, height: 32)
-                    .overlay(PixelText("≡", size: 14, color: TrackrColors.fg2, tracking: 0))
-                    .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
+                Button { showingInsights = true } label: {
+                    Color.clear.frame(width: 32, height: 32)
+                        .overlay(PixelText("≡", size: 14, color: TrackrColors.fg2, tracking: 0))
+                        .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
+                }
+                .buttonStyle(.plain)
                 Button { showingSettings = true } label: {
                     Color.clear.frame(width: 32, height: 32)
                         .overlay(PixelText("⚙", size: 14, color: TrackrColors.fg2, tracking: 0))
