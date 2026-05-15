@@ -9,6 +9,7 @@ struct AddSubscriptionSheet: View {
 
     @State private var draft: SubscriptionDraft
     @State private var errorMessage: String?
+    @State private var hasResolvedDefaultCurrency = false
 
     /// Production callers use the default initializer. The `initialDraft` overload
     /// is for snapshot tests that need to render a pre-filled form.
@@ -49,6 +50,8 @@ struct AddSubscriptionSheet: View {
             }
         }
         .onAppear {
+            guard !hasResolvedDefaultCurrency else { return }
+            hasResolvedDefaultCurrency = true
             if draft.currency.isEmpty {
                 draft = SubscriptionDraft.empty(
                     defaultCurrency: (try? SettingsRepository(context: context).currentSettings().defaultCurrency) ?? "USD"
@@ -65,7 +68,7 @@ struct AddSubscriptionSheet: View {
             Spacer()
             PixelText("ADD SUB", size: TrackrTypography.Scale.title, tracking: 2)
             Spacer()
-            Button("SAVE") { /* wired in Task 6 */ }
+            Button("SAVE") { attemptSave() }
                 .font(TrackrTypography.pixel(size: TrackrTypography.Scale.body))
                 .foregroundStyle(TrackrColors.accent)
         }
@@ -180,7 +183,7 @@ struct AddSubscriptionSheet: View {
     private var footer: some View {
         VStack(spacing: 0) {
             DashedDivider()
-            TrackrButton("SAVE") { /* wired in Task 6 */ }
+            TrackrButton("SAVE") { attemptSave() }
                 .padding(20)
         }
     }
@@ -192,6 +195,38 @@ struct AddSubscriptionSheet: View {
                       color: TrackrColors.fg2, tracking: 2)
             content()
             Rectangle().fill(TrackrColors.border).frame(height: 1)
+        }
+    }
+
+    private func attemptSave() {
+        if let msg = Self.submit(draft: draft,
+                                 context: context,
+                                 onDismiss: { dismiss() }) {
+            errorMessage = msg
+        } else {
+            errorMessage = nil
+        }
+    }
+
+    /// Pure-ish submit helper exposed for tests. Returns `nil` on success or a
+    /// user-facing error message on failure.
+    @discardableResult
+    static func submit(draft: SubscriptionDraft,
+                       context: ModelContext,
+                       onDismiss: () -> Void) -> String? {
+        do {
+            let sub = try draft.makeSubscription()
+            try SubscriptionRepository(context: context).insert(sub)
+            onDismiss()
+            return nil
+        } catch SubscriptionDraft.ValidationError.emptyName {
+            return "Name is required"
+        } catch SubscriptionDraft.ValidationError.invalidAmount {
+            return "Enter a valid amount"
+        } catch SubscriptionDraft.ValidationError.invalidCustomDays {
+            return "Custom cycle days must be > 0"
+        } catch {
+            return "Could not save: \(error.localizedDescription)"
         }
     }
 }
