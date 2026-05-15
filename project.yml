@@ -25,7 +25,12 @@ targets:
     platform: iOS
     sources:
       - path: Trackr
+        excludes:
+          - "Resources/presets.bundled.json"
+          - "Resources/Localizable.xcstrings"
       - path: Trackr/Resources/presets.bundled.json
+        buildPhase: resources
+      - path: Trackr/Resources/Localizable.xcstrings
         buildPhase: resources
     dependencies:
       - target: Widgets

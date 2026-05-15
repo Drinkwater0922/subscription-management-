@@ -1,0 +1,199 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "EVERY SUBSCRIPTION,\nNEVER A SURPRISE." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "EVERY SUBSCRIPTION,\nNEVER A SURPRISE." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "管好每一笔订阅，\n再无意外扣款。" } }
+      }
+    },
+    "WHY TRACKR" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "WHY TRACKR" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "为什么选 TRACKR" } }
+      }
+    },
+    "ONE PLACE\nFOR ALL YOUR SUBS" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "ONE PLACE\nFOR ALL YOUR SUBS" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "一个地方\n管所有订阅" } }
+      }
+    },
+    "SEE YOUR MONTHLY TOTAL AT A GLANCE" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "SEE YOUR MONTHLY TOTAL AT A GLANCE" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "一眼看清每月总开销" } }
+      }
+    },
+    "GET NOTIFIED BEFORE EVERY RENEWAL" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "GET NOTIFIED BEFORE EVERY RENEWAL" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "续费前提前提醒" } }
+      }
+    },
+    "CATCH PRICE CHANGES THE MOMENT THEY HAPPEN" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CATCH PRICE CHANGES THE MOMENT THEY HAPPEN" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "价格变动第一时间收到" } }
+      }
+    },
+    "ONE MORE THING" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "ONE MORE THING" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "还有一件事" } }
+      }
+    },
+    "TURN ON NOTIFICATIONS\nSO TRACKR CAN REMIND YOU" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "TURN ON NOTIFICATIONS\nSO TRACKR CAN REMIND YOU" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开通知\n让 TRACKR 提醒你" } }
+      }
+    },
+    "We'll only ping you a few days before each renewal — never spam." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "We'll only ping you a few days before each renewal — never spam." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "我们只会在每次续费前几天通知你 —— 绝不打扰。" } }
+      }
+    },
+    "ENABLE NOTIFICATIONS" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "ENABLE NOTIFICATIONS" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开通知" } }
+      }
+    },
+    "MAYBE LATER" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "MAYBE LATER" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "稍后再说" } }
+      }
+    },
+    "GET STARTED" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "GET STARTED" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "开始使用" } }
+      }
+    },
+    "CONTINUE" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CONTINUE" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "继续" } }
+      }
+    },
+    "NO SUBS\nTRACKED" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "NO SUBS\nTRACKED" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "暂无\n订阅记录" } }
+      }
+    },
+    "Tap + to add your first subscription" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Tap + to add your first subscription" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "点击 + 添加第一个订阅" } }
+      }
+    },
+    "SETTINGS" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "SETTINGS" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "设置" } }
+      }
+    },
+    "REMIND ME" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "REMIND ME" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "提醒我" } }
+      }
+    },
+    "DEFAULT CURRENCY" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "DEFAULT CURRENCY" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "默认货币" } }
+      }
+    },
+    "LANGUAGE" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "LANGUAGE" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "语言" } }
+      }
+    },
+    "AUTO" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "AUTO" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "跟随系统" } }
+      }
+    },
+    "ENGLISH" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "ENGLISH" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "英文" } }
+      }
+    },
+    "简体中文" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "简体中文" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "简体中文" } }
+      }
+    },
+    "CLOSE" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CLOSE" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭" } }
+      }
+    },
+    "UPGRADE" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "UPGRADE" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "升级 PRO" } }
+      }
+    },
+    "RESTORE PURCHASES" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "RESTORE PURCHASES" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "恢复购买" } }
+      }
+    },
+    "PRIVACY POLICY" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "PRIVACY POLICY" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "隐私政策" } }
+      }
+    },
+    "TERMS OF SERVICE" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "TERMS OF SERVICE" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "服务条款" } }
+      }
+    },
+    "MANAGE SUBSCRIPTION" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "MANAGE SUBSCRIPTION" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "管理订阅" } }
+      }
+    },
+    "PRO STATUS" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "PRO STATUS" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "PRO 状态" } }
+      }
+    },
+    "FREE" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "FREE" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "免费版" } }
+      }
+    },
+    "PRO MONTHLY" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "PRO MONTHLY" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "PRO 月度" } }
+      }
+    },
+    "PRO LIFETIME" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "PRO LIFETIME" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "PRO 终身" } }
+      }
+    }
+  }
+}
