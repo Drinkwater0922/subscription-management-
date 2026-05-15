@@ -9,6 +9,7 @@ struct TrackrApp: App {
     private let router: AppDeepLinkRouter
     private let coordinator: NotificationCoordinator
     private let notificationDelegate: TrackrNotificationDelegate
+    private let presetSync: PresetSync
 
     init() {
         do {
@@ -23,6 +24,14 @@ struct TrackrApp: App {
         )
         self.notificationDelegate = TrackrNotificationDelegate(router: router)
         UNUserNotificationCenter.current().delegate = notificationDelegate
+
+        // M5: the live host lands in M9. Until then we point at a placeholder
+        // that fails on every device — the bundled seed catalog drives LIBRARY.
+        let catalogURL = URL(string: "https://presets.invalid/trackr/v1/presets.json")!
+        self.presetSync = PresetSync(
+            fetcher: URLSessionPresetFetcher(catalogURL: catalogURL),
+            container: container
+        )
     }
 
     var body: some Scene {
@@ -30,6 +39,7 @@ struct TrackrApp: App {
             HomeView()
                 .environment(router)
                 .environment(\.notificationCoordinator, coordinator)
+                .environment(\.presetSync, presetSync)
                 .preferredColorScheme(.dark)
         }
         .modelContainer(container)

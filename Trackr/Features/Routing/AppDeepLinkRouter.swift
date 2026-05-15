@@ -32,3 +32,14 @@ extension EnvironmentValues {
         set { self[NotificationCoordinatorKey.self] = newValue }
     }
 }
+
+private struct PresetSyncKey: EnvironmentKey {
+    static let defaultValue: PresetSync? = nil
+}
+
+extension EnvironmentValues {
+    var presetSync: PresetSync? {
+        get { self[PresetSyncKey.self] }
+        set { self[PresetSyncKey.self] = newValue }
+    }
+}

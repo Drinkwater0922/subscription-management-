@@ -11,6 +11,7 @@ struct HomeView: View {
     @Environment(\.modelContext) private var context
     @Environment(AppDeepLinkRouter.self) private var router
     @Environment(\.notificationCoordinator) private var coordinator
+    @Environment(\.presetSync) private var presetSync
 
     @State private var showingAdd = false
     @State private var showingSettings = false
@@ -64,6 +65,9 @@ struct HomeView: View {
                 selected = match
             }
             _ = router.consume()
+        }
+        .task {
+            try? await presetSync?.run()
         }
     }
 
