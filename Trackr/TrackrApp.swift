@@ -97,14 +97,24 @@ private struct RootView: View {
 
     var body: some View {
         HomeView()
+            .environment(\.locale, resolvedLocale)
             .fullScreenCover(isPresented: .constant(needsOnboarding)) {
                 OnboardingView(onComplete: completeOnboarding)
+                    .environment(\.locale, resolvedLocale)
             }
     }
 
     private var needsOnboarding: Bool {
         guard let row = settings.first else { return true }
         return row.onboardingCompletedAt == nil
+    }
+
+    private var resolvedLocale: Locale {
+        let preference = settings.first?.language ?? "auto"
+        return LocaleResolver.resolve(
+            languagePreference: preference,
+            systemLocale: Locale.current
+        )
     }
 
     private func completeOnboarding() {
