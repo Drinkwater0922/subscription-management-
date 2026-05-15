@@ -2,6 +2,9 @@ import SwiftUI
 
 /// Horizontal 1pt dashed separator. Primary section divider per the design system.
 struct DashedDivider: View {
+    /// Dash and gap length in points. Equal values produce a 50% duty-cycle pattern.
+    private static let dashPattern: [CGFloat] = [4, 4]
+
     let color: Color
 
     init(color: Color = TrackrColors.border) {
@@ -20,7 +23,7 @@ struct DashedDivider: View {
                     }
                     .stroke(
                         color,
-                        style: StrokeStyle(lineWidth: 1, dash: [4, 4])
+                        style: StrokeStyle(lineWidth: 1, dash: Self.dashPattern)
                     )
                 }
             )
