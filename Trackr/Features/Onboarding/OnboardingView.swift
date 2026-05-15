@@ -32,7 +32,7 @@ struct OnboardingView: View {
         VStack(spacing: 16) {
             pageDots
             if selectedPage < 2 {
-                TrackrButton(selectedPage == 0 ? "GET STARTED" : "CONTINUE") {
+                TrackrButton(String(localized: selectedPage == 0 ? "GET STARTED" : "CONTINUE")) {
                     withAnimation { selectedPage += 1 }
                 }
                 .padding(.horizontal, 32)

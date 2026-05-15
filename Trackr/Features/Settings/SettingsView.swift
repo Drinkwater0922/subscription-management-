@@ -32,11 +32,11 @@ struct SettingsView: View {
 
     private var header: some View {
         HStack {
-            Button("CLOSE") { saveAndDismiss() }
+            Button(String(localized: "CLOSE")) { saveAndDismiss() }
                 .font(TrackrTypography.pixel(size: TrackrTypography.Scale.body))
                 .foregroundStyle(TrackrColors.accent)
             Spacer()
-            PixelText("SETTINGS", size: TrackrTypography.Scale.title, tracking: 2)
+            PixelText(LocalizedStringKey("SETTINGS"), size: TrackrTypography.Scale.title, tracking: 2)
             Spacer()
             Color.clear.frame(width: 60, height: 1)
         }
@@ -45,7 +45,7 @@ struct SettingsView: View {
 
     private var leadDaysSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            PixelText("REMIND ME",
+            PixelText(LocalizedStringKey("REMIND ME"),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2, tracking: 2)
             HStack(spacing: 8) {
@@ -77,7 +77,7 @@ struct SettingsView: View {
 
     private var currencySection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            PixelText("DEFAULT CURRENCY",
+            PixelText(LocalizedStringKey("DEFAULT CURRENCY"),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2, tracking: 2)
             TextField("USD", text: $currency)

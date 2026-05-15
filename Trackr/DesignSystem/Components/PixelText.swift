@@ -3,7 +3,11 @@ import SwiftUI
 /// Renders text in the VT323 pixel font with a default 1.5pt tracking.
 /// Use for all-caps labels, numeric values, and section headers.
 struct PixelText: View {
-    let text: String
+    private enum Source {
+        case raw(String)
+        case localized(LocalizedStringKey)
+    }
+    private let source: Source
     let size: CGFloat
     let color: Color
     let tracking: CGFloat
@@ -14,17 +18,39 @@ struct PixelText: View {
         color: Color = TrackrColors.fg,
         tracking: CGFloat = 1.5
     ) {
-        self.text = text
+        self.source = .raw(text)
+        self.size = size
+        self.color = color
+        self.tracking = tracking
+    }
+
+    init(
+        _ key: LocalizedStringKey,
+        size: CGFloat = TrackrTypography.Scale.body,
+        color: Color = TrackrColors.fg,
+        tracking: CGFloat = 1.5
+    ) {
+        self.source = .localized(key)
         self.size = size
         self.color = color
         self.tracking = tracking
     }
 
     var body: some View {
-        Text(text)
+        textView
             .font(TrackrTypography.pixel(size: size))
             .foregroundStyle(color)
             .tracking(tracking)
+    }
+
+    @ViewBuilder
+    private var textView: some View {
+        switch source {
+        case .raw(let s):
+            Text(verbatim: s)
+        case .localized(let key):
+            Text(key)
+        }
     }
 }
 

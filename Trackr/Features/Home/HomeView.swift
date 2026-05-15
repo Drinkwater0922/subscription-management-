@@ -148,12 +148,12 @@ struct HomeView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Spacer().frame(height: 60)
-            PixelText("NO SUBS\nTRACKED",
+            PixelText(LocalizedStringKey("NO SUBS\nTRACKED"),
                       size: TrackrTypography.Scale.title,
                       color: TrackrColors.fg3,
                       tracking: 3)
                 .multilineTextAlignment(.center)
-            Text("Tap + to add your first subscription")
+            Text(LocalizedStringKey("Tap + to add your first subscription"))
                 .font(TrackrTypography.sans(size: TrackrTypography.Scale.caption))
                 .foregroundStyle(TrackrColors.fg3)
         }

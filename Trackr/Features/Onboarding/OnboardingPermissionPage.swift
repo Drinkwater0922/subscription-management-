@@ -7,11 +7,11 @@ struct OnboardingPermissionPage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Spacer()
-            PixelText("ONE MORE THING",
+            PixelText(LocalizedStringKey("ONE MORE THING"),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
-            PixelText("TURN ON NOTIFICATIONS\nSO TRACKR CAN REMIND YOU",
+            PixelText(LocalizedStringKey("TURN ON NOTIFICATIONS\nSO TRACKR CAN REMIND YOU"),
                       size: TrackrTypography.Scale.title,
                       tracking: 2)
             Text("We'll only ping you a few days before each renewal — never spam.")
@@ -19,8 +19,8 @@ struct OnboardingPermissionPage: View {
                 .foregroundStyle(TrackrColors.fg2)
             Spacer()
             VStack(spacing: 12) {
-                TrackrButton("ENABLE NOTIFICATIONS", action: onEnable)
-                TrackrButton("MAYBE LATER", variant: .outlined, action: onSkip)
+                TrackrButton(String(localized: "ENABLE NOTIFICATIONS"), action: onEnable)
+                TrackrButton(String(localized: "MAYBE LATER"), variant: .outlined, action: onSkip)
             }
             Spacer().frame(height: 20)
         }

@@ -4,17 +4,17 @@ struct OnboardingValuePage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 28) {
             Spacer()
-            PixelText("WHY TRACKR",
+            PixelText(LocalizedStringKey("WHY TRACKR"),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
-            PixelText("ONE PLACE\nFOR ALL YOUR SUBS",
+            PixelText(LocalizedStringKey("ONE PLACE\nFOR ALL YOUR SUBS"),
                       size: TrackrTypography.Scale.title,
                       tracking: 2)
             VStack(alignment: .leading, spacing: 16) {
-                bullet("SEE YOUR MONTHLY TOTAL AT A GLANCE")
-                bullet("GET NOTIFIED BEFORE EVERY RENEWAL")
-                bullet("CATCH PRICE CHANGES THE MOMENT THEY HAPPEN")
+                bullet(LocalizedStringKey("SEE YOUR MONTHLY TOTAL AT A GLANCE"))
+                bullet(LocalizedStringKey("GET NOTIFIED BEFORE EVERY RENEWAL"))
+                bullet(LocalizedStringKey("CATCH PRICE CHANGES THE MOMENT THEY HAPPEN"))
             }
             Spacer()
             Spacer()
@@ -24,13 +24,13 @@ struct OnboardingValuePage: View {
         .background(TrackrColors.bg)
     }
 
-    private func bullet(_ label: String) -> some View {
+    private func bullet(_ key: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 12) {
             PixelText("◆",
                       size: TrackrTypography.Scale.body,
                       color: TrackrColors.accent,
                       tracking: 0)
-            PixelText(label,
+            PixelText(key,
                       size: TrackrTypography.Scale.body,
                       tracking: 1.5)
         }

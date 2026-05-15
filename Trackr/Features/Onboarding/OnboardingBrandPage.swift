@@ -10,7 +10,7 @@ struct OnboardingBrandPage: View {
                           size: TrackrTypography.Scale.hero,
                           tracking: 4)
             }
-            PixelText("EVERY SUBSCRIPTION,\nNEVER A SURPRISE.",
+            PixelText(LocalizedStringKey("EVERY SUBSCRIPTION,\nNEVER A SURPRISE."),
                       size: TrackrTypography.Scale.title,
                       color: TrackrColors.fg2,
                       tracking: 2)
