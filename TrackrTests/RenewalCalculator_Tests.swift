@@ -118,4 +118,44 @@ final class RenewalCalculatorTests: XCTestCase {
         // cycles: 2026-01-01, 2026-03-02, 2026-05-01
         XCTAssertEqual(next, date("2026-05-01"))
     }
+
+    // MARK: cycle-boundary edge cases (today exactly N cycles after start)
+
+    func test_weekly_today_exactlyOnCycleBoundary_returnsNextWeek() {
+        let next = RenewalCalculator.nextBillingDate(
+            after: date("2026-02-15"),          // exactly 1 week after start
+            startingFrom: date("2026-02-08"),
+            cycle: .weekly
+        )
+        XCTAssertEqual(next, date("2026-02-22"))
+    }
+
+    func test_customDays_today_exactlyOnCycleBoundary_returnsNextCycle() {
+        let next = RenewalCalculator.nextBillingDate(
+            after: date("2026-03-02"),          // exactly 1 × 60-day cycle after start
+            startingFrom: date("2026-01-01"),
+            cycle: .customDays(60)
+        )
+        XCTAssertEqual(next, date("2026-05-01"))
+    }
+
+    // MARK: invalid cycle defense
+
+    func test_customDays_zero_returnsDistantFuture() {
+        let result = RenewalCalculator.nextBillingDate(
+            after: date("2026-02-15"),
+            startingFrom: date("2026-01-01"),
+            cycle: .customDays(0)
+        )
+        XCTAssertEqual(result, .distantFuture)
+    }
+
+    func test_customDays_negative_returnsDistantFuture() {
+        let result = RenewalCalculator.nextBillingDate(
+            after: date("2026-02-15"),
+            startingFrom: date("2026-01-01"),
+            cycle: .customDays(-5)
+        )
+        XCTAssertEqual(result, .distantFuture)
+    }
 }

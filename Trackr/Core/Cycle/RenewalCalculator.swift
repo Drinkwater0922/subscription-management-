@@ -5,30 +5,41 @@ import Foundation
 /// classic month-end drift bug ("subscribed Jan 31, stuck on the 28th forever").
 enum RenewalCalculator {
 
+    /// Shared Gregorian/UTC calendar. UTC removes local-DST drift; the Gregorian
+    /// identifier is the only one Apple guarantees consistent month arithmetic for.
+    private static let calendar: Calendar = {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(identifier: "UTC") ?? .gmt
+        return cal
+    }()
+
     /// Returns the next billing date strictly after `today`, given `startDate` as the
     /// anchor and `cycle` as the recurrence.
+    ///
+    /// Defensive behavior: `customDays(N)` with N ≤ 0 is an invalid cycle and returns
+    /// `Date.distantFuture` so the broken subscription never surfaces as "due soon"
+    /// in the UI. The repository/form layer should validate `N > 0` upstream; this
+    /// is the last-line safety net.
     static func nextBillingDate(
         after today: Date,
         startingFrom startDate: Date,
         cycle: BillingCycle
     ) -> Date {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(identifier: "UTC")!
-
-        // If we haven't reached the first billing yet, that's the answer.
+        // First billing hasn't happened yet.
         if today < startDate {
             return startDate
         }
 
         switch cycle {
         case .monthly:
-            return nthDate(after: today, startDate: startDate, unit: .month, in: calendar)
+            return nthDate(after: today, startDate: startDate, unit: .month, step: 1)
         case .yearly:
-            return nthDate(after: today, startDate: startDate, unit: .year, in: calendar)
+            return nthDate(after: today, startDate: startDate, unit: .year, step: 1)
         case .weekly:
-            return nthDate(after: today, startDate: startDate, unit: .day, in: calendar, step: 7)
+            return nthDate(after: today, startDate: startDate, unit: .day, step: 7)
         case .customDays(let days):
-            return nthDate(after: today, startDate: startDate, unit: .day, in: calendar, step: days)
+            guard days > 0 else { return .distantFuture }
+            return nthDate(after: today, startDate: startDate, unit: .day, step: days)
         }
     }
 
@@ -38,19 +49,24 @@ enum RenewalCalculator {
         after today: Date,
         startDate: Date,
         unit: Calendar.Component,
-        in calendar: Calendar,
-        step: Int = 1
+        step: Int
     ) -> Date {
         let elapsed = max(0, calendar.dateComponents([unit], from: startDate, to: today).value(for: unit) ?? 0)
         let cyclesElapsed = elapsed / step
         var n = cyclesElapsed + 1
 
-        var candidate = calendar.date(byAdding: unit, value: n * step, to: startDate) ?? today
-        while candidate <= today {
+        // Bounded iteration: if the Calendar refuses to produce a candidate (overflow,
+        // representability), break rather than loop forever.
+        while true {
+            guard let candidate = calendar.date(byAdding: unit, value: n * step, to: startDate) else {
+                // Calendar can't represent this date — return a sentinel rather than crash.
+                return .distantFuture
+            }
+            if candidate > today {
+                return candidate
+            }
             n += 1
-            candidate = calendar.date(byAdding: unit, value: n * step, to: startDate) ?? today
         }
-        return candidate
     }
 }
 
