@@ -15,7 +15,7 @@ struct TrackrApp: App {
 
     init() {
         do {
-            self.container = try ModelContainerConfig.makeAppContainer()
+            self.container = try ModelContainerConfig.makeAppContainer(syncMode: .localOnly)
         } catch {
             fatalError("Failed to construct ModelContainer: \(error)")
         }

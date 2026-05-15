@@ -44,6 +44,7 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         ENABLE_PREVIEWS: YES
         ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS: NO
+        CODE_SIGN_ENTITLEMENTS: Trackr.entitlements
 
   TrackrTests:
     type: bundle.unit-test
