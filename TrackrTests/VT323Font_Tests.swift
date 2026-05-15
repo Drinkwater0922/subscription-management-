@@ -1,5 +1,4 @@
 import XCTest
-import SwiftUI
 @testable import Trackr
 
 final class VT323FontTests: XCTestCase {
