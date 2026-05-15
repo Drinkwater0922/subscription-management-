@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "items": [
+    {
+      "id": "chatgpt.plus",
+      "name": "ChatGPT Plus",
+      "defaultPlanName": "Plus",
+      "defaultAmount": "20.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:chatgpt.plus"
+    },
+    {
+      "id": "claude.pro",
+      "name": "Claude",
+      "defaultPlanName": "Pro",
+      "defaultAmount": "20.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:claude.pro"
+    },
+    {
+      "id": "github.copilot",
+      "name": "GitHub Copilot",
+      "defaultPlanName": "Individual",
+      "defaultAmount": "10.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "dev",
+      "iconRef": "preset:github.copilot"
+    },
+    {
+      "id": "netflix.standard",
+      "name": "Netflix",
+      "defaultPlanName": "Standard",
+      "defaultAmount": "15.49",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "media",
+      "iconRef": "preset:netflix.standard"
+    },
+    {
+      "id": "spotify.premium",
+      "name": "Spotify",
+      "defaultPlanName": "Premium",
+      "defaultAmount": "10.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "media",
+      "iconRef": "preset:spotify.premium"
+    },
+    {
+      "id": "apple.music",
+      "name": "Apple Music",
+      "defaultPlanName": "Individual",
+      "defaultAmount": "10.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "media",
+      "iconRef": "preset:apple.music"
+    },
+    {
+      "id": "icloud.50",
+      "name": "iCloud+",
+      "defaultPlanName": "50GB",
+      "defaultAmount": "0.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "cloud",
+      "iconRef": "preset:icloud.50"
+    },
+    {
+      "id": "notion.pro",
+      "name": "Notion",
+      "defaultPlanName": "Personal Pro",
+      "defaultAmount": "8.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "productivity",
+      "iconRef": "preset:notion.pro"
+    }
+  ]
+}

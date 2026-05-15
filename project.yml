@@ -25,6 +25,8 @@ targets:
     platform: iOS
     sources:
       - path: Trackr
+      - path: Trackr/Resources/presets.bundled.json
+        buildPhase: resources
     info:
       path: Trackr/Info.plist
       properties:
