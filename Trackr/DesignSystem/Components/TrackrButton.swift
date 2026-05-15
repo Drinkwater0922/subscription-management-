@@ -2,6 +2,13 @@ import SwiftUI
 
 /// Primary action button. Two visual variants: filled (accent background) and outlined (border only).
 struct TrackrButton: View {
+    /// Minimum touch-target height per Apple HIG.
+    private static let minTouchTarget: CGFloat = 44
+    /// Vertical padding inside the touch target. Combined with the label, total height settles at `minTouchTarget`.
+    private static let verticalPadding: CGFloat = 12
+    /// Tracking (letter spacing) for the pixel-font label.
+    private static let labelTracking: CGFloat = 2
+
     enum Variant {
         case filled
         case outlined
@@ -22,11 +29,11 @@ struct TrackrButton: View {
             PixelText(
                 label,
                 size: TrackrTypography.Scale.body,
-                color: variant == .filled ? .black : TrackrColors.fg,
-                tracking: 2
+                color: variant == .filled ? TrackrColors.onAccent : TrackrColors.fg,
+                tracking: Self.labelTracking
             )
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, minHeight: Self.minTouchTarget)
+            .padding(.vertical, Self.verticalPadding)
             .background(background)
             .overlay(border)
         }

@@ -21,6 +21,8 @@ enum TrackrColors {
 
     /// Brand accent (lime). Used on FAB, CTAs, "due soon" countdowns.
     static let accent = Color(hex: 0xC7F284)
+    /// Text/glyph color for content placed on top of `accent`. High-contrast black.
+    static let onAccent = Color(hex: 0x000000)
     /// True-warning red. Reserved for overdue subscriptions and price-increase alerts.
     static let warn   = Color(hex: 0xA8453D)
 }
