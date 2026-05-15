@@ -68,7 +68,7 @@ final class SubscriptionTests: XCTestCase {
 func makeInMemoryContainer() throws -> ModelContainer {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     return try ModelContainer(
-        for: Subscription.self,
+        for: Subscription.self, RenewalEvent.self,
         configurations: config
     )
 }
