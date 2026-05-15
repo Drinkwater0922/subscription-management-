@@ -121,11 +121,7 @@ struct HomeView: View {
 
 #Preview { HomeView() }
 
-// MARK: - Temporary stubs (removed in Tasks 5/7)
-struct AddSubscriptionSheet: View {
-    var body: some View { Text("AddSubscriptionSheet stub") }
-}
-
+// MARK: - Temporary stubs (removed in Task 7)
 struct SubscriptionDetailView: View {
     let subscription: Subscription
     var body: some View { Text("Detail stub: \(subscription.name)") }
