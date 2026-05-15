@@ -61,14 +61,3 @@ final class SubscriptionTests: XCTestCase {
         XCTAssertEqual(sub.iconRef, "custom:emoji:❓")
     }
 }
-
-// Temporary helper — superseded by Task 7's ModelContainerConfig.
-// Update the `for:` list as each subsequent @Model task lands.
-
-func makeInMemoryContainer() throws -> ModelContainer {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    return try ModelContainer(
-        for: Subscription.self, RenewalEvent.self, PriceChangeAlert.self, UserSettings.self, PresetCache.self,
-        configurations: config
-    )
-}
