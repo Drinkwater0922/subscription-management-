@@ -1,24 +1,35 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 @main
 struct TrackrApp: App {
-    /// The app's SwiftData container. Constructed once at launch.
+
     private let container: ModelContainer
+    private let router: AppDeepLinkRouter
+    private let coordinator: NotificationCoordinator
+    private let notificationDelegate: TrackrNotificationDelegate
 
     init() {
         do {
             self.container = try ModelContainerConfig.makeAppContainer()
         } catch {
-            // Schema mismatch or disk-full at first launch — both warrant a crash
-            // rather than silent degradation. M7 revisits with CloudKit sync.
             fatalError("Failed to construct ModelContainer: \(error)")
         }
+        self.router = AppDeepLinkRouter()
+        self.coordinator = NotificationCoordinator(
+            scheduler: LocalNotificationScheduler(center: SystemNotificationCenter()),
+            container: container
+        )
+        self.notificationDelegate = TrackrNotificationDelegate(router: router)
+        UNUserNotificationCenter.current().delegate = notificationDelegate
     }
 
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environment(router)
+                .environment(\.notificationCoordinator, coordinator)
                 .preferredColorScheme(.dark)
         }
         .modelContainer(container)
