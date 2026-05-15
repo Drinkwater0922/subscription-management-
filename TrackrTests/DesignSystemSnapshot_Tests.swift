@@ -1,5 +1,6 @@
 import XCTest
 import SwiftUI
+import SwiftData
 import SnapshotTesting
 @testable import Trackr
 
@@ -12,6 +13,18 @@ final class DesignSystemSnapshotTests: XCTestCase {
     /// rather than treating the diff as a regression.
     private let record: Bool = false
 
+    private var container: ModelContainer!
+
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        container = try makeInMemoryContainer()
+    }
+
+    override func tearDownWithError() throws {
+        container = nil
+        try super.tearDownWithError()
+    }
+
     override func invokeTest() {
         withSnapshotTesting(record: record ? .all : .missing) {
             super.invokeTest()
@@ -20,6 +33,7 @@ final class DesignSystemSnapshotTests: XCTestCase {
 
     func test_homeView_iPhone15() {
         let view = HomeView()
+            .modelContainer(container)
             .frame(width: 393, height: 852)    // iPhone 15 logical points
             .background(TrackrColors.bg)
         assertSnapshot(of: view, as: .image(layout: .fixed(width: 393, height: 852)))

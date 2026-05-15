@@ -1,8 +1,28 @@
 import SwiftUI
+import SwiftData
 
-/// Home screen. M1: placeholder shell that renders the design-system pieces.
-/// Real subscription data binding lands in M3.
+/// Home screen. Lists the user's active subscriptions in `nextBillingDate` order
+/// and shows the monthly-equivalent total in the user's default currency.
 struct HomeView: View {
+
+    @Query(sort: \Subscription.nextBillingDate, order: .forward)
+    private var subscriptions: [Subscription]
+
+    @Environment(\.modelContext) private var context
+
+    @State private var showingAdd = false
+    @State private var selected: Subscription?
+
+    /// Resolved lazily — `SettingsRepository` creates the row on first access.
+    private var defaultCurrency: String {
+        do {
+            let repo = SettingsRepository(context: context)
+            return try repo.currentSettings().defaultCurrency
+        } catch {
+            return "USD"
+        }
+    }
+
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             TrackrColors.bg.ignoresSafeArea()
@@ -13,33 +33,37 @@ struct HomeView: View {
                 heroAmount
                 Spacer().frame(height: 20)
                 DashedDivider()
-                Spacer().frame(height: 14)
-                emptyState
+                Spacer().frame(height: 8)
+                content
                 Spacer()
             }
             .padding(.horizontal, 20)
 
-            FloatingActionButton(action: { /* M3 wires this up */ })
+            FloatingActionButton(action: { showingAdd = true })
                 .padding(24)
+        }
+        .sheet(isPresented: $showingAdd) {
+            AddSubscriptionSheet()
+                .modelContext(context)
+        }
+        .sheet(item: $selected) { sub in
+            SubscriptionDetailView(subscription: sub)
+                .modelContext(context)
         }
     }
 
     private var topBar: some View {
         HStack {
             HStack(spacing: 6) {
-                Rectangle()
-                    .fill(TrackrColors.accent)
-                    .frame(width: 8, height: 8)
+                Rectangle().fill(TrackrColors.accent).frame(width: 8, height: 8)
                 PixelText("TRACKR", size: TrackrTypography.Scale.title, tracking: 3)
             }
             Spacer()
             HStack(spacing: 14) {
-                Color.clear
-                    .frame(width: 32, height: 32)
+                Color.clear.frame(width: 32, height: 32)
                     .overlay(PixelText("≡", size: 14, color: TrackrColors.fg2, tracking: 0))
                     .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
-                Color.clear
-                    .frame(width: 32, height: 32)
+                Color.clear.frame(width: 32, height: 32)
                     .overlay(PixelText("⚙", size: 14, color: TrackrColors.fg2, tracking: 0))
                     .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
             }
@@ -47,24 +71,33 @@ struct HomeView: View {
     }
 
     private var heroAmount: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            PixelText("MONTHLY · USD",
+        let total = MonthlyTotalCalculator.total(of: subscriptions, in: defaultCurrency)
+        return VStack(alignment: .leading, spacing: 6) {
+            PixelText("MONTHLY · \(defaultCurrency.uppercased())",
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                PixelText("$",
-                          size: TrackrTypography.Scale.largeNumber,
-                          color: TrackrColors.fg2,
-                          tracking: 1)
-                PixelText("0",
-                          size: TrackrTypography.Scale.hero,
-                          color: TrackrColors.fg,
-                          tracking: 1)
-                PixelText(".00",
-                          size: TrackrTypography.Scale.largeNumber,
-                          color: TrackrColors.fg2,
-                          tracking: 1)
+            PixelText(AmountFormatter.format(total, currency: defaultCurrency),
+                      size: TrackrTypography.Scale.hero,
+                      tracking: 1)
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if subscriptions.isEmpty {
+            emptyState
+        } else {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(subscriptions) { sub in
+                        Button { selected = sub } label: {
+                            SubscriptionRow(subscription: sub)
+                        }
+                        .buttonStyle(.plain)
+                        DashedDivider()
+                    }
+                }
             }
         }
     }
@@ -86,3 +119,13 @@ struct HomeView: View {
 }
 
 #Preview { HomeView() }
+
+// MARK: - Temporary stubs (removed in Tasks 5/7)
+struct AddSubscriptionSheet: View {
+    var body: some View { Text("AddSubscriptionSheet stub") }
+}
+
+struct SubscriptionDetailView: View {
+    let subscription: Subscription
+    var body: some View { Text("Detail stub: \(subscription.name)") }
+}
