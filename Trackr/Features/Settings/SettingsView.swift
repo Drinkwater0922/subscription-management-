@@ -205,7 +205,7 @@ struct SettingsView: View {
                                   color: TrackrColors.accent, tracking: 1.5)
                     }.buttonStyle(.plain)
                 } else {
-                    Link(destination: URL(string: "https://apps.apple.com/account/subscriptions")!) {
+                    Link(destination: BrandConfig.manageSubscriptionURL) {
                         PixelText(LocalizedStringKey("MANAGE SUBSCRIPTION"),
                                   size: TrackrTypography.Scale.body,
                                   color: TrackrColors.accent, tracking: 1.5)
@@ -229,12 +229,12 @@ struct SettingsView: View {
 
     private var linksSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Link(destination: URL(string: "https://trackr.placeholder/privacy")!) {
+            Link(destination: BrandConfig.privacyPolicyURL) {
                 PixelText(LocalizedStringKey("PRIVACY POLICY"),
                           size: TrackrTypography.Scale.body,
                           color: TrackrColors.fg2, tracking: 1.5)
             }
-            Link(destination: URL(string: "https://trackr.placeholder/terms")!) {
+            Link(destination: BrandConfig.termsOfServiceURL) {
                 PixelText(LocalizedStringKey("TERMS OF SERVICE"),
                           size: TrackrTypography.Scale.body,
                           color: TrackrColors.fg2, tracking: 1.5)
