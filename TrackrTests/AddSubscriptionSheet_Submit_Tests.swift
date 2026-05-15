@@ -25,6 +25,7 @@ final class AddSubscriptionSheetSubmitTests: XCTestCase {
 
         var dismissed = false
         let result = await AddSubscriptionSheet.submit(draft: draft,
+                                                       presetId: nil,
                                                        context: container.mainContext,
                                                        coordinator: nil,
                                                        onDismiss: { dismissed = true })
@@ -43,6 +44,7 @@ final class AddSubscriptionSheetSubmitTests: XCTestCase {
 
         var dismissed = false
         let result = await AddSubscriptionSheet.submit(draft: draft,
+                                                       presetId: nil,
                                                        context: container.mainContext,
                                                        coordinator: nil,
                                                        onDismiss: { dismissed = true })

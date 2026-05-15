@@ -1,12 +1,17 @@
 import SwiftUI
 import SwiftData
 
-/// The CUSTOM tab of the Add Subscription sheet. Library tab is M5.
 struct AddSubscriptionSheet: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.notificationCoordinator) private var coordinator
+
+    private enum Tab: Hashable { case custom, library }
+    @State private var selectedTab: Tab = .custom
+    @State private var pendingPresetId: String?
+    @State private var presetItems: [PresetItem] = []
+    @State private var presetSearch: String = ""
 
     @State private var draft: SubscriptionDraft
     @State private var errorMessage: String?
@@ -27,27 +32,21 @@ struct AddSubscriptionSheet: View {
             TrackrColors.bg.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
                 header
+                tabPicker
                 Divider().background(TrackrColors.border)
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        nameField
-                        amountAndCurrency
-                        cycleField
-                        startDateField
-                        categoryField
-                        planNameField
-                        notesField
-                        urlField
-                        if let errorMessage {
-                            PixelText(errorMessage.uppercased(),
-                                      size: TrackrTypography.Scale.caption,
-                                      color: TrackrColors.warn,
-                                      tracking: 1.5)
+                    Group {
+                        if selectedTab == .custom {
+                            customForm
+                        } else {
+                            PresetLibraryView(items: presetItems,
+                                              searchQuery: $presetSearch,
+                                              onSelect: selectPreset)
                         }
                     }
-                    .padding(20)
+                    .padding(selectedTab == .custom ? 20 : 0)
                 }
-                footer
+                if selectedTab == .custom { footer }
             }
         }
         .onAppear {
@@ -58,7 +57,45 @@ struct AddSubscriptionSheet: View {
                     defaultCurrency: (try? SettingsRepository(context: context).currentSettings().defaultCurrency) ?? "USD"
                 )
             }
+            if presetItems.isEmpty {
+                presetItems = (try? PresetBundleLoader.loadBundled().items) ?? []
+            }
         }
+    }
+
+    private var tabPicker: some View {
+        Picker("", selection: $selectedTab) {
+            Text("CUSTOM").tag(Tab.custom)
+            Text("LIBRARY").tag(Tab.library)
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 12)
+    }
+
+    private var customForm: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            nameField
+            amountAndCurrency
+            cycleField
+            startDateField
+            categoryField
+            planNameField
+            notesField
+            urlField
+            if let errorMessage {
+                PixelText(errorMessage.uppercased(),
+                          size: TrackrTypography.Scale.caption,
+                          color: TrackrColors.warn,
+                          tracking: 1.5)
+            }
+        }
+    }
+
+    private func selectPreset(_ item: PresetItem) {
+        draft = item.toDraft(defaultStart: draft.startDate)
+        pendingPresetId = item.id
+        selectedTab = .custom
     }
 
     private var header: some View {
@@ -202,6 +239,7 @@ struct AddSubscriptionSheet: View {
     private func attemptSave() {
         Task {
             if let msg = await Self.submit(draft: draft,
+                                            presetId: pendingPresetId,
                                             context: context,
                                             coordinator: coordinator,
                                             onDismiss: { dismiss() }) {
@@ -216,11 +254,13 @@ struct AddSubscriptionSheet: View {
     /// user-facing error message on failure.
     @discardableResult
     static func submit(draft: SubscriptionDraft,
+                       presetId: String? = nil,
                        context: ModelContext,
                        coordinator: NotificationCoordinator? = nil,
                        onDismiss: () -> Void) async -> String? {
         do {
             let sub = try draft.makeSubscription()
+            if let presetId { sub.presetId = presetId }
             try SubscriptionRepository(context: context).insert(sub)
             if let coordinator {
                 try? await coordinator.refresh()

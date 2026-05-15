@@ -34,6 +34,7 @@ final class NotificationWriteHooksTests: XCTestCase {
 
         let result = await AddSubscriptionSheet.submit(
             draft: draft,
+            presetId: nil,
             context: container.mainContext,
             coordinator: coordinator,
             onDismiss: {}
