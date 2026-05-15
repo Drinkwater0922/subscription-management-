@@ -48,7 +48,7 @@ struct TrackrApp: App {
         self.paywallTrigger = PaywallTriggerCoordinator()
         self.haptics = SystemHaptics()
 
-        let catalogURL = URL(string: "https://presets.invalid/trackr/v1/presets.json")!
+        let catalogURL = BrandConfig.presetCatalogURL
         let pushPublisher = PriceChangePushPublisher(center: SystemNotificationCenter())
         self.presetSync = PresetSync(
             fetcher: URLSessionPresetFetcher(catalogURL: catalogURL),
