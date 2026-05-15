@@ -30,18 +30,18 @@ struct HomeView: View {
                 Rectangle()
                     .fill(TrackrColors.accent)
                     .frame(width: 8, height: 8)
-                PixelText("TRACKR", size: 22, tracking: 3)
+                PixelText("TRACKR", size: TrackrTypography.Scale.title, tracking: 3)
             }
             Spacer()
             HStack(spacing: 14) {
-                Rectangle()
-                    .stroke(TrackrColors.border, lineWidth: 1)
+                Color.clear
                     .frame(width: 32, height: 32)
                     .overlay(PixelText("≡", size: 14, color: TrackrColors.fg2, tracking: 0))
-                Rectangle()
-                    .stroke(TrackrColors.border, lineWidth: 1)
+                    .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
+                Color.clear
                     .frame(width: 32, height: 32)
                     .overlay(PixelText("⚙", size: 14, color: TrackrColors.fg2, tracking: 0))
+                    .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
             }
         }
     }
