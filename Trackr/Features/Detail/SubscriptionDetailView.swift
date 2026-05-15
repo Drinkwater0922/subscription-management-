@@ -169,16 +169,61 @@ struct SubscriptionDetailView: View {
         return f.string(from: date)
     }
 
-    // MARK: - Actions — implementations land in Tasks 8/9/10
+    // MARK: - Actions
 
     private func beginEdit() {
-        // Task 8 fills this in.
+        draft = SubscriptionDraft(
+            name: subscription.name,
+            planName: subscription.planName ?? "",
+            amountString: "\(subscription.amount)",
+            currency: subscription.currency,
+            billingCycle: subscription.billingCycle,
+            customDays: {
+                if case .customDays(let d) = subscription.billingCycle { return d }
+                return 30
+            }(),
+            startDate: subscription.startDate,
+            category: subscription.category,
+            notes: subscription.notes ?? "",
+            urlString: subscription.url?.absoluteString ?? ""
+        )
         editing = true
     }
 
     private func commitEdits() {
-        // Task 8 fills this in.
-        editing = false
+        if Self.applyEdits(to: subscription, draft: draft, context: context) == nil {
+            editing = false
+        }
+    }
+
+    /// Pure-ish helper: validates `draft`, mutates `subscription`, saves the context.
+    /// Returns `nil` on success or a user-facing error message on failure.
+    @discardableResult
+    static func applyEdits(to subscription: Subscription,
+                           draft: SubscriptionDraft,
+                           context: ModelContext) -> String? {
+        do {
+            let built = try draft.makeSubscription()
+            subscription.name = built.name
+            subscription.planName = built.planName
+            subscription.amount = built.amount
+            subscription.currency = built.currency
+            subscription.billingCycle = built.billingCycle
+            subscription.category = built.category
+            subscription.notes = built.notes
+            subscription.url = built.url
+            subscription.updatedAt = .now
+            try context.save()
+            return nil
+        } catch SubscriptionDraft.ValidationError.emptyName {
+            return "Name is required"
+        } catch SubscriptionDraft.ValidationError.invalidAmount {
+            return "Enter a valid amount"
+        } catch SubscriptionDraft.ValidationError.invalidCustomDays {
+            return "Custom cycle days must be > 0"
+        } catch {
+            return "Could not save: \(error.localizedDescription)"
+        }
     }
 
     private func togglePause() {
