@@ -10,8 +10,10 @@ struct HomeView: View {
 
     @Environment(\.modelContext) private var context
     @Environment(AppDeepLinkRouter.self) private var router
+    @Environment(\.notificationCoordinator) private var coordinator
 
     @State private var showingAdd = false
+    @State private var showingSettings = false
     @State private var selected: Subscription?
 
     /// Resolved lazily — `SettingsRepository` creates the row on first access.
@@ -51,6 +53,11 @@ struct HomeView: View {
             SubscriptionDetailView(subscription: sub)
                 .modelContext(context)
         }
+        .sheet(isPresented: $showingSettings) {
+            SettingsView()
+                .modelContext(context)
+                .environment(\.notificationCoordinator, coordinator)
+        }
         .onChange(of: router.pendingSubscriptionID) { _, newValue in
             guard let id = newValue else { return }
             if let match = subscriptions.first(where: { $0.id == id }) {
@@ -71,9 +78,12 @@ struct HomeView: View {
                 Color.clear.frame(width: 32, height: 32)
                     .overlay(PixelText("≡", size: 14, color: TrackrColors.fg2, tracking: 0))
                     .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
-                Color.clear.frame(width: 32, height: 32)
-                    .overlay(PixelText("⚙", size: 14, color: TrackrColors.fg2, tracking: 0))
-                    .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
+                Button { showingSettings = true } label: {
+                    Color.clear.frame(width: 32, height: 32)
+                        .overlay(PixelText("⚙", size: 14, color: TrackrColors.fg2, tracking: 0))
+                        .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
+                }
+                .buttonStyle(.plain)
             }
         }
     }
