@@ -227,7 +227,13 @@ struct SubscriptionDetailView: View {
     }
 
     private func togglePause() {
-        // Task 9 fills this in.
+        try? Self.togglePause(subscription: subscription, context: context)
+    }
+
+    static func togglePause(subscription: Subscription, context: ModelContext) throws {
+        subscription.isActive.toggle()
+        subscription.updatedAt = .now
+        try context.save()
     }
 
     private func performDelete() {
