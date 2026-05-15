@@ -10,6 +10,8 @@ struct FloatingActionButton: View {
     /// Shadow radius and offset of the accent glow.
     private static let shadowRadius: CGFloat = 12
     private static let shadowYOffset: CGFloat = 4
+    /// Opacity of the accent-colored glow under the FAB.
+    private static let shadowOpacity: Double = 0.4
 
     let action: () -> Void
 
@@ -22,7 +24,7 @@ struct FloatingActionButton: View {
             PixelText("+", size: Self.glyphSize, color: TrackrColors.onAccent, tracking: 0)
                 .frame(width: Self.side, height: Self.side)
                 .background(TrackrColors.accent)
-                .shadow(color: TrackrColors.accent.opacity(0.4),
+                .shadow(color: TrackrColors.accent.opacity(Self.shadowOpacity),
                         radius: Self.shadowRadius,
                         y: Self.shadowYOffset)
         }
