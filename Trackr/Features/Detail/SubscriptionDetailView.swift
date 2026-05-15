@@ -6,6 +6,7 @@ struct SubscriptionDetailView: View {
     @Bindable var subscription: Subscription
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.notificationCoordinator) private var coordinator
 
     @State private var editing = false
     @State private var draft = SubscriptionDraft.empty(defaultCurrency: "USD")
@@ -191,8 +192,13 @@ struct SubscriptionDetailView: View {
     }
 
     private func commitEdits() {
-        if Self.applyEdits(to: subscription, draft: draft, context: context) == nil {
-            editing = false
+        Task {
+            if await Self.applyEdits(to: subscription,
+                                      draft: draft,
+                                      context: context,
+                                      coordinator: coordinator) == nil {
+                editing = false
+            }
         }
     }
 
@@ -201,7 +207,8 @@ struct SubscriptionDetailView: View {
     @discardableResult
     static func applyEdits(to subscription: Subscription,
                            draft: SubscriptionDraft,
-                           context: ModelContext) -> String? {
+                           context: ModelContext,
+                           coordinator: NotificationCoordinator? = nil) async -> String? {
         do {
             let built = try draft.makeSubscription()
             subscription.name = built.name
@@ -214,6 +221,7 @@ struct SubscriptionDetailView: View {
             subscription.url = built.url
             subscription.updatedAt = .now
             try context.save()
+            if let coordinator { try? await coordinator.refresh() }
             return nil
         } catch SubscriptionDraft.ValidationError.emptyName {
             return "Name is required"
@@ -227,25 +235,37 @@ struct SubscriptionDetailView: View {
     }
 
     private func togglePause() {
-        try? Self.togglePause(subscription: subscription, context: context)
+        Task {
+            try? await Self.togglePause(subscription: subscription,
+                                        context: context,
+                                        coordinator: coordinator)
+        }
     }
 
-    static func togglePause(subscription: Subscription, context: ModelContext) throws {
+    static func togglePause(subscription: Subscription,
+                            context: ModelContext,
+                            coordinator: NotificationCoordinator? = nil) async throws {
         subscription.isActive.toggle()
         subscription.updatedAt = .now
         try context.save()
+        if let coordinator { try? await coordinator.refresh() }
     }
 
     private func performDelete() {
-        try? Self.performDelete(subscription: subscription,
-                                context: context,
-                                onDismiss: { dismiss() })
+        Task {
+            try? await Self.performDelete(subscription: subscription,
+                                          context: context,
+                                          coordinator: coordinator,
+                                          onDismiss: { dismiss() })
+        }
     }
 
     static func performDelete(subscription: Subscription,
                               context: ModelContext,
-                              onDismiss: () -> Void) throws {
+                              coordinator: NotificationCoordinator? = nil,
+                              onDismiss: () -> Void) async throws {
         try SubscriptionRepository(context: context).delete(subscription)
+        if let coordinator { try? await coordinator.refresh() }
         onDismiss()
     }
 }

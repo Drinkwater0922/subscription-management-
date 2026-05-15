@@ -6,6 +6,7 @@ struct AddSubscriptionSheet: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.notificationCoordinator) private var coordinator
 
     @State private var draft: SubscriptionDraft
     @State private var errorMessage: String?
@@ -199,12 +200,15 @@ struct AddSubscriptionSheet: View {
     }
 
     private func attemptSave() {
-        if let msg = Self.submit(draft: draft,
-                                 context: context,
-                                 onDismiss: { dismiss() }) {
-            errorMessage = msg
-        } else {
-            errorMessage = nil
+        Task {
+            if let msg = await Self.submit(draft: draft,
+                                            context: context,
+                                            coordinator: coordinator,
+                                            onDismiss: { dismiss() }) {
+                errorMessage = msg
+            } else {
+                errorMessage = nil
+            }
         }
     }
 
@@ -213,10 +217,14 @@ struct AddSubscriptionSheet: View {
     @discardableResult
     static func submit(draft: SubscriptionDraft,
                        context: ModelContext,
-                       onDismiss: () -> Void) -> String? {
+                       coordinator: NotificationCoordinator? = nil,
+                       onDismiss: () -> Void) async -> String? {
         do {
             let sub = try draft.makeSubscription()
             try SubscriptionRepository(context: context).insert(sub)
+            if let coordinator {
+                try? await coordinator.refresh()
+            }
             onDismiss()
             return nil
         } catch SubscriptionDraft.ValidationError.emptyName {

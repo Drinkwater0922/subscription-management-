@@ -17,7 +17,7 @@ final class SubscriptionDetailViewDeleteTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func test_performDelete_removesRowAndDismisses() throws {
+    func test_performDelete_removesRowAndDismisses() async throws {
         let sub = Subscription(
             name: "GoneSoon", amount: 1, currency: "USD",
             billingCycle: .monthly,
@@ -28,9 +28,10 @@ final class SubscriptionDetailViewDeleteTests: XCTestCase {
         try ctx.save()
 
         var dismissed = false
-        try SubscriptionDetailView.performDelete(subscription: sub,
-                                                 context: ctx,
-                                                 onDismiss: { dismissed = true })
+        try await SubscriptionDetailView.performDelete(subscription: sub,
+                                                       context: ctx,
+                                                       coordinator: nil,
+                                                       onDismiss: { dismissed = true })
 
         XCTAssertTrue(dismissed)
         let count = try SubscriptionRepository(context: ctx).count()

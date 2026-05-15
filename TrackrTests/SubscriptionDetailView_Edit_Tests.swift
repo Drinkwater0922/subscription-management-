@@ -17,7 +17,7 @@ final class SubscriptionDetailViewEditTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func test_applyEdits_updatesFieldsAndSaves() throws {
+    func test_applyEdits_updatesFieldsAndSaves() async throws {
         let sub = Subscription(
             name: "Old", planName: nil, amount: 5, currency: "USD",
             billingCycle: .monthly,
@@ -33,7 +33,7 @@ final class SubscriptionDetailViewEditTests: XCTestCase {
         draft.planName = "Pro"
         draft.notes = "moved up a tier"
 
-        let error = SubscriptionDetailView.applyEdits(to: sub, draft: draft, context: ctx)
+        let error = await SubscriptionDetailView.applyEdits(to: sub, draft: draft, context: ctx, coordinator: nil)
         XCTAssertNil(error)
         XCTAssertEqual(sub.name, "New Name")
         XCTAssertEqual(sub.amount, Decimal(string: "12.50"))
@@ -44,7 +44,7 @@ final class SubscriptionDetailViewEditTests: XCTestCase {
         XCTAssertEqual(refetched?.name, "New Name")
     }
 
-    func test_applyEdits_invalidAmount_doesNotMutate() throws {
+    func test_applyEdits_invalidAmount_doesNotMutate() async throws {
         let sub = Subscription(
             name: "Keep", amount: 5, currency: "USD",
             billingCycle: .monthly,
@@ -57,7 +57,7 @@ final class SubscriptionDetailViewEditTests: XCTestCase {
         draft.name = "Keep"
         draft.amountString = "not-a-number"
 
-        let error = SubscriptionDetailView.applyEdits(to: sub, draft: draft, context: container.mainContext)
+        let error = await SubscriptionDetailView.applyEdits(to: sub, draft: draft, context: container.mainContext, coordinator: nil)
         XCTAssertNotNil(error)
         XCTAssertEqual(sub.amount, 5)
     }

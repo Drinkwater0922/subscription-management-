@@ -17,7 +17,7 @@ final class SubscriptionDetailViewPauseTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func test_togglePause_flipsAndPersists() throws {
+    func test_togglePause_flipsAndPersists() async throws {
         let sub = Subscription(
             name: "X", amount: 1, currency: "USD",
             billingCycle: .monthly,
@@ -28,9 +28,9 @@ final class SubscriptionDetailViewPauseTests: XCTestCase {
         try ctx.save()
         XCTAssertTrue(sub.isActive)
 
-        try SubscriptionDetailView.togglePause(subscription: sub, context: ctx)
+        try await SubscriptionDetailView.togglePause(subscription: sub, context: ctx, coordinator: nil)
         XCTAssertFalse(sub.isActive)
-        try SubscriptionDetailView.togglePause(subscription: sub, context: ctx)
+        try await SubscriptionDetailView.togglePause(subscription: sub, context: ctx, coordinator: nil)
         XCTAssertTrue(sub.isActive)
 
         let refetched = try SubscriptionRepository(context: ctx).fetch(byID: sub.id)

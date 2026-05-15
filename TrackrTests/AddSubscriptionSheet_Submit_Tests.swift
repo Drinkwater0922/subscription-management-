@@ -17,16 +17,17 @@ final class AddSubscriptionSheetSubmitTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func test_submit_validDraft_insertsRow() throws {
+    func test_submit_validDraft_insertsRow() async throws {
         var draft = SubscriptionDraft.empty(defaultCurrency: "USD")
         draft.name = "ChatGPT Plus"
         draft.amountString = "20"
         draft.category = .ai
 
         var dismissed = false
-        let result = AddSubscriptionSheet.submit(draft: draft,
-                                                 context: container.mainContext,
-                                                 onDismiss: { dismissed = true })
+        let result = await AddSubscriptionSheet.submit(draft: draft,
+                                                       context: container.mainContext,
+                                                       coordinator: nil,
+                                                       onDismiss: { dismissed = true })
 
         XCTAssertNil(result, "submit should return nil error on success")
         XCTAssertTrue(dismissed)
@@ -36,14 +37,15 @@ final class AddSubscriptionSheetSubmitTests: XCTestCase {
         XCTAssertEqual(all.first?.category, .ai)
     }
 
-    func test_submit_invalidDraft_returnsErrorAndDoesNotInsert() throws {
+    func test_submit_invalidDraft_returnsErrorAndDoesNotInsert() async throws {
         var draft = SubscriptionDraft.empty(defaultCurrency: "USD")
         draft.name = ""   // invalid
 
         var dismissed = false
-        let result = AddSubscriptionSheet.submit(draft: draft,
-                                                 context: container.mainContext,
-                                                 onDismiss: { dismissed = true })
+        let result = await AddSubscriptionSheet.submit(draft: draft,
+                                                       context: container.mainContext,
+                                                       coordinator: nil,
+                                                       onDismiss: { dismissed = true })
 
         XCTAssertNotNil(result)
         XCTAssertFalse(dismissed)

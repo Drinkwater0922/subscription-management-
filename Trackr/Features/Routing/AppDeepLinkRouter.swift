@@ -19,3 +19,16 @@ final class AppDeepLinkRouter {
         return pendingSubscriptionID
     }
 }
+
+import SwiftUI
+
+private struct NotificationCoordinatorKey: EnvironmentKey {
+    static let defaultValue: NotificationCoordinator? = nil
+}
+
+extension EnvironmentValues {
+    var notificationCoordinator: NotificationCoordinator? {
+        get { self[NotificationCoordinatorKey.self] }
+        set { self[NotificationCoordinatorKey.self] = newValue }
+    }
+}
