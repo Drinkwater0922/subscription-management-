@@ -58,3 +58,18 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.placeholder.trackr.tests
         GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  Trackr:
+    build:
+      targets:
+        Trackr: all
+        TrackrTests: [test]
+    run:
+      config: Debug
+      storeKitConfiguration: Configuration.storekit
+    test:
+      config: Debug
+      targets:
+        - TrackrTests
+      storeKitConfiguration: Configuration.storekit

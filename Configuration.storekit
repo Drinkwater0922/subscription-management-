@@ -1,0 +1,60 @@
+{
+  "identifier" : "trackr-iap-config",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "29.99",
+      "familyShareable" : false,
+      "internalID" : "F0E1D2C3",
+      "localizations" : [
+        {
+          "description" : "One-time purchase — Pro features forever.",
+          "displayName" : "Trackr Pro Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.placeholder.trackr.pro.lifetime",
+      "referenceName" : "Pro Lifetime",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_compatibilityTimeRate" : 1,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : []
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "BA1A2B3C",
+      "localizations" : [],
+      "name" : "Trackr Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "A1B2C3D4",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Auto-renewing monthly subscription with all Pro features.",
+              "displayName" : "Trackr Pro Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.placeholder.trackr.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pro Monthly",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
