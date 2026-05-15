@@ -24,7 +24,7 @@ final class MonoSquareIconTests: XCTestCase {
         XCTAssertEqual(MonoSquareIcon.monogram(for: "   "), "?")
     }
 
-    func test_monogram_singleLetterPadsWithSpace() {
+    func test_monogram_singleLetterReturnsAsIs() {
         XCTAssertEqual(MonoSquareIcon.monogram(for: "X"), "X")
     }
 
