@@ -57,7 +57,7 @@ struct TrackrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            RootView()
                 .environment(router)
                 .environment(\.notificationCoordinator, coordinator)
                 .environment(\.presetSync, presetSync)
@@ -82,6 +82,38 @@ struct TrackrApp: App {
             return settings?.proStatus ?? .free
         } catch {
             return .free
+        }
+    }
+}
+
+/// Root coordinator: shows the onboarding flow as a full-screen cover on
+/// first launch (`UserSettings.onboardingCompletedAt == nil`), and `HomeView`
+/// otherwise. Writing the completion timestamp through SwiftData triggers
+/// re-evaluation of `needsOnboarding` and the cover dismisses.
+private struct RootView: View {
+
+    @Environment(\.modelContext) private var context
+    @Query private var settings: [UserSettings]
+
+    var body: some View {
+        HomeView()
+            .fullScreenCover(isPresented: .constant(needsOnboarding)) {
+                OnboardingView(onComplete: completeOnboarding)
+            }
+    }
+
+    private var needsOnboarding: Bool {
+        guard let row = settings.first else { return true }
+        return row.onboardingCompletedAt == nil
+    }
+
+    private func completeOnboarding() {
+        do {
+            let row = try SettingsRepository(context: context).currentSettings()
+            row.onboardingCompletedAt = .now
+            try context.save()
+        } catch {
+            // M8 ignores this — worst case the user sees onboarding again next launch.
         }
     }
 }
