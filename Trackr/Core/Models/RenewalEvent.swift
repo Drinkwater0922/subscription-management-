@@ -5,7 +5,7 @@ import SwiftData
 /// historical amounts on the Detail screen even after prices change.
 @Model
 final class RenewalEvent {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var subscriptionId: UUID
     var date: Date
     var amount: Decimal

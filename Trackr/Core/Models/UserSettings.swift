@@ -5,7 +5,7 @@ import SwiftData
 /// not at the schema level (SwiftData has no singleton constraint).
 @Model
 final class UserSettings {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var defaultCurrency: String
     /// Days before `nextBillingDate` to fire local notifications. Default [3, 1].
     var leadDays: [Int]

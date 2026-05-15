@@ -6,7 +6,7 @@ import SwiftData
 /// on the relevant Subscription Detail screen, and (Pro only) as a push notification.
 @Model
 final class PriceChangeAlert {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var presetId: String
     var planKey: String
     var oldAmount: Decimal

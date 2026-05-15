@@ -6,7 +6,7 @@ import SwiftData
 @Model
 final class Subscription {
     // Identity
-    @Attribute(.unique) var id: UUID
+    var id: UUID
 
     // Core fields
     var name: String

@@ -6,7 +6,7 @@ import SwiftData
 /// `PresetSync` (M5) so this model stays schema-agnostic.
 @Model
 final class PresetCache {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var version: String
     var fetchedAt: Date
     var data: Data
