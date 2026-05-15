@@ -68,6 +68,7 @@ targets:
     sources:
       - path: Widgets
       - path: Trackr/Core
+      - path: Trackr/DesignSystem
       - path: Trackr/Features/Widget
     info:
       path: Widgets/Info.plist
