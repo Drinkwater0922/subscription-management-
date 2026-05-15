@@ -29,8 +29,11 @@ final class SettingsViewSnapshotTests: XCTestCase {
         settings.leadDays = leadDays
         settings.notifyHour = hour
         try container.mainContext.save()
+        let entitlement = ProEntitlement(client: FakeStoreKitClient(), container: container)
         return SettingsView()
             .modelContainer(container)
+            .environment(entitlement)
+            .environment(PaywallTriggerCoordinator())
             .frame(width: 390, height: 844)
             .preferredColorScheme(.dark)
     }
@@ -51,6 +54,7 @@ final class SettingsViewSnapshotTests: XCTestCase {
             leadDays: [7, 3],
             notifyHour: 18,
             currency: "cny",
+            language: "auto",
             context: container.mainContext,
             coordinator: coordinator
         )

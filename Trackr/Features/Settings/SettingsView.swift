@@ -10,6 +10,9 @@ struct SettingsView: View {
     @State private var leadDays: Set<Int> = [3, 1]
     @State private var notifyHour: Int = 9
     @State private var currency: String = "USD"
+    @State private var language: String = "auto"
+    @Environment(ProEntitlement.self) private var entitlement
+    @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
 
     var body: some View {
         ZStack {
@@ -22,6 +25,9 @@ struct SettingsView: View {
                         leadDaysSection
                         notifyHourSection
                         currencySection
+                        languageSection
+                        proStatusSection
+                        linksSection
                     }
                     .padding(20)
                 }
@@ -115,6 +121,7 @@ struct SettingsView: View {
         leadDays = Set(s.leadDays)
         notifyHour = s.notifyHour
         currency = s.defaultCurrency
+        language = s.language
     }
 
     private func saveAndDismiss() {
@@ -123,6 +130,7 @@ struct SettingsView: View {
                 leadDays: Array(leadDays).sorted(by: >),
                 notifyHour: notifyHour,
                 currency: currency,
+                language: language,
                 context: context,
                 coordinator: coordinator
             )
@@ -135,6 +143,7 @@ struct SettingsView: View {
         leadDays: [Int],
         notifyHour: Int,
         currency: String,
+        language: String,
         context: ModelContext,
         coordinator: NotificationCoordinator?
     ) async {
@@ -143,11 +152,93 @@ struct SettingsView: View {
             s.leadDays = leadDays
             s.notifyHour = notifyHour
             s.defaultCurrency = currency.uppercased()
+            s.language = language
             try context.save()
             if let coordinator { try? await coordinator.refresh() }
-        } catch {
-            // M4 ignores save failures — there's nowhere meaningful to surface
-            // them yet. M8's onboarding adds an error banner.
+        } catch { }
+    }
+    private var languageSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PixelText(LocalizedStringKey("LANGUAGE"),
+                      size: TrackrTypography.Scale.sectionLabel,
+                      color: TrackrColors.fg2, tracking: 2)
+            HStack(spacing: 8) {
+                languageChip(value: "auto",    labelKey: LocalizedStringKey("AUTO"))
+                languageChip(value: "en",      labelKey: LocalizedStringKey("ENGLISH"))
+                languageChip(value: "zh-Hans", labelKey: LocalizedStringKey("简体中文"))
+            }
+            Rectangle().fill(TrackrColors.border).frame(height: 1)
+        }
+    }
+
+    @ViewBuilder
+    private func languageChip(value: String, labelKey: LocalizedStringKey) -> some View {
+        let isOn = language == value
+        Button(action: { language = value }) {
+            PixelText(labelKey,
+                      size: TrackrTypography.Scale.caption,
+                      color: isOn ? TrackrColors.onAccent : TrackrColors.fg,
+                      tracking: 1.5)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(isOn ? TrackrColors.accent : TrackrColors.bg2)
+                .overlay(Rectangle().stroke(TrackrColors.border, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var proStatusSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PixelText(LocalizedStringKey("PRO STATUS"),
+                      size: TrackrTypography.Scale.sectionLabel,
+                      color: TrackrColors.fg2, tracking: 2)
+            HStack {
+                PixelText(proStatusLabel,
+                          size: TrackrTypography.Scale.value,
+                          color: entitlement.current == .free ? TrackrColors.fg2 : TrackrColors.accent,
+                          tracking: 1.5)
+                Spacer()
+                if entitlement.current == .free {
+                    Button(action: { paywallTrigger.present(reason: .manual) }) {
+                        PixelText(LocalizedStringKey("UPGRADE"),
+                                  size: TrackrTypography.Scale.body,
+                                  color: TrackrColors.accent, tracking: 1.5)
+                    }.buttonStyle(.plain)
+                } else {
+                    Link(destination: URL(string: "https://apps.apple.com/account/subscriptions")!) {
+                        PixelText(LocalizedStringKey("MANAGE SUBSCRIPTION"),
+                                  size: TrackrTypography.Scale.body,
+                                  color: TrackrColors.accent, tracking: 1.5)
+                    }
+                }
+            }
+            TrackrButton(String(localized: "RESTORE PURCHASES"), variant: .outlined) {
+                Task { await entitlement.refresh() }
+            }
+            Rectangle().fill(TrackrColors.border).frame(height: 1)
+        }
+    }
+
+    private var proStatusLabel: LocalizedStringKey {
+        switch entitlement.current {
+        case .free:        return LocalizedStringKey("FREE")
+        case .proMonthly:  return LocalizedStringKey("PRO MONTHLY")
+        case .proLifetime: return LocalizedStringKey("PRO LIFETIME")
+        }
+    }
+
+    private var linksSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Link(destination: URL(string: "https://trackr.placeholder/privacy")!) {
+                PixelText(LocalizedStringKey("PRIVACY POLICY"),
+                          size: TrackrTypography.Scale.body,
+                          color: TrackrColors.fg2, tracking: 1.5)
+            }
+            Link(destination: URL(string: "https://trackr.placeholder/terms")!) {
+                PixelText(LocalizedStringKey("TERMS OF SERVICE"),
+                          size: TrackrTypography.Scale.body,
+                          color: TrackrColors.fg2, tracking: 1.5)
+            }
         }
     }
 }
