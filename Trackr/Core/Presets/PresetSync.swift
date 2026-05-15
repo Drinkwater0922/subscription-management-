@@ -13,13 +13,16 @@ final class PresetSync {
     private let fetcher: PresetFetcher
     private let container: ModelContainer
     private let bundle: Bundle
+    private let pushPublisher: PriceChangePushPublisher?
 
     init(fetcher: PresetFetcher,
          container: ModelContainer,
-         bundle: Bundle = .main) {
+         bundle: Bundle = .main,
+         pushPublisher: PriceChangePushPublisher? = nil) {
         self.fetcher = fetcher
         self.container = container
         self.bundle = bundle
+        self.pushPublisher = pushPublisher
     }
 
     func run(now: Date = .now) async throws {
@@ -56,6 +59,12 @@ final class PresetSync {
                                              now: now)
         let alertRepo = AlertRepository(context: context)
         for alert in alerts { try alertRepo.insert(alert) }
+
+        // Pro-only push for each new alert. Free users see only the in-app banner.
+        if let pushPublisher {
+            let settings = try SettingsRepository(context: context).currentSettings()
+            try await pushPublisher.publish(alerts: alerts, proStatus: settings.proStatus)
+        }
 
         // 5. Overwrite the cache row with the remote payload.
         let row = try context.fetch(FetchDescriptor<PresetCache>()).first
