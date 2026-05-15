@@ -237,6 +237,15 @@ struct SubscriptionDetailView: View {
     }
 
     private func performDelete() {
-        // Task 10 fills this in.
+        try? Self.performDelete(subscription: subscription,
+                                context: context,
+                                onDismiss: { dismiss() })
+    }
+
+    static func performDelete(subscription: Subscription,
+                              context: ModelContext,
+                              onDismiss: () -> Void) throws {
+        try SubscriptionRepository(context: context).delete(subscription)
+        onDismiss()
     }
 }
