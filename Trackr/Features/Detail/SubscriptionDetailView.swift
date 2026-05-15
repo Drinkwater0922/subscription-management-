@@ -59,6 +59,11 @@ struct SubscriptionDetailView: View {
 
     private var readingBody: some View {
         VStack(alignment: .leading, spacing: 20) {
+            if let alert = unseenAlert {
+                PriceChangeBanner(message: alert.messageEn) {
+                    try? AlertRepository(context: context).markSeen(alert)
+                }
+            }
             heroAmount
             DashedDivider()
             row("PLAN", subscription.planName ?? "—")
@@ -152,6 +157,13 @@ struct SubscriptionDetailView: View {
             content()
             Rectangle().fill(TrackrColors.border).frame(height: 1)
         }
+    }
+
+    private var unseenAlert: PriceChangeAlert? {
+        guard let presetId = subscription.presetId else { return nil }
+        return try? AlertRepository(context: context)
+            .fetch(forPresetId: presetId)
+            .first(where: { $0.seenAt == nil })
     }
 
     private var cycleText: String {

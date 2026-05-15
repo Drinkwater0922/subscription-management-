@@ -52,4 +52,37 @@ final class SubscriptionDetailViewSnapshotTests: XCTestCase {
     func test_paused_render() {
         assertSnapshot(of: seedAndHost(active: false), as: .image)
     }
+
+    func test_priceChangeBanner_render() throws {
+        let sub = Subscription(
+            name: "Netflix",
+            planName: "Standard",
+            amount: 17.99,
+            currency: "USD",
+            billingCycle: .monthly,
+            nextBillingDate: Date(timeIntervalSince1970: 1_750_000_000),
+            startDate: Date(timeIntervalSince1970: 1_700_000_000),
+            category: .media,
+            presetId: "netflix.standard"
+        )
+        container.mainContext.insert(sub)
+        let alert = PriceChangeAlert(
+            presetId: "netflix.standard",
+            planKey: "Standard",
+            oldAmount: 15.49,
+            newAmount: 17.99,
+            currency: "USD",
+            effectiveDate: Date(timeIntervalSince1970: 1_750_000_000),
+            messageEn: "Netflix raised its Standard price from $15.49 to $17.99.",
+            messageZh: "Netflix Standard 价格已上调，由 $15.49 变为 $17.99。"
+        )
+        container.mainContext.insert(alert)
+        try container.mainContext.save()
+
+        let host = SubscriptionDetailView(subscription: sub)
+            .modelContainer(container)
+            .frame(width: 390, height: 844)
+            .preferredColorScheme(.dark)
+        assertSnapshot(of: host, as: .image)
+    }
 }
