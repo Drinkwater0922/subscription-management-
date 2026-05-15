@@ -6,6 +6,7 @@ struct AddSubscriptionSheet: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.notificationCoordinator) private var coordinator
+    @Environment(ProEntitlement.self) private var entitlement
 
     private enum Tab: Hashable { case custom, library }
     @State private var selectedTab: Tab = .custom
@@ -240,8 +241,10 @@ struct AddSubscriptionSheet: View {
         Task {
             if let msg = await Self.submit(draft: draft,
                                             presetId: pendingPresetId,
+                                            proStatus: entitlement.current,
                                             context: context,
                                             coordinator: coordinator,
+                                            onLimitExceeded: handleLimitExceeded,
                                             onDismiss: { dismiss() }) {
                 errorMessage = msg
             } else {
@@ -250,15 +253,29 @@ struct AddSubscriptionSheet: View {
         }
     }
 
+    private func handleLimitExceeded() {
+        // Task 7 fills this in (presents PaywallTriggerCoordinator). For now,
+        // the inline `errorMessage` already informs the user.
+    }
+
     /// Pure-ish submit helper exposed for tests. Returns `nil` on success or a
     /// user-facing error message on failure.
     @discardableResult
     static func submit(draft: SubscriptionDraft,
                        presetId: String? = nil,
+                       proStatus: ProStatus = .proLifetime,
                        context: ModelContext,
                        coordinator: NotificationCoordinator? = nil,
+                       onLimitExceeded: () -> Void = {},
                        onDismiss: () -> Void) async -> String? {
         do {
+            // Free-tier gate.
+            let count = try SubscriptionRepository(context: context).count()
+            if !FeatureGate.canAddSubscription(currentCount: count, proStatus: proStatus) {
+                onLimitExceeded()
+                return "Free tier is limited to \(FeatureGate.freeSubscriptionLimit) subscriptions. Upgrade to Pro for unlimited."
+            }
+
             let sub = try draft.makeSubscription()
             if let presetId { sub.presetId = presetId }
             try SubscriptionRepository(context: context).insert(sub)

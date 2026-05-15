@@ -25,8 +25,10 @@ final class AddSubscriptionSheetSnapshotTests: XCTestCase {
     }
 
     private func host(initial: SubscriptionDraft = .empty(defaultCurrency: "USD")) -> some View {
-        AddSubscriptionSheet(initialDraft: initial)
+        let entitlement = ProEntitlement(client: FakeStoreKitClient(), container: container)
+        return AddSubscriptionSheet(initialDraft: initial)
             .modelContainer(container)
+            .environment(entitlement)
             .frame(width: 390, height: 844)
             .preferredColorScheme(.dark)
     }

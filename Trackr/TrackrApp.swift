@@ -10,6 +10,7 @@ struct TrackrApp: App {
     private let coordinator: NotificationCoordinator
     private let notificationDelegate: TrackrNotificationDelegate
     private let presetSync: PresetSync
+    private let entitlement: ProEntitlement
 
     init() {
         do {
@@ -24,6 +25,7 @@ struct TrackrApp: App {
         )
         self.notificationDelegate = TrackrNotificationDelegate(router: router)
         UNUserNotificationCenter.current().delegate = notificationDelegate
+        self.entitlement = ProEntitlement(client: SystemStoreKitClient(), container: container)
 
         // M5: the live host lands in M9. Until then we point at a placeholder
         // that fails on every device — the bundled seed catalog drives LIBRARY.
@@ -40,7 +42,9 @@ struct TrackrApp: App {
                 .environment(router)
                 .environment(\.notificationCoordinator, coordinator)
                 .environment(\.presetSync, presetSync)
+                .environment(entitlement)
                 .preferredColorScheme(.dark)
+                .task { await entitlement.start() }
         }
         .modelContainer(container)
     }
