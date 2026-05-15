@@ -43,3 +43,25 @@ extension EnvironmentValues {
         set { self[PresetSyncKey.self] = newValue }
     }
 }
+
+private struct ProEntitlementKey: EnvironmentKey {
+    static let defaultValue: ProEntitlement? = nil
+}
+
+extension EnvironmentValues {
+    var proEntitlement: ProEntitlement? {
+        get { self[ProEntitlementKey.self] }
+        set { self[ProEntitlementKey.self] = newValue }
+    }
+}
+
+private struct PaywallTriggerCoordinatorKey: EnvironmentKey {
+    static let defaultValue: PaywallTriggerCoordinator? = nil
+}
+
+extension EnvironmentValues {
+    var paywallTrigger: PaywallTriggerCoordinator? {
+        get { self[PaywallTriggerCoordinatorKey.self] }
+        set { self[PaywallTriggerCoordinatorKey.self] = newValue }
+    }
+}
