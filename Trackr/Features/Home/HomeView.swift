@@ -12,6 +12,8 @@ struct HomeView: View {
     @Environment(AppDeepLinkRouter.self) private var router
     @Environment(\.notificationCoordinator) private var coordinator
     @Environment(\.presetSync) private var presetSync
+    @Environment(ProEntitlement.self) private var entitlement
+    @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
 
     @State private var showingAdd = false
     @State private var showingSettings = false
@@ -68,6 +70,14 @@ struct HomeView: View {
         }
         .task {
             try? await presetSync?.run()
+        }
+        .sheet(isPresented: Binding(
+            get: { paywallTrigger.isShowing },
+            set: { newValue in if !newValue { paywallTrigger.dismiss() } }
+        )) {
+            PaywallView(reason: paywallTrigger.reason ?? .manual)
+                .modelContext(context)
+                .environment(entitlement)
         }
     }
 

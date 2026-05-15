@@ -7,6 +7,7 @@ struct AddSubscriptionSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.notificationCoordinator) private var coordinator
     @Environment(ProEntitlement.self) private var entitlement
+    @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
 
     private enum Tab: Hashable { case custom, library }
     @State private var selectedTab: Tab = .custom
@@ -254,8 +255,8 @@ struct AddSubscriptionSheet: View {
     }
 
     private func handleLimitExceeded() {
-        // Task 7 fills this in (presents PaywallTriggerCoordinator). For now,
-        // the inline `errorMessage` already informs the user.
+        paywallTrigger.present(reason: .subscriptionLimit)
+        dismiss()
     }
 
     /// Pure-ish submit helper exposed for tests. Returns `nil` on success or a

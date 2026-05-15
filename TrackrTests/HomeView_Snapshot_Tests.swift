@@ -31,9 +31,13 @@ final class HomeViewSnapshotTests: XCTestCase {
     }
 
     private func host() -> some View {
-        HomeView()
+        let client = FakeStoreKitClient()
+        let entitlement = ProEntitlement(client: client, container: container)
+        return HomeView()
             .modelContainer(container)
             .environment(AppDeepLinkRouter())
+            .environment(entitlement)
+            .environment(PaywallTriggerCoordinator())
             .frame(width: 390, height: 844)
             .preferredColorScheme(.dark)
     }

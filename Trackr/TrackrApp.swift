@@ -11,6 +11,7 @@ struct TrackrApp: App {
     private let notificationDelegate: TrackrNotificationDelegate
     private let presetSync: PresetSync
     private let entitlement: ProEntitlement
+    private let paywallTrigger: PaywallTriggerCoordinator
 
     init() {
         do {
@@ -26,9 +27,8 @@ struct TrackrApp: App {
         self.notificationDelegate = TrackrNotificationDelegate(router: router)
         UNUserNotificationCenter.current().delegate = notificationDelegate
         self.entitlement = ProEntitlement(client: SystemStoreKitClient(), container: container)
+        self.paywallTrigger = PaywallTriggerCoordinator()
 
-        // M5: the live host lands in M9. Until then we point at a placeholder
-        // that fails on every device — the bundled seed catalog drives LIBRARY.
         let catalogURL = URL(string: "https://presets.invalid/trackr/v1/presets.json")!
         self.presetSync = PresetSync(
             fetcher: URLSessionPresetFetcher(catalogURL: catalogURL),
@@ -43,6 +43,7 @@ struct TrackrApp: App {
                 .environment(\.notificationCoordinator, coordinator)
                 .environment(\.presetSync, presetSync)
                 .environment(entitlement)
+                .environment(paywallTrigger)
                 .preferredColorScheme(.dark)
                 .task { await entitlement.start() }
         }

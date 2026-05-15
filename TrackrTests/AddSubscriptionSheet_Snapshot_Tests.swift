@@ -29,6 +29,7 @@ final class AddSubscriptionSheetSnapshotTests: XCTestCase {
         return AddSubscriptionSheet(initialDraft: initial)
             .modelContainer(container)
             .environment(entitlement)
+            .environment(PaywallTriggerCoordinator())
             .frame(width: 390, height: 844)
             .preferredColorScheme(.dark)
     }

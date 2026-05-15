@@ -33,9 +33,12 @@ final class DesignSystemSnapshotTests: XCTestCase {
 
     @MainActor
     func test_homeView_iPhone15() {
+        let entitlement = ProEntitlement(client: FakeStoreKitClient(), container: container)
         let view = HomeView()
             .modelContainer(container)
             .environment(AppDeepLinkRouter())
+            .environment(entitlement)
+            .environment(PaywallTriggerCoordinator())
             .frame(width: 393, height: 852)    // iPhone 15 logical points
             .background(TrackrColors.bg)
         assertSnapshot(of: view, as: .image(layout: .fixed(width: 393, height: 852)))
