@@ -65,3 +65,14 @@ extension EnvironmentValues {
         set { self[PaywallTriggerCoordinatorKey.self] = newValue }
     }
 }
+
+private struct HapticsKey: EnvironmentKey {
+    static let defaultValue: Haptics? = nil
+}
+
+extension EnvironmentValues {
+    var haptics: Haptics? {
+        get { self[HapticsKey.self] }
+        set { self[HapticsKey.self] = newValue }
+    }
+}

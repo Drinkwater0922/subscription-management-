@@ -8,6 +8,7 @@ struct AddSubscriptionSheet: View {
     @Environment(\.notificationCoordinator) private var coordinator
     @Environment(ProEntitlement.self) private var entitlement
     @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
+    @Environment(\.haptics) private var haptics
 
     private enum Tab: Hashable { case custom, library }
     @State private var selectedTab: Tab = .custom
@@ -247,8 +248,10 @@ struct AddSubscriptionSheet: View {
                                             coordinator: coordinator,
                                             onLimitExceeded: handleLimitExceeded,
                                             onDismiss: { dismiss() }) {
+                haptics?.play(.warning)
                 errorMessage = msg
             } else {
+                haptics?.play(.success)
                 errorMessage = nil
             }
         }

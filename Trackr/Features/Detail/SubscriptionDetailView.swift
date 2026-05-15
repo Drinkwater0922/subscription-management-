@@ -7,6 +7,7 @@ struct SubscriptionDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.notificationCoordinator) private var coordinator
+    @Environment(\.haptics) private var haptics
 
     @State private var editing = false
     @State private var draft = SubscriptionDraft.empty(defaultCurrency: "USD")
@@ -31,7 +32,10 @@ struct SubscriptionDetailView: View {
         .confirmationDialog("Delete \(subscription.name)?",
                             isPresented: $confirmingDelete,
                             titleVisibility: .visible) {
-            Button("Delete", role: .destructive) { performDelete() }
+            Button("Delete", role: .destructive) {
+                haptics?.play(.mediumImpact)
+                performDelete()
+            }
             Button("Cancel", role: .cancel) { }
         }
     }

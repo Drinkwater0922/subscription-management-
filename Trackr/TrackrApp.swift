@@ -12,6 +12,7 @@ struct TrackrApp: App {
     private let presetSync: PresetSync
     private let entitlement: ProEntitlement
     private let paywallTrigger: PaywallTriggerCoordinator
+    private let haptics: Haptics
 
     init() {
         // Read the cached entitlement from a temporary local-only container so
@@ -45,6 +46,7 @@ struct TrackrApp: App {
         UNUserNotificationCenter.current().delegate = notificationDelegate
         self.entitlement = ProEntitlement(client: SystemStoreKitClient(), container: container)
         self.paywallTrigger = PaywallTriggerCoordinator()
+        self.haptics = SystemHaptics()
 
         let catalogURL = URL(string: "https://presets.invalid/trackr/v1/presets.json")!
         let pushPublisher = PriceChangePushPublisher(center: SystemNotificationCenter())
@@ -63,6 +65,7 @@ struct TrackrApp: App {
                 .environment(\.presetSync, presetSync)
                 .environment(entitlement)
                 .environment(paywallTrigger)
+                .environment(\.haptics, haptics)
                 .preferredColorScheme(.dark)
                 .task { await entitlement.start() }
         }

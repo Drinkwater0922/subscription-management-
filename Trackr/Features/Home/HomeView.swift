@@ -14,6 +14,7 @@ struct HomeView: View {
     @Environment(\.presetSync) private var presetSync
     @Environment(ProEntitlement.self) private var entitlement
     @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
+    @Environment(\.haptics) private var haptics
 
     @State private var showingAdd = false
     @State private var showingSettings = false
@@ -46,8 +47,11 @@ struct HomeView: View {
             }
             .padding(.horizontal, 20)
 
-            FloatingActionButton(action: { showingAdd = true })
-                .padding(24)
+            FloatingActionButton(action: {
+                haptics?.play(.lightImpact)
+                showingAdd = true
+            })
+            .padding(24)
         }
         .sheet(isPresented: $showingAdd) {
             AddSubscriptionSheet()
