@@ -6,11 +6,16 @@ import SnapshotTesting
 final class DesignSystemSnapshotTests: XCTestCase {
 
     /// Set to `true` to (re-)generate baseline snapshots. Commit and set back to `false`.
+    ///
+    /// Baselines were recorded on the **iPhone 16 simulator running iOS 18.1**. If you
+    /// see snapshot diffs on a different simulator/OS, re-record on the same target
+    /// rather than treating the diff as a regression.
     private let record: Bool = false
 
-    override func setUp() {
-        super.setUp()
-        isRecording = record
+    override func invokeTest() {
+        withSnapshotTesting(record: record ? .all : .missing) {
+            super.invokeTest()
+        }
     }
 
     func test_homeView_iPhone15() {
@@ -32,9 +37,11 @@ final class DesignSystemSnapshotTests: XCTestCase {
 
     func test_monoSquareIcon_variants() {
         let view = HStack(spacing: 12) {
-            MonoSquareIcon(name: "AI Chat Pro")
-            MonoSquareIcon(name: "Code Editor +")
-            MonoSquareIcon(name: "")
+            MonoSquareIcon(name: "AI Chat Pro")     // multi-word -> "AC"
+            MonoSquareIcon(name: "Code Editor +")   // punctuation stripped -> "CE"
+            MonoSquareIcon(name: "Copilot")         // single word, 2+ letters -> "CO"
+            MonoSquareIcon(name: "X")               // single letter -> "X"
+            MonoSquareIcon(name: "")                // empty -> "?"
         }
         .padding()
         .background(TrackrColors.bg)
@@ -62,7 +69,7 @@ final class DesignSystemSnapshotTests: XCTestCase {
 
     func test_fab() {
         let view = ZStack(alignment: .bottomTrailing) {
-            TrackrColors.bg.frame(width: 200, height: 200)
+            TrackrColors.bg.frame(width: 220, height: 220)
             FloatingActionButton(action: { }).padding(20)
         }
         assertSnapshot(of: view, as: .image(layout: .sizeThatFits))
