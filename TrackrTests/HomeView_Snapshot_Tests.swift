@@ -33,6 +33,7 @@ final class HomeViewSnapshotTests: XCTestCase {
     private func host() -> some View {
         HomeView()
             .modelContainer(container)
+            .environment(AppDeepLinkRouter())
             .frame(width: 390, height: 844)
             .preferredColorScheme(.dark)
     }

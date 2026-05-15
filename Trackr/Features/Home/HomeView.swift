@@ -9,6 +9,7 @@ struct HomeView: View {
     private var subscriptions: [Subscription]
 
     @Environment(\.modelContext) private var context
+    @Environment(AppDeepLinkRouter.self) private var router
 
     @State private var showingAdd = false
     @State private var selected: Subscription?
@@ -49,6 +50,13 @@ struct HomeView: View {
         .sheet(item: $selected) { sub in
             SubscriptionDetailView(subscription: sub)
                 .modelContext(context)
+        }
+        .onChange(of: router.pendingSubscriptionID) { _, newValue in
+            guard let id = newValue else { return }
+            if let match = subscriptions.first(where: { $0.id == id }) {
+                selected = match
+            }
+            _ = router.consume()
         }
     }
 
