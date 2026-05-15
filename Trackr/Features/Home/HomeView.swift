@@ -71,13 +71,14 @@ struct HomeView: View {
     }
 
     private var heroAmount: some View {
-        let total = MonthlyTotalCalculator.total(of: subscriptions, in: defaultCurrency)
+        let currency = defaultCurrency
+        let total = MonthlyTotalCalculator.total(of: subscriptions, in: currency)
         return VStack(alignment: .leading, spacing: 6) {
-            PixelText("MONTHLY · \(defaultCurrency.uppercased())",
+            PixelText("MONTHLY · \(currency.uppercased())",
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
-            PixelText(AmountFormatter.format(total, currency: defaultCurrency),
+            PixelText(AmountFormatter.format(total, currency: currency),
                       size: TrackrTypography.Scale.hero,
                       tracking: 1)
         }
