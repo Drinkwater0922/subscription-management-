@@ -1,0 +1,191 @@
+import SwiftUI
+import SwiftData
+
+struct SubscriptionDetailView: View {
+
+    @Bindable var subscription: Subscription
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var editing = false
+    @State private var draft = SubscriptionDraft.empty(defaultCurrency: "USD")
+    @State private var confirmingDelete = false
+
+    var body: some View {
+        ZStack {
+            TrackrColors.bg.ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 0) {
+                header
+                Divider().background(TrackrColors.border)
+                ScrollView {
+                    if editing {
+                        editingBody
+                    } else {
+                        readingBody
+                    }
+                }
+                footer
+            }
+        }
+        .confirmationDialog("Delete \(subscription.name)?",
+                            isPresented: $confirmingDelete,
+                            titleVisibility: .visible) {
+            Button("Delete", role: .destructive) { performDelete() }
+            Button("Cancel", role: .cancel) { }
+        }
+    }
+
+    private var header: some View {
+        HStack {
+            Button("CLOSE") { dismiss() }
+                .font(TrackrTypography.pixel(size: TrackrTypography.Scale.body))
+                .foregroundStyle(TrackrColors.fg2)
+            Spacer()
+            PixelText("DETAIL", size: TrackrTypography.Scale.title, tracking: 2)
+            Spacer()
+            if editing {
+                Button("DONE") { commitEdits() }
+                    .font(TrackrTypography.pixel(size: TrackrTypography.Scale.body))
+                    .foregroundStyle(TrackrColors.accent)
+            } else {
+                Button("EDIT") { beginEdit() }
+                    .font(TrackrTypography.pixel(size: TrackrTypography.Scale.body))
+                    .foregroundStyle(TrackrColors.accent)
+            }
+        }
+        .padding(20)
+    }
+
+    private var readingBody: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            heroAmount
+            DashedDivider()
+            row("PLAN", subscription.planName ?? "—")
+            row("CYCLE", cycleText)
+            row("CATEGORY", subscription.category.displayName.uppercased())
+            row("STARTED", iso(subscription.startDate))
+            row("NEXT", iso(subscription.nextBillingDate))
+            row("STATUS", subscription.isActive ? "ACTIVE" : "PAUSED")
+            if let notes = subscription.notes, !notes.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    PixelText("NOTES",
+                              size: TrackrTypography.Scale.sectionLabel,
+                              color: TrackrColors.fg2,
+                              tracking: 2)
+                    Text(notes)
+                        .font(TrackrTypography.sans(size: TrackrTypography.Scale.body))
+                        .foregroundStyle(TrackrColors.fg)
+                }
+            }
+        }
+        .padding(20)
+    }
+
+    private var editingBody: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            labeled("NAME") {
+                TextField("", text: $draft.name)
+                    .textFieldStyle(.plain)
+                    .foregroundStyle(TrackrColors.fg)
+            }
+            labeled("AMOUNT") {
+                TextField("0.00", text: $draft.amountString)
+                    .keyboardType(.decimalPad)
+                    .textFieldStyle(.plain)
+                    .foregroundStyle(TrackrColors.fg)
+            }
+            labeled("PLAN") {
+                TextField("optional", text: $draft.planName)
+                    .textFieldStyle(.plain)
+                    .foregroundStyle(TrackrColors.fg)
+            }
+            labeled("NOTES") {
+                TextField("optional", text: $draft.notes, axis: .vertical)
+                    .lineLimit(2...4)
+                    .textFieldStyle(.plain)
+                    .foregroundStyle(TrackrColors.fg)
+            }
+        }
+        .padding(20)
+    }
+
+    private var heroAmount: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            PixelText(subscription.name.uppercased(),
+                      size: TrackrTypography.Scale.title,
+                      tracking: 2)
+            PixelText(AmountFormatter.format(subscription.amount, currency: subscription.currency),
+                      size: TrackrTypography.Scale.hero,
+                      color: subscription.isActive ? TrackrColors.fg : TrackrColors.fg3,
+                      tracking: 1)
+        }
+    }
+
+    private var footer: some View {
+        VStack(spacing: 0) {
+            DashedDivider()
+            HStack(spacing: 12) {
+                TrackrButton(subscription.isActive ? "PAUSE" : "RESUME",
+                             variant: .outlined) { togglePause() }
+                TrackrButton("DELETE", variant: .outlined) { confirmingDelete = true }
+            }
+            .padding(20)
+        }
+    }
+
+    @ViewBuilder
+    private func row(_ label: String, _ value: String) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            PixelText(label, size: TrackrTypography.Scale.sectionLabel,
+                      color: TrackrColors.fg2, tracking: 2)
+            Spacer()
+            PixelText(value, size: TrackrTypography.Scale.value, tracking: 1)
+        }
+    }
+
+    @ViewBuilder
+    private func labeled<Content: View>(_ label: String, @ViewBuilder _ content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            PixelText(label, size: TrackrTypography.Scale.sectionLabel,
+                      color: TrackrColors.fg2, tracking: 2)
+            content()
+            Rectangle().fill(TrackrColors.border).frame(height: 1)
+        }
+    }
+
+    private var cycleText: String {
+        switch subscription.billingCycle {
+        case .monthly:           return "MONTHLY"
+        case .yearly:            return "YEARLY"
+        case .weekly:            return "WEEKLY"
+        case .customDays(let d): return "EVERY \(d) DAYS"
+        }
+    }
+
+    private func iso(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.timeZone = TimeZone(identifier: "UTC")
+        return f.string(from: date)
+    }
+
+    // MARK: - Actions — implementations land in Tasks 8/9/10
+
+    private func beginEdit() {
+        // Task 8 fills this in.
+        editing = true
+    }
+
+    private func commitEdits() {
+        // Task 8 fills this in.
+        editing = false
+    }
+
+    private func togglePause() {
+        // Task 9 fills this in.
+    }
+
+    private func performDelete() {
+        // Task 10 fills this in.
+    }
+}
