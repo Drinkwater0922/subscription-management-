@@ -27,6 +27,8 @@ targets:
       - path: Trackr
       - path: Trackr/Resources/presets.bundled.json
         buildPhase: resources
+    dependencies:
+      - target: Widgets
     info:
       path: Trackr/Info.plist
       properties:
@@ -59,6 +61,27 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.placeholder.trackr.tests
         GENERATE_INFOPLIST_FILE: YES
+
+  Widgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      - path: Trackr/Core
+      - path: Trackr/Features/Widget
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: Trackr Widgets
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.placeholder.trackr.widgets
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: YES
+        CODE_SIGN_ENTITLEMENTS: Widgets.entitlements
+        INFOPLIST_KEY_CFBundleDisplayName: "Trackr Widgets"
 
 schemes:
   Trackr:
