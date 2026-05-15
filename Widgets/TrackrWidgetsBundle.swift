@@ -8,13 +8,12 @@ struct TrackrWidgetsBundle: WidgetBundle {
     }
 }
 
-/// Placeholder until Task 8 fleshes out the timeline provider + body.
 struct UpcomingRenewalsWidget: Widget {
     let kind: String = "UpcomingRenewalsWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: PlaceholderProvider()) { _ in
-            Text("Trackr")
+        StaticConfiguration(kind: kind, provider: RenewalTimelineProvider()) { entry in
+            UpcomingRenewalsWidgetView(entry: entry)
         }
         .configurationDisplayName("Upcoming Renewals")
         .description("See your next subscription renewals.")
@@ -22,19 +21,18 @@ struct UpcomingRenewalsWidget: Widget {
     }
 }
 
-/// Placeholder until Task 8.
-struct PlaceholderProvider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: .now)
-    }
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) {
-        completion(SimpleEntry(date: .now))
-    }
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
-        completion(Timeline(entries: [SimpleEntry(date: .now)], policy: .never))
-    }
-}
+struct UpcomingRenewalsWidgetView: View {
+    @Environment(\.widgetFamily) private var family
+    let entry: RenewalEntry
 
-struct SimpleEntry: TimelineEntry {
-    let date: Date
+    var body: some View {
+        switch family {
+        case .systemSmall:
+            SmallRenewalWidgetView(renewal: entry.renewals.first)
+        case .systemMedium:
+            MediumRenewalWidgetView(renewals: entry.renewals)
+        default:
+            SmallRenewalWidgetView(renewal: entry.renewals.first)
+        }
+    }
 }

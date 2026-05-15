@@ -53,6 +53,8 @@ targets:
     platform: iOS
     sources:
       - path: TrackrTests
+        excludes:
+          - "**/__Snapshots__/**"
     dependencies:
       - target: Trackr
       - package: SnapshotTesting
