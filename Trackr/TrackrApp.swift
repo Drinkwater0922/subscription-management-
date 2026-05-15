@@ -14,11 +14,28 @@ struct TrackrApp: App {
     private let paywallTrigger: PaywallTriggerCoordinator
 
     init() {
+        // Read the cached entitlement from a temporary local-only container so
+        // we know which SyncMode to build the real container with. The temp
+        // container is scoped to this function and released before the real
+        // container opens, so SQLite can reopen the same store.
+        let cachedProStatus = Self.readCachedProStatus()
+        let syncMode: SyncMode = SyncDecider.decide(
+            proStatus: cachedProStatus,
+            iCloud: .couldNotDetermine
+        )
+
         do {
-            self.container = try ModelContainerConfig.makeAppContainer(syncMode: .localOnly)
+            self.container = try ModelContainerConfig.makeAppContainer(syncMode: syncMode)
         } catch {
-            fatalError("Failed to construct ModelContainer: \(error)")
+            // CloudKit can fail to attach (no entitlement in dev, account
+            // signed out mid-launch, etc.). Fall back to local-only.
+            do {
+                self.container = try ModelContainerConfig.makeAppContainer(syncMode: .localOnly)
+            } catch {
+                fatalError("Failed to construct ModelContainer: \(error)")
+            }
         }
+
         self.router = AppDeepLinkRouter()
         self.coordinator = NotificationCoordinator(
             scheduler: LocalNotificationScheduler(center: SystemNotificationCenter()),
@@ -50,5 +67,21 @@ struct TrackrApp: App {
                 .task { await entitlement.start() }
         }
         .modelContainer(container)
+    }
+
+    /// Reads the previously-persisted `UserSettings.proStatus` from the shared
+    /// App Group container. Used at launch (before `ProEntitlement.start()`)
+    /// to decide whether to spin up CloudKit. Scopes the container to a `do`
+    /// block so ARC releases it before the real container opens.
+    @MainActor
+    private static func readCachedProStatus() -> ProStatus {
+        do {
+            let temp: ModelContainer = try ModelContainerConfig.makeAppContainer(syncMode: .localOnly)
+            let context = temp.mainContext
+            let settings = try context.fetch(FetchDescriptor<UserSettings>()).first
+            return settings?.proStatus ?? .free
+        } catch {
+            return .free
+        }
     }
 }
