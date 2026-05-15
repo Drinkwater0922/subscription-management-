@@ -26,6 +26,7 @@ final class SubscriptionTests: XCTestCase {
         XCTAssertEqual(fetched.first?.name, "AI Chat Pro")
         XCTAssertEqual(fetched.first?.billingCycle, .monthly)
         XCTAssertEqual(fetched.first?.category, .ai)
+        XCTAssertEqual(fetched.first?.amount, 20)
     }
 
     func test_defaultValuesAreSetOnInit() throws {
@@ -43,6 +44,7 @@ final class SubscriptionTests: XCTestCase {
         XCTAssertNil(sub.notes)
         XCTAssertNil(sub.url)
         XCTAssertNil(sub.presetId)
+        XCTAssertNil(sub.paymentMethod)
         XCTAssertNil(sub.pausedUntil)
     }
 
@@ -62,7 +64,6 @@ final class SubscriptionTests: XCTestCase {
 
 // Temporary helper — superseded by Task 7's ModelContainerConfig.
 // Update the `for:` list as each subsequent @Model task lands.
-import Foundation
 
 func makeInMemoryContainer() throws -> ModelContainer {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
