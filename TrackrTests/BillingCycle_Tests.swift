@@ -39,4 +39,18 @@ final class BillingCycleTests: XCTestCase {
             XCTFail("expected .customDays")
         }
     }
+
+    /// Pin the literal JSON shape of `customDays(45)`. The synthesised label `_0`
+    /// is an internal Swift detail, not an ABI guarantee — if a future Swift
+    /// version changes the synthesis strategy, this test fails loudly and we know
+    /// a persistence migration is needed.
+    func test_customDays_encodesToExpectedJSON() throws {
+        let data = try JSONEncoder().encode(BillingCycle.customDays(45))
+        let json = String(data: data, encoding: .utf8)!
+        XCTAssertEqual(json, #"{"customDays":{"_0":45}}"#)
+    }
+
+    func test_customDays_inequalityForDifferentDays() {
+        XCTAssertNotEqual(BillingCycle.customDays(15), BillingCycle.customDays(30))
+    }
 }
