@@ -1,5 +1,5 @@
 {
-  "identifier" : "trackr-iap-config",
+  "identifier" : "pennyloop-iap-config",
   "nonRenewingSubscriptions" : [],
   "products" : [
     {
@@ -9,11 +9,11 @@
       "localizations" : [
         {
           "description" : "One-time purchase — Pro features forever.",
-          "displayName" : "Trackr Pro Lifetime",
+          "displayName" : "PennyLoop Pro Lifetime",
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.placeholder.trackr.pro.lifetime",
+      "productID" : "com.jingxue.pennyloop.pro.lifetime",
       "referenceName" : "Pro Lifetime",
       "type" : "NonConsumable"
     }
@@ -28,7 +28,7 @@
     {
       "id" : "BA1A2B3C",
       "localizations" : [],
-      "name" : "Trackr Pro",
+      "name" : "PennyLoop Pro",
       "subscriptions" : [
         {
           "adHocOffers" : [],
@@ -41,11 +41,11 @@
           "localizations" : [
             {
               "description" : "Auto-renewing monthly subscription with all Pro features.",
-              "displayName" : "Trackr Pro Monthly",
+              "displayName" : "PennyLoop Pro Monthly",
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.placeholder.trackr.pro.monthly",
+          "productID" : "com.jingxue.pennyloop.pro.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pro Monthly",
           "type" : "RecurringSubscription"

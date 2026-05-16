@@ -7,10 +7,10 @@ enum ModelContainerConfig {
     /// App Group identifier — both the app and the widget extension read/write
     /// the same SQLite store via this group. Production swaps this for the
     /// real Apple Developer team prefix in M9.
-    static let appGroupIdentifier = "group.com.placeholder.trackr"
+    static let appGroupIdentifier = "group.com.jingxue.pennyloop"
 
     /// SwiftData CloudKit container ID — matches the entitlement on the app target.
-    static let cloudKitContainerIdentifier = "iCloud.com.placeholder.trackr"
+    static let cloudKitContainerIdentifier = "iCloud.com.jingxue.pennyloop"
 
     /// URL inside the shared App Group container where the SwiftData store lives.
     /// The widget extension targets the same URL so the two processes see the

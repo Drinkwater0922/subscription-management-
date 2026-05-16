@@ -11,7 +11,7 @@ struct OnboardingPermissionPage: View {
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
-            PixelText(LocalizedStringKey("TURN ON NOTIFICATIONS\nSO TRACKR CAN REMIND YOU"),
+            PixelText(LocalizedStringKey("TURN ON NOTIFICATIONS\nSO PENNYLOOP CAN REMIND YOU"),
                       size: TrackrTypography.Scale.title,
                       tracking: 2)
             Text("We'll only ping you a few days before each renewal — never spam.")

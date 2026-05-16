@@ -9,10 +9,10 @@
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "管好每一笔订阅，\n再无意外扣款。" } }
       }
     },
-    "WHY TRACKR" : {
+    "WHY PENNYLOOP" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "WHY TRACKR" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "为什么选 TRACKR" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "WHY PENNYLOOP" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "为什么选 PENNYLOOP" } }
       }
     },
     "ONE PLACE\nFOR ALL YOUR SUBS" : {
@@ -45,10 +45,10 @@
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "还有一件事" } }
       }
     },
-    "TURN ON NOTIFICATIONS\nSO TRACKR CAN REMIND YOU" : {
+    "TURN ON NOTIFICATIONS\nSO PENNYLOOP CAN REMIND YOU" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "TURN ON NOTIFICATIONS\nSO TRACKR CAN REMIND YOU" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开通知\n让 TRACKR 提醒你" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "TURN ON NOTIFICATIONS\nSO PENNYLOOP CAN REMIND YOU" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开通知\n让 PENNYLOOP 提醒你" } }
       }
     },
     "We'll only ping you a few days before each renewal — never spam." : {

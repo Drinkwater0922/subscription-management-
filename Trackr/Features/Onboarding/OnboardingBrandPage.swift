@@ -6,7 +6,7 @@ struct OnboardingBrandPage: View {
             Spacer()
             HStack(spacing: 10) {
                 Rectangle().fill(TrackrColors.accent).frame(width: 16, height: 16)
-                PixelText("TRACKR",
+                PixelText("PENNYLOOP",
                           size: TrackrTypography.Scale.hero,
                           tracking: 4)
             }

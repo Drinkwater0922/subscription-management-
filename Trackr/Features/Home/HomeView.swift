@@ -96,7 +96,7 @@ struct HomeView: View {
         HStack {
             HStack(spacing: 6) {
                 Rectangle().fill(TrackrColors.accent).frame(width: 8, height: 8)
-                PixelText("TRACKR", size: TrackrTypography.Scale.title, tracking: 3)
+                PixelText("PENNYLOOP", size: TrackrTypography.Scale.title, tracking: 3)
             }
             Spacer()
             HStack(spacing: 14) {

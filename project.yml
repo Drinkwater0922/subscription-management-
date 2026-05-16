@@ -37,7 +37,7 @@ targets:
     info:
       path: Trackr/Info.plist
       properties:
-        CFBundleDisplayName: Trackr
+        CFBundleDisplayName: PennyLoop
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
@@ -47,7 +47,7 @@ targets:
           - VT323-Regular.ttf
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.placeholder.trackr
+        PRODUCT_BUNDLE_IDENTIFIER: com.jingxue.pennyloop
         TARGETED_DEVICE_FAMILY: "1,2"
         ENABLE_PREVIEWS: YES
         ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS: NO
@@ -66,7 +66,7 @@ targets:
         product: SnapshotTesting
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.placeholder.trackr.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.jingxue.pennyloop.tests
         GENERATE_INFOPLIST_FILE: YES
 
   Widgets:
@@ -80,16 +80,16 @@ targets:
     info:
       path: Widgets/Info.plist
       properties:
-        CFBundleDisplayName: Trackr Widgets
+        CFBundleDisplayName: PennyLoop Widgets
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.placeholder.trackr.widgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.jingxue.pennyloop.widgets
         TARGETED_DEVICE_FAMILY: "1"
         SKIP_INSTALL: YES
         CODE_SIGN_ENTITLEMENTS: Widgets.entitlements
-        INFOPLIST_KEY_CFBundleDisplayName: "Trackr Widgets"
+        INFOPLIST_KEY_CFBundleDisplayName: "PennyLoop Widgets"
 
 schemes:
   Trackr:

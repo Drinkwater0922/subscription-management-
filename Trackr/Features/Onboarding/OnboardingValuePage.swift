@@ -4,7 +4,7 @@ struct OnboardingValuePage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 28) {
             Spacer()
-            PixelText(LocalizedStringKey("WHY TRACKR"),
+            PixelText(LocalizedStringKey("WHY PENNYLOOP"),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)

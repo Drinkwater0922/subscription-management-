@@ -1,8 +1,10 @@
-# Trackr
+# PennyLoop
 
 A pixel-aesthetic iOS subscription tracker. Built end-to-end with SwiftUI / SwiftData / StoreKit 2 / WidgetKit, no runtime third-party dependencies.
 
-![first-launch onboarding (zh-Hans)](docs/screenshots/m8-onboarding.png)
+> Internal Swift module / target / type prefix is still `Trackr` (the working name during engineering). The user-facing brand is **PennyLoop** — display name, brand mark, bundle ID, and product IDs all reflect the production identity.
+
+![first-launch onboarding (zh-Hans)](docs/screenshots/onboarding-zh.png)
 
 ## Status
 

@@ -40,7 +40,7 @@ struct SmallRenewalWidgetView: View {
 
     private var empty: some View {
         VStack(alignment: .leading, spacing: 8) {
-            PixelText("TRACKR",
+            PixelText("PENNYLOOP",
                       size: TrackrTypography.Scale.title,
                       tracking: 2)
             Spacer()

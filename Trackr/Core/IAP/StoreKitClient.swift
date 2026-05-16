@@ -33,6 +33,6 @@ protocol StoreKitClient: AnyObject {
 /// Product IDs for the two Pro tiers — kept here so `FeatureGate`, `PaywallView`,
 /// and the StoreKit config all share one source of truth.
 enum ProProductID {
-    static let monthly  = "com.placeholder.trackr.pro.monthly"
-    static let lifetime = "com.placeholder.trackr.pro.lifetime"
+    static let monthly  = "com.jingxue.pennyloop.pro.monthly"
+    static let lifetime = "com.jingxue.pennyloop.pro.lifetime"
 }
