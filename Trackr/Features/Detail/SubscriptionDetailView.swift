@@ -128,7 +128,30 @@ struct SubscriptionDetailView: View {
                       size: TrackrTypography.Scale.hero,
                       color: subscription.isActive ? TrackrColors.fg : TrackrColors.fg3,
                       tracking: 1)
+            if let converted = Self.convertedAmountText(for: subscription) {
+                PixelText(converted,
+                          size: TrackrTypography.Scale.caption,
+                          color: TrackrColors.fg2,
+                          tracking: 1)
+            }
         }
+    }
+
+    /// "≈ ¥144.00 @ 2026-05-16" when the sub has a pinned FX rate; otherwise nil.
+    /// Pure helper exposed for tests.
+    static func convertedAmountText(for sub: Subscription) -> String? {
+        guard let rate = sub.exchangeRateToHome,
+              let home = sub.homeCurrencyAtCreation,
+              home.uppercased() != sub.currency.uppercased() else { return nil }
+        let converted = sub.amount * rate
+        let formatted = AmountFormatter.format(converted, currency: home)
+        if let asOf = sub.exchangeRateAsOf {
+            let f = DateFormatter()
+            f.dateFormat = "yyyy-MM-dd"
+            f.timeZone = TimeZone(identifier: "UTC")
+            return "≈ \(formatted) @ \(f.string(from: asOf))"
+        }
+        return "≈ \(formatted)"
     }
 
     private var footer: some View {

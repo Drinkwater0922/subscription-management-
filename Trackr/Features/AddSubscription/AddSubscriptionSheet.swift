@@ -11,6 +11,7 @@ struct AddSubscriptionSheet: View {
     @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
     @Environment(\.haptics) private var haptics
     @Environment(\.photoImportPipeline) private var photoImport
+    @Environment(\.fxRateClient) private var fxClient
 
     private enum Tab: Hashable { case custom, library }
     @State private var selectedTab: Tab = .custom
@@ -328,9 +329,12 @@ struct AddSubscriptionSheet: View {
 
     private func attemptSave() {
         Task {
+            let homeCurrency = (try? SettingsRepository(context: context).currentSettings().defaultCurrency)
             if let msg = await Self.submit(draft: draft,
                                             presetId: pendingPresetId,
                                             proStatus: entitlement.current,
+                                            fxClient: fxClient,
+                                            homeCurrency: homeCurrency,
                                             context: context,
                                             coordinator: coordinator,
                                             onLimitExceeded: handleLimitExceeded,
@@ -351,10 +355,19 @@ struct AddSubscriptionSheet: View {
 
     /// Pure-ish submit helper exposed for tests. Returns `nil` on success or a
     /// user-facing error message on failure.
+    ///
+    /// When `fxClient` + `homeCurrency` are supplied and the draft's currency
+    /// differs from `homeCurrency`, we ask the FX client for today's rate and
+    /// pin it onto the new subscription. If the lookup fails, the subscription
+    /// still saves — just without a pinned rate (it will simply not roll into
+    /// the home-currency total). We never block save on FX availability.
     @discardableResult
     static func submit(draft: SubscriptionDraft,
                        presetId: String? = nil,
                        proStatus: ProStatus = .proLifetime,
+                       fxClient: FXRateClient? = nil,
+                       homeCurrency: String? = nil,
+                       today: Date = .now,
                        context: ModelContext,
                        coordinator: NotificationCoordinator? = nil,
                        onLimitExceeded: () -> Void = {},
@@ -369,6 +382,20 @@ struct AddSubscriptionSheet: View {
 
             let sub = try draft.makeSubscription()
             if let presetId { sub.presetId = presetId }
+
+            // FX pinning — best-effort, never blocks save.
+            if let fxClient,
+               let home = homeCurrency?.uppercased(), !home.isEmpty,
+               sub.currency.uppercased() != home {
+                if let rate = try? await fxClient.rate(from: sub.currency,
+                                                       to: home,
+                                                       on: today) {
+                    sub.exchangeRateToHome = rate
+                    sub.exchangeRateAsOf = today
+                    sub.homeCurrencyAtCreation = home
+                }
+            }
+
             try SubscriptionRepository(context: context).insert(sub)
             if let coordinator {
                 try? await coordinator.refresh()

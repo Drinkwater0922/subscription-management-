@@ -13,6 +13,8 @@ struct TrackrApp: App {
     private let entitlement: ProEntitlement
     private let paywallTrigger: PaywallTriggerCoordinator
     private let haptics: Haptics
+    private let fxClient: FXRateClient
+    private let photoImport: PhotoImportPipeline
 
     init() {
         // Read the cached entitlement from a temporary local-only container so
@@ -47,6 +49,8 @@ struct TrackrApp: App {
         self.entitlement = ProEntitlement(client: SystemStoreKitClient(), container: container)
         self.paywallTrigger = PaywallTriggerCoordinator()
         self.haptics = SystemHaptics()
+        self.fxClient = FrankfurterFXClient()
+        self.photoImport = FallbackPhotoImport()
 
         let catalogURL = BrandConfig.presetCatalogURL
         let pushPublisher = PriceChangePushPublisher(center: SystemNotificationCenter())
@@ -66,6 +70,8 @@ struct TrackrApp: App {
                 .environment(entitlement)
                 .environment(paywallTrigger)
                 .environment(\.haptics, haptics)
+                .environment(\.fxRateClient, fxClient)
+                .environment(\.photoImportPipeline, photoImport)
                 .preferredColorScheme(.dark)
                 .task { await entitlement.start() }
         }

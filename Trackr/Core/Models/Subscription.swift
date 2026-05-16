@@ -31,6 +31,19 @@ final class Subscription {
     var isActive: Bool
     var pausedUntil: Date?
 
+    // FX (M11) — pinned at creation when `currency != homeCurrency`. All three
+    // fields are nilable + additive so old records (and CloudKit) keep working.
+    /// FX rate at pin time. To convert `amount` into the home currency:
+    /// `amount * exchangeRateToHome`. nil means no rate was pinned.
+    var exchangeRateToHome: Decimal?
+    /// Date used when looking up the rate. Stored so the Detail screen can
+    /// surface "@ 2026-05-16" alongside the converted amount.
+    var exchangeRateAsOf: Date?
+    /// What the user's home currency was at pin time. We snapshot it so that
+    /// later changing `UserSettings.defaultCurrency` doesn't silently
+    /// invalidate every pinned rate in the store.
+    var homeCurrencyAtCreation: String?
+
     // Timestamps
     var createdAt: Date
     var updatedAt: Date
@@ -52,6 +65,9 @@ final class Subscription {
         presetId: String? = nil,
         isActive: Bool = true,
         pausedUntil: Date? = nil,
+        exchangeRateToHome: Decimal? = nil,
+        exchangeRateAsOf: Date? = nil,
+        homeCurrencyAtCreation: String? = nil,
         createdAt: Date = .now,
         updatedAt: Date = .now
     ) {
@@ -71,6 +87,9 @@ final class Subscription {
         self.presetId = presetId
         self.isActive = isActive
         self.pausedUntil = pausedUntil
+        self.exchangeRateToHome = exchangeRateToHome
+        self.exchangeRateAsOf = exchangeRateAsOf
+        self.homeCurrencyAtCreation = homeCurrencyAtCreation
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
