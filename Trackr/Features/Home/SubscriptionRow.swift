@@ -8,7 +8,8 @@ struct SubscriptionRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            MonoSquareIcon(name: subscription.name)
+            MonoSquareIcon(name: subscription.name,
+                           glyph: PresetIcons.glyph(for: subscription))
                 .opacity(subscription.isActive ? 1 : 0.4)
 
             VStack(alignment: .leading, spacing: 2) {

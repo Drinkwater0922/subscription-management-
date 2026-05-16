@@ -70,7 +70,7 @@ struct PresetLibraryView: View {
     @ViewBuilder
     private func row(_ item: PresetItem) -> some View {
         HStack(spacing: 12) {
-            MonoSquareIcon(name: item.name)
+            MonoSquareIcon(name: item.name, glyph: PresetIcons.glyph(for: item))
             VStack(alignment: .leading, spacing: 2) {
                 PixelText(item.name.uppercased(),
                           size: TrackrTypography.Scale.value, tracking: 1.5)
