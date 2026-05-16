@@ -1,0 +1,8 @@
+title: PennyLoop
+description: Subscription tracker for iOS
+theme: jekyll-theme-minimal
+permalink: pretty
+exclude:
+  - release/
+  - superpowers/
+  - screenshots/

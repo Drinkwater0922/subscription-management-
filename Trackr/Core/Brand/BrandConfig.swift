@@ -26,14 +26,15 @@ enum BrandConfig {
     /// `Trackr.entitlements`.
     static let cloudKitContainerIdentifier = "iCloud.com.jingxue.pennyloop"
 
-    /// Public privacy policy URL — surfaced in Settings. Placeholder until
-    /// the legal pages are published; the swap target is documented in
-    /// `docs/release/PRE-LAUNCH.md`.
-    static let privacyPolicyURL = URL(string: "https://pennyloop.app/privacy")!
+    /// Public privacy policy URL — surfaced in Settings. Hosted on GitHub
+    /// Pages out of the `docs/` folder of the project repo. Source lives at
+    /// `docs/legal/privacy.md`; swap to a vanity domain later by updating
+    /// this constant only.
+    static let privacyPolicyURL = URL(string: "https://drinkwater0922.github.io/subscription-management-/legal/privacy/")!
 
-    /// Public terms of service URL — surfaced in Settings. Placeholder until
-    /// the legal pages are published.
-    static let termsOfServiceURL = URL(string: "https://pennyloop.app/terms")!
+    /// Public terms of service URL — surfaced in Settings. Hosted on GitHub
+    /// Pages alongside the privacy policy.
+    static let termsOfServiceURL = URL(string: "https://drinkwater0922.github.io/subscription-management-/legal/terms/")!
 
     /// Apple-hosted subscription management page — deep-links into the user's
     /// Apple ID subscriptions on iOS.
