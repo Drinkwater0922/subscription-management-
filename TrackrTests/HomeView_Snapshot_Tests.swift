@@ -52,7 +52,7 @@ final class HomeViewSnapshotTests: XCTestCase {
                          billingCycle: .monthly,
                          nextBillingDate: Date(timeIntervalSince1970: 1_750_000_000),
                          startDate: Date(timeIntervalSince1970: 1_700_000_000),
-                         category: .media),
+                         category: .streaming),
             Subscription(name: "iCloud", amount: 0.99, currency: "USD",
                          billingCycle: .monthly,
                          nextBillingDate: Date(timeIntervalSince1970: 1_760_000_000),

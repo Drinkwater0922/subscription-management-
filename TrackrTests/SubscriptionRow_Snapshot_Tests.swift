@@ -21,7 +21,7 @@ final class SubscriptionRowSnapshotTests: XCTestCase {
             billingCycle: cycle,
             nextBillingDate: Date(timeIntervalSince1970: 1_750_000_000),
             startDate: Date(timeIntervalSince1970: 1_700_000_000),
-            category: .media,
+            category: .streaming,
             isActive: active
         )
     }

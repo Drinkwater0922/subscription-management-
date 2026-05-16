@@ -35,12 +35,12 @@ final class PresetSyncProPushTests: XCTestCase {
             name: "X", amount: 10, currency: "USD",
             billingCycle: .monthly,
             nextBillingDate: .distantFuture, startDate: .now,
-            category: .media, presetId: "a"
+            category: .streaming, presetId: "a"
         )
         container.mainContext.insert(sub)
         let initial = try JSONDecoder().decode(PresetCatalog.self,
             from: Data(#"""
-            {"version":"1.0.0","items":[{"id":"a","name":"Service A","defaultPlanName":"S","defaultAmount":"10","defaultCurrency":"USD","defaultCycle":"monthly","category":"media","iconRef":"preset:a"}]}
+            {"version":"1.0.0","items":[{"id":"a","name":"Service A","defaultPlanName":"S","defaultAmount":"10","defaultCurrency":"USD","defaultCycle":"monthly","category":"streaming","iconRef":"preset:a"}]}
             """#.utf8))
         let cache = PresetCache(version: "1.0.0", fetchedAt: .now,
                                 data: try JSONEncoder().encode(initial))
@@ -53,7 +53,7 @@ final class PresetSyncProPushTests: XCTestCase {
         try seedSettings(proStatus: .proLifetime)
         fetcher.result = try JSONDecoder().decode(PresetCatalog.self,
             from: Data(#"""
-            {"version":"1.1.0","items":[{"id":"a","name":"Service A","defaultPlanName":"S","defaultAmount":"12","defaultCurrency":"USD","defaultCycle":"monthly","category":"media","iconRef":"preset:a"}]}
+            {"version":"1.1.0","items":[{"id":"a","name":"Service A","defaultPlanName":"S","defaultAmount":"12","defaultCurrency":"USD","defaultCycle":"monthly","category":"streaming","iconRef":"preset:a"}]}
             """#.utf8))
 
         let publisher = PriceChangePushPublisher(center: notificationCenter)
@@ -71,7 +71,7 @@ final class PresetSyncProPushTests: XCTestCase {
         try seedSettings(proStatus: .free)
         fetcher.result = try JSONDecoder().decode(PresetCatalog.self,
             from: Data(#"""
-            {"version":"1.1.0","items":[{"id":"a","name":"Service A","defaultPlanName":"S","defaultAmount":"12","defaultCurrency":"USD","defaultCycle":"monthly","category":"media","iconRef":"preset:a"}]}
+            {"version":"1.1.0","items":[{"id":"a","name":"Service A","defaultPlanName":"S","defaultAmount":"12","defaultCurrency":"USD","defaultCycle":"monthly","category":"streaming","iconRef":"preset:a"}]}
             """#.utf8))
 
         let publisher = PriceChangePushPublisher(center: notificationCenter)

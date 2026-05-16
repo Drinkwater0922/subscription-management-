@@ -11,7 +11,7 @@ final class SubscriptionDraftTests: XCTestCase {
             billingCycle: .monthly,
             customDays: 30,
             startDate: Date(timeIntervalSince1970: 1_700_000_000),
-            category: .media
+            category: .streaming
         )
     }
 
@@ -22,7 +22,7 @@ final class SubscriptionDraftTests: XCTestCase {
         XCTAssertEqual(sub.amount, Decimal(string: "9.99"))
         XCTAssertEqual(sub.currency, "USD")
         XCTAssertEqual(sub.billingCycle, .monthly)
-        XCTAssertEqual(sub.category, .media)
+        XCTAssertEqual(sub.category, .streaming)
     }
 
     func test_emptyName_isInvalid() {

@@ -13,7 +13,7 @@ final class PriceChangeDifferTests: XCTestCase {
           "defaultAmount": "\#(amount)",
           "defaultCurrency": "USD",
           "defaultCycle": "monthly",
-          "category": "media",
+          "category": "streaming",
           "iconRef": "preset:\#(id)"
         }
         """#
@@ -28,7 +28,7 @@ final class PriceChangeDifferTests: XCTestCase {
             billingCycle: .monthly,
             nextBillingDate: .distantFuture,
             startDate: .now,
-            category: .media,
+            category: .streaming,
             presetId: presetId
         )
     }

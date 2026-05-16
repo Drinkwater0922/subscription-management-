@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "items": [
     {
       "id": "chatgpt.plus",
@@ -12,6 +12,16 @@
       "iconRef": "preset:chatgpt.plus"
     },
     {
+      "id": "chatgpt.pro",
+      "name": "ChatGPT Pro",
+      "defaultPlanName": "Pro",
+      "defaultAmount": "200.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:chatgpt.pro"
+    },
+    {
       "id": "claude.pro",
       "name": "Claude",
       "defaultPlanName": "Pro",
@@ -22,14 +32,94 @@
       "iconRef": "preset:claude.pro"
     },
     {
-      "id": "github.copilot",
-      "name": "GitHub Copilot",
-      "defaultPlanName": "Individual",
+      "id": "claude.max5x",
+      "name": "Claude",
+      "defaultPlanName": "Max 5x",
+      "defaultAmount": "100.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:claude.max5x"
+    },
+    {
+      "id": "claude.max20x",
+      "name": "Claude",
+      "defaultPlanName": "Max 20x",
+      "defaultAmount": "200.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:claude.max20x"
+    },
+    {
+      "id": "gemini.advanced",
+      "name": "Gemini Advanced",
+      "defaultPlanName": "AI Pro",
+      "defaultAmount": "19.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:gemini.advanced"
+    },
+    {
+      "id": "grok.supergrok",
+      "name": "Grok",
+      "defaultPlanName": "SuperGrok",
+      "defaultAmount": "30.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:grok.supergrok"
+    },
+    {
+      "id": "grok.heavy",
+      "name": "Grok",
+      "defaultPlanName": "SuperGrok Heavy",
+      "defaultAmount": "300.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:grok.heavy"
+    },
+    {
+      "id": "perplexity.pro",
+      "name": "Perplexity",
+      "defaultPlanName": "Pro",
+      "defaultAmount": "20.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:perplexity.pro"
+    },
+    {
+      "id": "midjourney.standard",
+      "name": "Midjourney",
+      "defaultPlanName": "Standard",
+      "defaultAmount": "30.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:midjourney.standard"
+    },
+    {
+      "id": "suno.pro",
+      "name": "Suno",
+      "defaultPlanName": "Pro",
       "defaultAmount": "10.00",
       "defaultCurrency": "USD",
       "defaultCycle": "monthly",
-      "category": "dev",
-      "iconRef": "preset:github.copilot"
+      "category": "ai",
+      "iconRef": "preset:suno.pro"
+    },
+    {
+      "id": "cursor.pro",
+      "name": "Cursor",
+      "defaultPlanName": "Pro",
+      "defaultAmount": "20.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:cursor.pro"
     },
     {
       "id": "netflix.standard",
@@ -38,17 +128,77 @@
       "defaultAmount": "15.49",
       "defaultCurrency": "USD",
       "defaultCycle": "monthly",
-      "category": "media",
+      "category": "streaming",
       "iconRef": "preset:netflix.standard"
+    },
+    {
+      "id": "disneyplus.standard",
+      "name": "Disney+",
+      "defaultPlanName": "Standard",
+      "defaultAmount": "9.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:disneyplus.standard"
+    },
+    {
+      "id": "hbomax.standard",
+      "name": "HBO Max",
+      "defaultPlanName": "Standard",
+      "defaultAmount": "16.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:hbomax.standard"
+    },
+    {
+      "id": "hulu.basic",
+      "name": "Hulu",
+      "defaultPlanName": "Basic",
+      "defaultAmount": "9.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:hulu.basic"
+    },
+    {
+      "id": "primevideo.standalone",
+      "name": "Prime Video",
+      "defaultPlanName": "Standalone",
+      "defaultAmount": "8.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:primevideo.standalone"
+    },
+    {
+      "id": "appletv.plus",
+      "name": "Apple TV+",
+      "defaultPlanName": "Monthly",
+      "defaultAmount": "9.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:appletv.plus"
+    },
+    {
+      "id": "youtube.premium",
+      "name": "YouTube Premium",
+      "defaultPlanName": "Individual",
+      "defaultAmount": "13.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:youtube.premium"
     },
     {
       "id": "spotify.premium",
       "name": "Spotify",
       "defaultPlanName": "Premium",
-      "defaultAmount": "10.99",
+      "defaultAmount": "11.99",
       "defaultCurrency": "USD",
       "defaultCycle": "monthly",
-      "category": "media",
+      "category": "music",
       "iconRef": "preset:spotify.premium"
     },
     {
@@ -58,8 +208,58 @@
       "defaultAmount": "10.99",
       "defaultCurrency": "USD",
       "defaultCycle": "monthly",
-      "category": "media",
+      "category": "music",
       "iconRef": "preset:apple.music"
+    },
+    {
+      "id": "tidal.hifi",
+      "name": "Tidal",
+      "defaultPlanName": "HiFi",
+      "defaultAmount": "10.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "music",
+      "iconRef": "preset:tidal.hifi"
+    },
+    {
+      "id": "psn.plus.essential",
+      "name": "PlayStation Plus",
+      "defaultPlanName": "Essential",
+      "defaultAmount": "9.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "games",
+      "iconRef": "preset:psn.plus.essential"
+    },
+    {
+      "id": "xbox.gamepass.ultimate",
+      "name": "Xbox Game Pass",
+      "defaultPlanName": "Ultimate",
+      "defaultAmount": "19.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "games",
+      "iconRef": "preset:xbox.gamepass.ultimate"
+    },
+    {
+      "id": "apple.arcade",
+      "name": "Apple Arcade",
+      "defaultPlanName": "Monthly",
+      "defaultAmount": "6.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "games",
+      "iconRef": "preset:apple.arcade"
+    },
+    {
+      "id": "nintendo.switch.online",
+      "name": "Nintendo Switch Online",
+      "defaultPlanName": "Individual",
+      "defaultAmount": "3.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "games",
+      "iconRef": "preset:nintendo.switch.online"
     },
     {
       "id": "icloud.50",
@@ -72,14 +272,174 @@
       "iconRef": "preset:icloud.50"
     },
     {
-      "id": "notion.pro",
+      "id": "icloud.200",
+      "name": "iCloud+",
+      "defaultPlanName": "200GB",
+      "defaultAmount": "2.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "cloud",
+      "iconRef": "preset:icloud.200"
+    },
+    {
+      "id": "icloud.2tb",
+      "name": "iCloud+",
+      "defaultPlanName": "2TB",
+      "defaultAmount": "9.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "cloud",
+      "iconRef": "preset:icloud.2tb"
+    },
+    {
+      "id": "googleone.200",
+      "name": "Google One",
+      "defaultPlanName": "200GB",
+      "defaultAmount": "2.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "cloud",
+      "iconRef": "preset:googleone.200"
+    },
+    {
+      "id": "dropbox.plus",
+      "name": "Dropbox",
+      "defaultPlanName": "Plus",
+      "defaultAmount": "11.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "cloud",
+      "iconRef": "preset:dropbox.plus"
+    },
+    {
+      "id": "notion.plus",
       "name": "Notion",
-      "defaultPlanName": "Personal Pro",
-      "defaultAmount": "8.00",
+      "defaultPlanName": "Plus",
+      "defaultAmount": "10.00",
       "defaultCurrency": "USD",
       "defaultCycle": "monthly",
       "category": "productivity",
-      "iconRef": "preset:notion.pro"
+      "iconRef": "preset:notion.plus"
+    },
+    {
+      "id": "microsoft365.personal",
+      "name": "Microsoft 365",
+      "defaultPlanName": "Personal",
+      "defaultAmount": "9.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "productivity",
+      "iconRef": "preset:microsoft365.personal"
+    },
+    {
+      "id": "1password.individual",
+      "name": "1Password",
+      "defaultPlanName": "Individual",
+      "defaultAmount": "2.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "productivity",
+      "iconRef": "preset:1password.individual"
+    },
+    {
+      "id": "github.copilot",
+      "name": "GitHub Copilot",
+      "defaultPlanName": "Individual",
+      "defaultAmount": "10.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "dev",
+      "iconRef": "preset:github.copilot"
+    },
+    {
+      "id": "jetbrains.allproducts",
+      "name": "JetBrains",
+      "defaultPlanName": "All Products Pack",
+      "defaultAmount": "28.90",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "dev",
+      "iconRef": "preset:jetbrains.allproducts"
+    },
+    {
+      "id": "nytimes.allaccess",
+      "name": "NYTimes",
+      "defaultPlanName": "All Access",
+      "defaultAmount": "25.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "news",
+      "iconRef": "preset:nytimes.allaccess"
+    },
+    {
+      "id": "wsj.digital",
+      "name": "WSJ",
+      "defaultPlanName": "Digital",
+      "defaultAmount": "38.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "news",
+      "iconRef": "preset:wsj.digital"
+    },
+    {
+      "id": "fitness.plus",
+      "name": "Apple Fitness+",
+      "defaultPlanName": "Monthly",
+      "defaultAmount": "9.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "fitness",
+      "iconRef": "preset:fitness.plus"
+    },
+    {
+      "id": "strava.premium",
+      "name": "Strava",
+      "defaultPlanName": "Premium",
+      "defaultAmount": "11.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "fitness",
+      "iconRef": "preset:strava.premium"
+    },
+    {
+      "id": "duolingo.super",
+      "name": "Duolingo",
+      "defaultPlanName": "Super",
+      "defaultAmount": "13.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "learning",
+      "iconRef": "preset:duolingo.super"
+    },
+    {
+      "id": "masterclass.standard",
+      "name": "MasterClass",
+      "defaultPlanName": "Standard",
+      "defaultAmount": "10.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "learning",
+      "iconRef": "preset:masterclass.standard"
+    },
+    {
+      "id": "amazon.prime",
+      "name": "Amazon Prime",
+      "defaultPlanName": "Monthly",
+      "defaultAmount": "14.99",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "shopping",
+      "iconRef": "preset:amazon.prime"
+    },
+    {
+      "id": "costco.gold",
+      "name": "Costco",
+      "defaultPlanName": "Gold Star",
+      "defaultAmount": "5.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "shopping",
+      "iconRef": "preset:costco.gold"
     }
   ]
 }

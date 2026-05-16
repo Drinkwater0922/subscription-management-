@@ -61,7 +61,7 @@ final class StoreScreenshotsTests: XCTestCase {
                 billingCycle: cycle,
                 nextBillingDate: billing,
                 startDate: Date(timeIntervalSince1970: 1_700_000_000),
-                category: .media
+                category: .streaming
             )
             container.mainContext.insert(sub)
         }

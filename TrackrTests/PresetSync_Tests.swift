@@ -32,7 +32,7 @@ final class PresetSyncTests: XCTestCase {
               "defaultAmount": "\#(amountForA)",
               "defaultCurrency": "USD",
               "defaultCycle": "monthly",
-              "category": "media",
+              "category": "streaming",
               "iconRef": "preset:a"
             }
           ]
@@ -46,7 +46,7 @@ final class PresetSyncTests: XCTestCase {
             name: "X", amount: 10, currency: "USD",
             billingCycle: .monthly,
             nextBillingDate: .distantFuture, startDate: .now,
-            category: .media,
+            category: .streaming,
             presetId: presetId
         )
         container.mainContext.insert(sub)

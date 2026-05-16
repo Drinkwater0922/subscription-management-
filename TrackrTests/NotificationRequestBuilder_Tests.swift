@@ -21,7 +21,7 @@ final class NotificationRequestBuilderTests: XCTestCase {
             billingCycle: .monthly,
             nextBillingDate: nextBilling,
             startDate: Date(timeIntervalSince1970: 0),
-            category: .media
+            category: .streaming
         )
     }
 

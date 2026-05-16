@@ -11,7 +11,7 @@ final class PresetItemTests: XCTestCase {
       "defaultAmount": "15.49",
       "defaultCurrency": "USD",
       "defaultCycle": "monthly",
-      "category": "media",
+      "category": "streaming",
       "iconRef": "preset:netflix.standard"
     }
     """#
@@ -25,7 +25,7 @@ final class PresetItemTests: XCTestCase {
         XCTAssertEqual(item.defaultAmount, Decimal(string: "15.49"))
         XCTAssertEqual(item.defaultCurrency, "USD")
         XCTAssertEqual(item.defaultCycle, .monthly)
-        XCTAssertEqual(item.category, .media)
+        XCTAssertEqual(item.category, .streaming)
         XCTAssertEqual(item.iconRef, "preset:netflix.standard")
     }
 
@@ -49,7 +49,7 @@ final class PresetItemTests: XCTestCase {
         XCTAssertEqual(draft.amountString, "15.49")
         XCTAssertEqual(draft.currency, "USD")
         XCTAssertEqual(draft.billingCycle, .monthly)
-        XCTAssertEqual(draft.category, .media)
+        XCTAssertEqual(draft.category, .streaming)
         XCTAssertEqual(draft.startDate, Date(timeIntervalSince1970: 1_700_000_000))
     }
 

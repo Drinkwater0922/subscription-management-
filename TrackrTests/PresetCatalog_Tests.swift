@@ -14,7 +14,7 @@ final class PresetCatalogTests: XCTestCase {
           "defaultAmount": "15.49",
           "defaultCurrency": "USD",
           "defaultCycle": "monthly",
-          "category": "media",
+          "category": "streaming",
           "iconRef": "preset:netflix.standard"
         }
       ]

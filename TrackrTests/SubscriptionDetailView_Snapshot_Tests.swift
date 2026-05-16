@@ -62,7 +62,7 @@ final class SubscriptionDetailViewSnapshotTests: XCTestCase {
             billingCycle: .monthly,
             nextBillingDate: Date(timeIntervalSince1970: 1_750_000_000),
             startDate: Date(timeIntervalSince1970: 1_700_000_000),
-            category: .media,
+            category: .streaming,
             presetId: "netflix.standard"
         )
         container.mainContext.insert(sub)

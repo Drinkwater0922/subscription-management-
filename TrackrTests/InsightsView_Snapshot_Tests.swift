@@ -30,7 +30,7 @@ final class InsightsViewSnapshotTests: XCTestCase {
                 name: name, amount: amount, currency: "USD",
                 billingCycle: cycle,
                 nextBillingDate: .distantFuture, startDate: .now,
-                category: .media
+                category: .streaming
             )
             container.mainContext.insert(sub)
         }
