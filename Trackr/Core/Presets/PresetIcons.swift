@@ -1,10 +1,78 @@
 import Foundation
 
-/// Per-preset emoji glyph for the library and Home rows. Emojis are chosen for
-/// recognizability + zero licensing concerns (real brand marks have trademark
-/// restrictions). When a preset isn't in the map we fall back to a category
-/// emoji, and from there to the typographic monogram in `MonoSquareIcon`.
+/// Brand-icon resolution for the library and Home rows. Three-tier lookup:
+///
+///   1. **Asset image** — `assetByPresetId[id]` returns the name of a bundled
+///      SVG asset (Simple Icons, MIT-licensed library; brand marks remain the
+///      property of their owners and are used here for nominative reference).
+///   2. **Emoji glyph** — `glyphByPresetId[id]` returns a representative
+///      emoji.
+///   3. **Category fallback** — `glyphByCategory[cat]` is the last resort
+///      before `MonoSquareIcon` shows the 2-letter monogram.
+///
+/// Asset names mirror our preset-id "slug" namespace, *not* Simple Icons'
+/// raw slug — so Grok (which has no Simple Icons entry) doesn't have an asset
+/// at all, and ChatGPT maps to `chatgpt` (containing the OpenAI logo SVG).
 enum PresetIcons {
+
+    /// Bundled SVG asset name, keyed by preset id. Asset Catalog lookup —
+    /// the SVGs live in `Trackr/Assets.xcassets/BrandIcons/<name>.imageset/`.
+    /// Misses fall through to emoji.
+    static let assetByPresetId: [String: String] = [
+        // AI
+        "chatgpt.plus":          "chatgpt",
+        "chatgpt.pro":           "chatgpt",
+        "claude.pro":            "claude",
+        "claude.max5x":          "claude",
+        "claude.max20x":         "claude",
+        "gemini.advanced":       "gemini",
+        "grok.supergrok":        "x",
+        "grok.heavy":            "x",
+        "perplexity.pro":        "perplexity",
+        "suno.pro":              "suno",
+        "cursor.pro":            "cursor",
+        // Streaming
+        "netflix.standard":      "netflix",
+        "hbomax.standard":       "max",
+        "hulu.basic":            "hulu",
+        "primevideo.standalone": "primevideo",
+        "appletv.plus":          "appletv",
+        "youtube.premium":       "youtube",
+        // Music
+        "spotify.premium":       "spotify",
+        "apple.music":           "applemusic",
+        "tidal.hifi":            "tidal",
+        // Games
+        "psn.plus.essential":    "playstation",
+        "xbox.gamepass.ultimate":"xbox",
+        "apple.arcade":          "apple",
+        "nintendo.switch.online":"nintendoswitch",
+        // Cloud
+        "icloud.50":             "icloud",
+        "icloud.200":            "icloud",
+        "icloud.2tb":            "icloud",
+        "googleone.200":         "googledrive",
+        "dropbox.plus":          "dropbox",
+        // Productivity
+        "notion.plus":           "notion",
+        "microsoft365.personal": "microsoftoffice",
+        "1password.individual":  "1password",
+        // Dev
+        "github.copilot":        "githubcopilot",
+        "jetbrains.allproducts": "jetbrains",
+        // News
+        "nytimes.allaccess":     "newyorktimes",
+        // Fitness
+        "fitness.plus":          "apple",
+        "strava.premium":        "strava",
+        // Learning
+        "duolingo.super":        "duolingo",
+        // Shopping
+        "amazon.prime":          "amazon",
+        // Midjourney, masterclass, costco, disneyplus, wsj — no Simple Icons
+        // entry. Emoji handles those.
+    ]
+
 
     /// Keyed by preset id (the same id used in `presets.bundled.json` and
     /// stored on `Subscription.presetId` when the row was added from the library).
@@ -82,6 +150,17 @@ enum PresetIcons {
         .shopping:     "🛒",
         .other:        "🔹",
     ]
+
+    /// Asset name for a preset library row (nil if no bundled SVG).
+    static func assetName(for preset: PresetItem) -> String? {
+        assetByPresetId[preset.id]
+    }
+
+    /// Asset name for a stored subscription (only when it's preset-backed).
+    static func assetName(for sub: Subscription) -> String? {
+        guard let presetId = sub.presetId else { return nil }
+        return assetByPresetId[presetId]
+    }
 
     /// Resolves a glyph for a preset library row. The row's `iconRef` is
     /// `"preset:<id>"`; we strip the prefix and look it up. Category fallback

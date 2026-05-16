@@ -1,22 +1,27 @@
 import SwiftUI
 
-/// 36×36 dark square subscription icon. Renders one of two glyph styles:
-/// - When `glyph` is supplied (an emoji or single character), it's drawn at
-///   roughly 60% of the square so the icon is recognizable at a glance.
-/// - When `glyph` is nil, falls back to a 2-letter pixel-font monogram
-///   derived from `name`.
+/// 36×36 dark square subscription icon. Renders the best available glyph in
+/// priority order:
+/// - `assetName` non-nil → bundled SVG brand mark (Simple Icons, monochrome,
+///   tinted with `foregroundColor` via template rendering).
+/// - `glyph` non-nil → emoji rendered at ~60% of the square.
+/// - Else → 2-letter pixel-font monogram derived from `name`.
 ///
-/// Library presets pass `PresetIcons.glyph(for:)`; custom subs without an
-/// explicit emoji fall through to the monogram.
+/// Library presets pass `PresetIcons.assetName(for:)` + `PresetIcons.glyph(for:)`;
+/// custom subs without an explicit emoji fall through to the monogram.
 struct MonoSquareIcon: View {
     /// Monogram glyph height as a fraction of the square's side length.
     /// 0.4 keeps the two pixel-font characters visually balanced inside the square.
     private static let monogramScaleFactor: CGFloat = 0.4
     /// Emoji renders smaller-feeling than text at the same point size — bump it.
     private static let emojiScaleFactor: CGFloat = 0.55
+    /// Brand SVGs are normalized to a 24×24 art box; render at ~60% of the
+    /// container with some breathing room.
+    private static let assetScaleFactor: CGFloat = 0.6
 
     let name: String
     let glyph: String?
+    let assetName: String?
     let size: CGFloat
     let backgroundColor: Color
     let foregroundColor: Color
@@ -24,12 +29,14 @@ struct MonoSquareIcon: View {
     init(
         name: String,
         glyph: String? = nil,
+        assetName: String? = nil,
         size: CGFloat = 36,
         background: Color = TrackrColors.bg3,
         foreground: Color = TrackrColors.fg
     ) {
         self.name = name
         self.glyph = glyph
+        self.assetName = assetName
         self.size = size
         self.backgroundColor = background
         self.foregroundColor = foreground
@@ -48,7 +55,17 @@ struct MonoSquareIcon: View {
 
     @ViewBuilder
     private var glyphOverlay: some View {
-        if let glyph, !glyph.isEmpty {
+        if let assetName,
+           !assetName.isEmpty,
+           UIImage(named: assetName) != nil {
+            Image(assetName)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(foregroundColor)
+                .frame(width: size * Self.assetScaleFactor,
+                       height: size * Self.assetScaleFactor)
+        } else if let glyph, !glyph.isEmpty {
             // Emoji renders via the system font, not VT323 — pixel font has
             // no emoji glyphs.
             Text(glyph)
