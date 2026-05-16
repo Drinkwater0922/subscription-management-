@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct AddSubscriptionSheet: View {
 
@@ -9,6 +10,7 @@ struct AddSubscriptionSheet: View {
     @Environment(ProEntitlement.self) private var entitlement
     @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
     @Environment(\.haptics) private var haptics
+    @Environment(\.photoImportPipeline) private var photoImport
 
     private enum Tab: Hashable { case custom, library }
     @State private var selectedTab: Tab = .custom
@@ -19,6 +21,11 @@ struct AddSubscriptionSheet: View {
     @State private var draft: SubscriptionDraft
     @State private var errorMessage: String?
     @State private var hasResolvedDefaultCurrency = false
+
+    // Photo import state
+    @State private var photoPickerItem: PhotosPickerItem?
+    @State private var importBanner: String?
+    @State private var isImporting = false
 
     /// Production callers use the default initializer. The `initialDraft` overload
     /// is for snapshot tests that need to render a pre-filled form.
@@ -78,6 +85,7 @@ struct AddSubscriptionSheet: View {
 
     private var customForm: some View {
         VStack(alignment: .leading, spacing: 20) {
+            photoImportRow
             nameField
             amountAndCurrency
             cycleField
@@ -114,6 +122,85 @@ struct AddSubscriptionSheet: View {
                 .foregroundStyle(TrackrColors.accent)
         }
         .padding(20)
+    }
+
+    @ViewBuilder
+    private var photoImportRow: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            PhotosPicker(selection: $photoPickerItem,
+                         matching: .images,
+                         photoLibrary: .shared()) {
+                HStack(spacing: 8) {
+                    PixelText(isImporting ? "SCANNING…" : "IMPORT FROM PHOTO",
+                              size: TrackrTypography.Scale.body,
+                              color: TrackrColors.accent,
+                              tracking: 2)
+                    Spacer()
+                    PixelText("→",
+                              size: TrackrTypography.Scale.body,
+                              color: TrackrColors.accent,
+                              tracking: 0)
+                }
+                .padding(.vertical, 8)
+                .contentShape(Rectangle())
+            }
+            .disabled(isImporting)
+            if let importBanner {
+                PixelText(importBanner.uppercased(),
+                          size: TrackrTypography.Scale.caption,
+                          color: TrackrColors.fg2,
+                          tracking: 1.5)
+            }
+            Rectangle().fill(TrackrColors.border).frame(height: 1)
+        }
+        .onChange(of: photoPickerItem) { _, newItem in
+            guard let newItem else { return }
+            runPhotoImport(item: newItem)
+        }
+    }
+
+    private func runPhotoImport(item: PhotosPickerItem) {
+        Task {
+            isImporting = true
+            defer { isImporting = false }
+            do {
+                guard let data = try await item.loadTransferable(type: Data.self) else {
+                    importBanner = "Couldn't load photo"
+                    return
+                }
+                let presets = presetItems.isEmpty
+                    ? (try? PresetBundleLoader.loadBundled().items) ?? []
+                    : presetItems
+                let pipeline = photoImport ?? FallbackPhotoImport()
+                let lines = try await pipeline.recognizeText(in: data)
+                let result = SubscriptionExtractor.extract(lines: lines, presets: presets)
+                result.apply(to: &draft)
+                importBanner = Self.bannerMessage(for: result)
+                haptics?.play(result.confidence > 0 ? .success : .warning)
+                photoPickerItem = nil
+            } catch {
+                importBanner = "Scan failed — try a clearer photo"
+                haptics?.play(.warning)
+            }
+        }
+    }
+
+    /// Pure formatter exposed for tests.
+    static func bannerMessage(for result: ExtractedSubscription) -> String {
+        switch result.confidence {
+        case 1.0:
+            if let name = result.matchedPreset?.name {
+                return "Matched \(name) — confirm and save"
+            }
+            return "Imported — confirm and save"
+        case 0.5:
+            if result.matchedPreset != nil {
+                return "Found a match — add the price and save"
+            }
+            return "Captured price — add a name and save"
+        default:
+            return "Couldn't read this one — try a clearer photo"
+        }
     }
 
     private var nameField: some View {
