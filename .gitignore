@@ -25,3 +25,7 @@ Package.resolved
 
 # Reference screenshots folder (not source code)
 Orbit ios Jan 2026/
+
+# Per-milestone smoke screenshots written by simctl during acceptance.
+# Curated screenshots go in docs/screenshots/ instead.
+/.m*.png
