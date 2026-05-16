@@ -89,6 +89,134 @@
         }
       }
     },
+    "IMPORT EXISTING SUBS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IMPORT EXISTING SUBS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入已有订阅"
+          }
+        }
+      }
+    },
+    "FROM APPLE SUBSCRIPTIONS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FROM APPLE SUBSCRIPTIONS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从 APPLE 订阅"
+          }
+        }
+      }
+    },
+    "IMPORT YOUR APPLE SUBS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IMPORT YOUR APPLE SUBS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入你的 APPLE 订阅"
+          }
+        }
+      }
+    },
+    "Apple doesn't let apps read your subscription list. Use the three-step trick below — it takes about 30 seconds per sub." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple doesn't let apps read your subscription list. Use the three-step trick below — it takes about 30 seconds per sub."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 不允许第三方 app 直接读取你的订阅列表。按下面三步操作,每条订阅大约 30 秒。"
+          }
+        }
+      }
+    },
+    "TAP THE BUTTON BELOW. IOS WILL OPEN YOUR SUBSCRIPTIONS LIST." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAP THE BUTTON BELOW. IOS WILL OPEN YOUR SUBSCRIPTIONS LIST."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点下方按钮,IOS 会打开你的订阅列表"
+          }
+        }
+      }
+    },
+    "TAKE A SCREENSHOT OF EACH SUB YOU WANT TO TRACK (SIDE + VOLUME UP)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAKE A SCREENSHOT OF EACH SUB YOU WANT TO TRACK (SIDE + VOLUME UP)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对每条想追踪的订阅截图(侧键+音量加)"
+          }
+        }
+      }
+    },
+    "COME BACK HERE, OPEN ADD SUB, AND TAP IMPORT FROM PHOTO." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "COME BACK HERE, OPEN ADD SUB, AND TAP IMPORT FROM PHOTO."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回到这里,打开「添加订阅」,点「从照片导入」"
+          }
+        }
+      }
+    },
+    "OPEN APPLE SUBSCRIPTIONS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OPEN APPLE SUBSCRIPTIONS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 APPLE 订阅"
+          }
+        }
+      }
+    },
     "ENABLE NOTIFICATIONS" : {
       "extractionState" : "stale",
       "localizations" : {

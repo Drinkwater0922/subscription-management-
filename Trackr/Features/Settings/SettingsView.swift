@@ -11,6 +11,8 @@ struct SettingsView: View {
     @State private var notifyHour: Int = 9
     @State private var currency: String = "USD"
     @State private var language: String = "auto"
+    @State private var showAppleImportSheet = false
+    @Environment(\.openURL) private var openURL
     @Environment(ProEntitlement.self) private var entitlement
     @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
 
@@ -26,6 +28,7 @@ struct SettingsView: View {
                         notifyHourSection
                         currencySection
                         languageSection
+                        importSection
                         proStatusSection
                         linksSection
                     }
@@ -34,6 +37,37 @@ struct SettingsView: View {
             }
         }
         .onAppear { hydrateFromStore() }
+        .sheet(isPresented: $showAppleImportSheet) {
+            AppleSubscriptionsImportSheet(
+                onOpenAppleSubscriptions: { openURL(AppleSubscriptionsRoute.deepLinkURL) },
+                onDismiss: { showAppleImportSheet = false }
+            )
+            .preferredColorScheme(.dark)
+        }
+    }
+
+    private var importSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PixelText(LocalizedStringKey("IMPORT EXISTING SUBS"),
+                      size: TrackrTypography.Scale.sectionLabel,
+                      color: TrackrColors.fg2, tracking: 2)
+            Button(action: { showAppleImportSheet = true }) {
+                HStack {
+                    PixelText(LocalizedStringKey("FROM APPLE SUBSCRIPTIONS"),
+                              size: TrackrTypography.Scale.body,
+                              color: TrackrColors.accent,
+                              tracking: 1.5)
+                    Spacer()
+                    PixelText("→",
+                              size: TrackrTypography.Scale.body,
+                              color: TrackrColors.accent,
+                              tracking: 0)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            Rectangle().fill(TrackrColors.border).frame(height: 1)
+        }
     }
 
     private var header: some View {
