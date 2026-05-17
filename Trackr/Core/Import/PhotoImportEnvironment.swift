@@ -17,7 +17,7 @@ extension EnvironmentValues {
 /// `VisionOCRClient` on iOS. Keeps `AddSubscriptionSheet` from having to
 /// import Vision directly.
 struct FallbackPhotoImport: PhotoImportPipeline {
-    func recognizeText(in imageData: Data) async throws -> [String] {
+    func recognizeText(in imageData: Data) async throws -> [RecognizedTextLine] {
         #if canImport(Vision) && canImport(UIKit)
         return try await VisionOCRClient().recognizeText(in: imageData)
         #else

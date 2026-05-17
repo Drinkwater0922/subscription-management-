@@ -70,8 +70,17 @@ enum PresetIcons {
         "duolingo.super":        "duolingo",
         // Shopping
         "amazon.prime":          "amazon",
-        // Midjourney, masterclass, costco, disneyplus, wsj — no Simple Icons
-        // entry. Emoji handles those.
+        // Chinese brands with a Simple Icons match (Dingtalk has no
+        // Simple Icons entry; falls back to the 💼 emoji.)
+        "bilibili.premium":      "bilibili",
+        "douyin.vip":            "tiktok",      // Douyin is TikTok's Chinese sibling
+        "wechat.reading":        "wechat",
+        "qq.music":              "qq",
+        "icloud.2tb.cn":         "icloud",
+        // Midjourney, masterclass, costco, disneyplus, wsj, plus most
+        // Chinese-only brands (iQIYI, Tencent Video, Youku, Mango TV,
+        // NetEase Music, Xiaoyuzhou, Caixin, Jike, Xiaohongshu, Feishu,
+        // Apple Developer) have no Simple Icons entry — emoji handles those.
     ]
 
 
@@ -133,6 +142,24 @@ enum PresetIcons {
         // Shopping
         "amazon.prime":          "🛒",
         "costco.gold":           "🛍",
+        // Chinese apps
+        "iqiyi.vip":             "🎬",
+        "tencent.video.vip":     "📺",
+        "youku.vip":             "📺",
+        "bilibili.premium":      "📺",
+        "mango.tv.vip":          "🥭",
+        "netease.music":         "🎵",
+        "qq.music":              "🎶",
+        "xiaoyuzhou.plus":       "🪐",
+        "wechat.reading":        "📖",
+        "caixin.pro":            "📰",
+        "jike.app":              "🟡",
+        "douyin.vip":            "🎵",
+        "xiaohongshu":           "📕",
+        "dingtalk.pro":          "💼",
+        "feishu.pro":            "✈️",
+        "apple.developer":       "🍎",
+        "icloud.2tb.cn":         "☁️",
     ]
 
     /// Fallback when the preset id isn't in the map (or when a sub was added

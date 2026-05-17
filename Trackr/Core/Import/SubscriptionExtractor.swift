@@ -1,4 +1,5 @@
 import Foundation
+import CoreGraphics
 
 /// Outcome of running OCR-derived text through `SubscriptionExtractor`. Every
 /// field is optional because we'd rather pre-fill what we *do* know than fight
@@ -9,13 +10,23 @@ struct ExtractedSubscription: Equatable {
     var currency: String?
     var billingCycle: BillingCycle?
     var matchedPreset: PresetItem?
+    /// Free-form name read from the OCR text when no preset matched. Lets the
+    /// bulk-import sheet show *some* label for rows the catalog doesn't know.
+    var inferredName: String?
     /// 0.0 = nothing useful. 0.5 = price only OR preset only. 1.0 = both.
     var confidence: Double
 
     static let empty = ExtractedSubscription(amount: nil, currency: nil,
                                               billingCycle: nil,
                                               matchedPreset: nil,
+                                              inferredName: nil,
                                               confidence: 0)
+
+    /// User-facing display name. Preset name wins if matched; otherwise the
+    /// OCR-derived inference; otherwise "Unknown".
+    var displayName: String {
+        matchedPreset?.name ?? inferredName ?? "Unknown"
+    }
 
     /// Mutates a draft in place. Fields that were not extracted are left
     /// untouched so the user's pre-existing input survives.
@@ -29,6 +40,8 @@ struct ExtractedSubscription: Equatable {
             draft.currency = preset.defaultCurrency
             draft.billingCycle = preset.defaultCycle
             draft.category = preset.category
+        } else if let inferredName, !inferredName.isEmpty {
+            draft.name = inferredName
         }
         if let amount {
             draft.amountString = Self.canonicalAmountString(amount)
@@ -45,11 +58,71 @@ struct ExtractedSubscription: Equatable {
     }
 }
 
-/// Stateless OCR-text → subscription-draft pipeline. The two responsibilities
-/// are independent so they can be tested in isolation:
-///   1. `matchPreset` — name-based fuzzy lookup into the catalog.
-///   2. `extractPrice` / `extractCycle` — regex over the same text.
+/// Stateless OCR-text → subscription-draft pipeline. Three responsibilities,
+/// independently testable:
+///   1. `extractAll` — split multi-row screenshots (e.g. iOS Subscriptions
+///      page) into one candidate per row.
+///   2. `matchPreset` — name-based fuzzy lookup into the catalog.
+///   3. `extractPrice` / `extractCycle` — regex over the same text.
 enum SubscriptionExtractor {
+
+    // MARK: - Multi-row entry point (M10.5)
+
+    /// For screenshots that contain *multiple* subscriptions (typical iOS
+    /// Subscriptions page). Uses the recognised text lines' Y bounds to
+    /// cluster lines into rows, then runs single-row extraction on each.
+    /// Rows that yielded nothing useful (no name, no price, no preset) are
+    /// dropped.
+    static func extractAll(textLines: [RecognizedTextLine],
+                            presets: [PresetItem]) -> [ExtractedSubscription] {
+        guard !textLines.isEmpty else { return [] }
+        let rows = groupIntoRows(textLines)
+        return rows.compactMap { row in
+            let texts = row.map(\.text)
+            let result = extract(lines: texts, presets: presets)
+            // Keep candidates with at least *something* — confidence > 0 means
+            // we got either a preset hit or a price; an unmatched name on its
+            // own (e.g. "Gentler") isn't worth offering.
+            if result.confidence == 0 && result.matchedPreset == nil && result.amount == nil {
+                return nil
+            }
+            return result
+        }
+    }
+
+    /// Cluster `RecognizedTextLine`s into visual rows by Y proximity.
+    /// Exposed for tests.
+    static func groupIntoRows(_ lines: [RecognizedTextLine]) -> [[RecognizedTextLine]] {
+        let sorted = lines.sorted { $0.bounds.midY < $1.bounds.midY }
+        var rows: [[RecognizedTextLine]] = []
+        var current: [RecognizedTextLine] = []
+        var currentBottom: CGFloat = -1
+        // Threshold tuned for iOS Subscriptions screenshots: rows are ~280px
+        // tall on a ~2800px screenshot, with ~30px padding between cards.
+        // 0.012 of image height (~30-40px) is comfortably under one row but
+        // safely above intra-row text gaps.
+        let gapThreshold: CGFloat = 0.012
+
+        for line in sorted {
+            if current.isEmpty {
+                current = [line]
+                currentBottom = line.bounds.maxY
+                continue
+            }
+            let gap = line.bounds.minY - currentBottom
+            if gap > gapThreshold {
+                rows.append(current)
+                current = [line]
+            } else {
+                current.append(line)
+            }
+            currentBottom = max(currentBottom, line.bounds.maxY)
+        }
+        if !current.isEmpty { rows.append(current) }
+        return rows
+    }
+
+    // MARK: - Single-row entry point
 
     /// Top-level entry point. `lines` should be one entry per visual row of the
     /// screenshot (Vision's `VNRecognizedTextObservation` already groups text
@@ -81,8 +154,29 @@ enum SubscriptionExtractor {
             currency: currency,
             billingCycle: cycle ?? preset?.defaultCycle,
             matchedPreset: preset,
+            inferredName: preset == nil ? inferName(from: cleaned) : nil,
             confidence: confidence
         )
+    }
+
+    /// Pick a best-guess subscription name from a row's OCR lines when no
+    /// preset matched. Heuristic: longest non-price, non-date, non-plan-noise
+    /// line. Returns nil if no good candidate exists.
+    static func inferName(from lines: [String]) -> String? {
+        let candidates = lines.filter { line in
+            // Skip lines that are mostly a price.
+            if extractPrice(in: line) != nil { return false }
+            // Skip Chinese date / expiry markers.
+            let l = line
+            if l.contains("续期") || l.contains("到期") || l.contains("将于") { return false }
+            // Skip very short / numeric-only lines.
+            let alphaCount = line.unicodeScalars.filter { CharacterSet.letters.contains($0) }.count
+            if alphaCount < 2 { return false }
+            return true
+        }
+        // Longest line wins — usually the bold app title on the iOS
+        // Subscriptions card.
+        return candidates.max(by: { $0.count < $1.count })
     }
 
     // MARK: - Name match

@@ -1,6 +1,176 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "items": [
+    {
+      "id": "iqiyi.vip",
+      "name": "爱奇艺",
+      "defaultPlanName": "VIP",
+      "defaultAmount": "30.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:iqiyi.vip"
+    },
+    {
+      "id": "tencent.video.vip",
+      "name": "腾讯视频",
+      "defaultPlanName": "VIP",
+      "defaultAmount": "25.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:tencent.video.vip"
+    },
+    {
+      "id": "youku.vip",
+      "name": "优酷",
+      "defaultPlanName": "VIP",
+      "defaultAmount": "30.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:youku.vip"
+    },
+    {
+      "id": "bilibili.premium",
+      "name": "哔哩哔哩",
+      "defaultPlanName": "大会员",
+      "defaultAmount": "25.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:bilibili.premium"
+    },
+    {
+      "id": "mango.tv.vip",
+      "name": "芒果TV",
+      "defaultPlanName": "VIP",
+      "defaultAmount": "25.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:mango.tv.vip"
+    },
+    {
+      "id": "netease.music",
+      "name": "网易云音乐",
+      "defaultPlanName": "黑胶VIP",
+      "defaultAmount": "15.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "music",
+      "iconRef": "preset:netease.music"
+    },
+    {
+      "id": "qq.music",
+      "name": "QQ音乐",
+      "defaultPlanName": "豪华绿钻",
+      "defaultAmount": "15.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "music",
+      "iconRef": "preset:qq.music"
+    },
+    {
+      "id": "xiaoyuzhou.plus",
+      "name": "小宇宙",
+      "defaultPlanName": "PLUS",
+      "defaultAmount": "19.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "music",
+      "iconRef": "preset:xiaoyuzhou.plus"
+    },
+    {
+      "id": "wechat.reading",
+      "name": "微信读书",
+      "defaultPlanName": "无限卡",
+      "defaultAmount": "19.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "learning",
+      "iconRef": "preset:wechat.reading"
+    },
+    {
+      "id": "caixin.pro",
+      "name": "财新通",
+      "defaultPlanName": "数据通Lite",
+      "defaultAmount": "498.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "yearly",
+      "category": "news",
+      "iconRef": "preset:caixin.pro"
+    },
+    {
+      "id": "jike.app",
+      "name": "即刻",
+      "defaultPlanName": "Jike Yellow 年度",
+      "defaultAmount": "128.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "yearly",
+      "category": "productivity",
+      "iconRef": "preset:jike.app"
+    },
+    {
+      "id": "douyin.vip",
+      "name": "抖音",
+      "defaultPlanName": "DOU+ / VIP",
+      "defaultAmount": "30.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "streaming",
+      "iconRef": "preset:douyin.vip"
+    },
+    {
+      "id": "xiaohongshu",
+      "name": "小红书",
+      "defaultPlanName": "会员",
+      "defaultAmount": "15.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "shopping",
+      "iconRef": "preset:xiaohongshu"
+    },
+    {
+      "id": "dingtalk.pro",
+      "name": "钉钉",
+      "defaultPlanName": "专业版",
+      "defaultAmount": "98.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "productivity",
+      "iconRef": "preset:dingtalk.pro"
+    },
+    {
+      "id": "feishu.pro",
+      "name": "飞书",
+      "defaultPlanName": "专业版",
+      "defaultAmount": "20.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "productivity",
+      "iconRef": "preset:feishu.pro"
+    },
+    {
+      "id": "apple.developer",
+      "name": "Apple Developer Program",
+      "defaultPlanName": "Annual",
+      "defaultAmount": "688.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "yearly",
+      "category": "dev",
+      "iconRef": "preset:apple.developer"
+    },
+    {
+      "id": "icloud.2tb.cn",
+      "name": "iCloud+",
+      "defaultPlanName": "2TB",
+      "defaultAmount": "68.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "cloud",
+      "iconRef": "preset:icloud.2tb.cn"
+    },
     {
       "id": "chatgpt.plus",
       "name": "ChatGPT Plus",

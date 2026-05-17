@@ -27,6 +27,8 @@ struct AddSubscriptionSheet: View {
     @State private var photoPickerItem: PhotosPickerItem?
     @State private var importBanner: String?
     @State private var isImporting = false
+    @State private var bulkCandidates: [ExtractedSubscription] = []
+    @State private var showBulkSheet = false
 
     /// Production callers use the default initializer. The `initialDraft` overload
     /// is for snapshot tests that need to render a pre-filled form.
@@ -71,6 +73,14 @@ struct AddSubscriptionSheet: View {
             if presetItems.isEmpty {
                 presetItems = (try? PresetBundleLoader.loadBundled().items) ?? []
             }
+        }
+        .sheet(isPresented: $showBulkSheet) {
+            BulkImportSheet(
+                candidates: bulkCandidates,
+                onCancel: { showBulkSheet = false },
+                onConfirm: runBulkImport
+            )
+            .preferredColorScheme(.dark)
         }
     }
 
@@ -173,16 +183,69 @@ struct AddSubscriptionSheet: View {
                     ? (try? PresetBundleLoader.loadBundled().items) ?? []
                     : presetItems
                 let pipeline = photoImport ?? FallbackPhotoImport()
-                let lines = try await pipeline.recognizeText(in: data)
-                let result = SubscriptionExtractor.extract(lines: lines, presets: presets)
-                result.apply(to: &draft)
-                importBanner = Self.bannerMessage(for: result)
-                haptics?.play(result.confidence > 0 ? .success : .warning)
+                let textLines = try await pipeline.recognizeText(in: data)
+                let candidates = SubscriptionExtractor.extractAll(
+                    textLines: textLines, presets: presets
+                )
                 photoPickerItem = nil
+
+                if candidates.count > 1 {
+                    // Multi-sub screenshot — show the picker.
+                    bulkCandidates = candidates
+                    showBulkSheet = true
+                    importBanner = nil
+                    haptics?.play(.success)
+                } else {
+                    // Single-sub or empty — fill the current draft (existing flow).
+                    let result = candidates.first
+                        ?? SubscriptionExtractor.extract(
+                            lines: textLines.map(\.text), presets: presets
+                        )
+                    result.apply(to: &draft)
+                    importBanner = Self.bannerMessage(for: result)
+                    haptics?.play(result.confidence > 0 ? .success : .warning)
+                }
             } catch {
                 importBanner = "Scan failed — try a clearer photo"
                 haptics?.play(.warning)
             }
+        }
+    }
+
+    /// Batch-save every candidate the user kept in the bulk sheet. Reuses the
+    /// existing `submit` helper so the free-tier gate, FX pinning, and
+    /// notification refresh all apply per row.
+    private func runBulkImport(_ picks: [ExtractedSubscription]) {
+        showBulkSheet = false
+        guard !picks.isEmpty else { return }
+        Task {
+            let homeCurrency = (try? SettingsRepository(context: context).currentSettings().defaultCurrency)
+            var saved = 0
+            var skipped = 0
+            for candidate in picks {
+                var rowDraft = SubscriptionDraft.empty(defaultCurrency: homeCurrency ?? "USD")
+                candidate.apply(to: &rowDraft)
+                if rowDraft.amountString.isEmpty { rowDraft.amountString = "0" }
+                if rowDraft.name.trimmingCharacters(in: .whitespaces).isEmpty {
+                    rowDraft.name = "Untitled"
+                }
+                let err = await Self.submit(
+                    draft: rowDraft,
+                    presetId: candidate.matchedPreset?.id,
+                    proStatus: entitlement.current,
+                    fxClient: fxClient,
+                    homeCurrency: homeCurrency,
+                    context: context,
+                    coordinator: coordinator,
+                    onLimitExceeded: { skipped += 1 },
+                    onDismiss: { /* don't dismiss the sheet per-row */ }
+                )
+                if err == nil { saved += 1 } else { skipped += 1 }
+            }
+            importBanner = "Imported \(saved). Skipped \(skipped)."
+            haptics?.play(.success)
+            // Close the parent sheet after a successful batch.
+            if saved > 0 { dismiss() }
         }
     }
 

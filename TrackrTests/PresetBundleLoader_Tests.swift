@@ -12,8 +12,18 @@ final class PresetBundleLoaderTests: XCTestCase {
 
     func test_loadBundledCatalog_versionMatchesSeed() throws {
         let catalog = try PresetBundleLoader.loadBundled()
-        XCTAssertEqual(catalog.version, "2.0.0",
-                       "seed catalog version pinned at M10 (preset expansion); bump deliberately")
+        XCTAssertEqual(catalog.version, "2.1.0",
+                       "M10.5 added Chinese app presets; bump deliberately")
+    }
+
+    func test_loadBundledCatalog_includesChinesePresets() throws {
+        let catalog = try PresetBundleLoader.loadBundled()
+        let ids = Set(catalog.items.map(\.id))
+        XCTAssertTrue(ids.contains("iqiyi.vip"))
+        XCTAssertTrue(ids.contains("tencent.video.vip"))
+        XCTAssertTrue(ids.contains("bilibili.premium"))
+        XCTAssertTrue(ids.contains("netease.music"))
+        XCTAssertTrue(ids.contains("apple.developer"))
     }
 
     func test_loadBundledCatalog_leadsWithAI() throws {
