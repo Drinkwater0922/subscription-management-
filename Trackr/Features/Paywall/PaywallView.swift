@@ -45,7 +45,7 @@ struct PaywallView: View {
                 .font(TrackrTypography.pixel(size: TrackrTypography.Scale.body))
                 .foregroundStyle(TrackrColors.fg2)
             Spacer()
-            PixelText("TRACKR PRO", size: TrackrTypography.Scale.title, tracking: 2)
+            PixelText("PENNYLOOP PRO", size: TrackrTypography.Scale.title, tracking: 2)
             Spacer()
             Color.clear.frame(width: 60, height: 1)
         }
