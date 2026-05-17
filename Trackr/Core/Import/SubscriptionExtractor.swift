@@ -13,6 +13,10 @@ struct ExtractedSubscription: Equatable {
     /// Free-form name read from the OCR text when no preset matched. Lets the
     /// bulk-import sheet show *some* label for rows the catalog doesn't know.
     var inferredName: String?
+    /// Next-billing / renewal date pulled from the OCR (typically the
+    /// "X月X日续期" / "将于X月X日到期" line on an iOS Subscriptions card).
+    /// Drives `Subscription.startDate` + `nextBillingDate` on save.
+    var nextBillingDate: Date?
     /// 0.0 = nothing useful. 0.5 = price only OR preset only. 1.0 = both.
     var confidence: Double
 
@@ -20,6 +24,7 @@ struct ExtractedSubscription: Equatable {
                                               billingCycle: nil,
                                               matchedPreset: nil,
                                               inferredName: nil,
+                                              nextBillingDate: nil,
                                               confidence: 0)
 
     /// User-facing display name. Preset name wins if matched; otherwise the
@@ -48,6 +53,9 @@ struct ExtractedSubscription: Equatable {
         }
         if let currency { draft.currency = currency }
         if let billingCycle { draft.billingCycle = billingCycle }
+        // `Subscription.makeSubscription()` sets nextBillingDate = startDate,
+        // so writing through startDate is enough.
+        if let nextBillingDate { draft.startDate = nextBillingDate }
     }
 
     private static func canonicalAmountString(_ d: Decimal) -> String {
@@ -139,6 +147,7 @@ enum SubscriptionExtractor {
         let preset = matchPreset(in: cleaned, presets: presets)
         let price  = extractPrice(in: blob)
         let cycle  = extractCycle(in: blob)
+        let date   = extractDate(in: blob)
 
         // Currency precedence: explicit OCR'd symbol > preset default.
         let currency = price?.currency ?? preset?.defaultCurrency
@@ -155,8 +164,57 @@ enum SubscriptionExtractor {
             billingCycle: cycle ?? preset?.defaultCycle,
             matchedPreset: preset,
             inferredName: preset == nil ? inferName(from: cleaned) : nil,
+            nextBillingDate: date,
             confidence: confidence
         )
+    }
+
+    // MARK: - Date
+
+    /// Parses the renewal / expiry date out of a row's OCR text. Handles:
+    ///   - `YYYY年X月X日`               (explicit year, e.g. "2027年1月4日")
+    ///   - `X月X日`                     (month-day; resolved to the next
+    ///                                   occurrence ≥ `now`)
+    ///   - common surrounding noise:    `将于`, `到期`, `续期`
+    /// Returns nil if nothing date-shaped was found.
+    static func extractDate(in text: String, now: Date = .now) -> Date? {
+        // Full-date pattern first — most specific wins.
+        if let m = firstMatch(pattern: #"(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日"#,
+                              in: text),
+           m.captures.count >= 3,
+           let date = makeDate(year: m.captures[0],
+                               month: m.captures[1],
+                               day: m.captures[2]) {
+            return date
+        }
+        // Month-day pattern — assume the next occurrence.
+        if let m = firstMatch(pattern: #"(\d{1,2})\s*月\s*(\d{1,2})\s*日"#,
+                              in: text),
+           m.captures.count >= 2,
+           let month = Int(m.captures[0]),
+           let day = Int(m.captures[1]) {
+            let cal = Calendar(identifier: .gregorian)
+            let currentYear = cal.component(.year, from: now)
+            if let candidate = makeDate(year: currentYear, month: month, day: day) {
+                if candidate >= now { return candidate }
+                return makeDate(year: currentYear + 1, month: month, day: day)
+            }
+        }
+        return nil
+    }
+
+    private static func makeDate(year: String, month: String, day: String) -> Date? {
+        guard let y = Int(year), let m = Int(month), let d = Int(day) else { return nil }
+        return makeDate(year: y, month: m, day: d)
+    }
+
+    private static func makeDate(year: Int, month: Int, day: Int) -> Date? {
+        var comps = DateComponents()
+        comps.year = year
+        comps.month = month
+        comps.day = day
+        comps.hour = 12   // noon, to avoid timezone-boundary surprises
+        return Calendar(identifier: .gregorian).date(from: comps)
     }
 
     /// Pick a best-guess subscription name from a row's OCR lines when no
@@ -245,14 +303,18 @@ enum SubscriptionExtractor {
 
     /// Pulls the first plausible (amount, currency) pair out of the text. We
     /// scan left-to-right and accept either `<symbol><amount>` (e.g. `$15.49`)
-    /// or `<amount> <code>` (e.g. `20.00 USD`).
+    /// or `<amount> <code>` (e.g. `20.00 USD`). The number sub-pattern
+    /// `[0-9]+(?:,[0-9]+)*(?:\.[0-9]{1,2})?` handles US thousands separators
+    /// (`1,099.00`), European decimals (`15,49`), plain integers (`100`) and
+    /// normal decimals (`15.49`) — `parseDecimal` disambiguates downstream.
     static func extractPrice(in text: String) -> ExtractedPrice? {
+        let number = #"[0-9]+(?:,[0-9]+)*(?:\.[0-9]{1,2})?"#
         // Pattern 1: <symbol_or_code><optional space><amount>
-        //   $15.49 | US$15.49 | USD 20.00 | ¥144 | £10.99 | C$9.99
-        let leadingPattern = #"(US\$|HK\$|CN¥|C\$|A\$|\$|¥|£|€|₩|USD|CNY|RMB|EUR|GBP|JPY|HKD|KRW|CAD|AUD)\s*([0-9]+(?:[.,][0-9]{1,2})?)"#
+        //   $15.49 | US$15.49 | USD 20.00 | ¥1,099.00 | £10.99 | C$9.99
+        let leadingPattern = #"(US\$|HK\$|CN¥|C\$|A\$|\$|¥|£|€|₩|USD|CNY|RMB|EUR|GBP|JPY|HKD|KRW|CAD|AUD)\s*(\#(number))"#
         // Pattern 2: <amount><space?><code_only>
         //   20.00 USD | 100 EUR
-        let trailingPattern = #"([0-9]+(?:[.,][0-9]{1,2})?)\s*(USD|CNY|RMB|EUR|GBP|JPY|HKD|KRW|CAD|AUD)\b"#
+        let trailingPattern = #"(\#(number))\s*(USD|CNY|RMB|EUR|GBP|JPY|HKD|KRW|CAD|AUD)\b"#
 
         if let hit = firstMatch(pattern: leadingPattern, in: text),
            hit.captures.count >= 2,
@@ -312,8 +374,25 @@ enum SubscriptionExtractor {
     }
 
     private static func parseDecimal(_ s: String) -> Decimal? {
-        // OCR + i18n sometimes give us `15,49` instead of `15.49`.
-        let normalized = s.replacingOccurrences(of: ",", with: ".")
+        // Disambiguate between US thousands separator (`1,099.00`) and
+        // European decimal separator (`15,49`):
+        //   - both `.` and `,` present → comma is thousands; strip it.
+        //   - only `,`, and exactly 3 digits after it → likely thousands (e.g. `1,099`).
+        //   - only `,`, with 1-2 digits after it → European decimal (e.g. `15,49`).
+        //   - neither, or only `.` → leave as-is.
+        let normalized: String
+        if s.contains(".") && s.contains(",") {
+            normalized = s.replacingOccurrences(of: ",", with: "")
+        } else if s.contains(",") {
+            let parts = s.split(separator: ",", omittingEmptySubsequences: false)
+            if parts.count >= 2, let last = parts.last, last.count == 3 {
+                normalized = s.replacingOccurrences(of: ",", with: "")
+            } else {
+                normalized = s.replacingOccurrences(of: ",", with: ".")
+            }
+        } else {
+            normalized = s
+        }
         return Decimal(string: normalized)
     }
 

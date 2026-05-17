@@ -149,6 +149,70 @@ final class SubscriptionExtractorTests: XCTestCase {
         XCTAssertNil(SubscriptionExtractor.extractCycle(in: "Netflix $15.49"))
     }
 
+    // MARK: - Price regex regressions (M10.6)
+
+    func test_extractPrice_thousandsSeparator_usFormat() {
+        // The Plaud bug — `¥1,099.00` used to capture only "1,09" → 1.09.
+        let hit = SubscriptionExtractor.extractPrice(in: "Plaud AI MemberShip ¥1,099.00")
+        XCTAssertEqual(hit?.amount, Decimal(string: "1099.00"))
+        XCTAssertEqual(hit?.currency, "CNY")
+    }
+
+    func test_extractPrice_thousandsSeparator_largeNumber() {
+        let hit = SubscriptionExtractor.extractPrice(in: "¥659.00 即梦AI")
+        XCTAssertEqual(hit?.amount, Decimal(string: "659.00"))
+        let hit2 = SubscriptionExtractor.extractPrice(in: "$12,345.67 monthly")
+        XCTAssertEqual(hit2?.amount, Decimal(string: "12345.67"))
+    }
+
+    func test_extractPrice_europeanDecimal_stillWorks() {
+        // `15,49 €` should still parse as 15.49.
+        let hit = SubscriptionExtractor.extractPrice(in: "€15,49 monthly")
+        XCTAssertEqual(hit?.amount, Decimal(string: "15.49"))
+    }
+
+    // MARK: - Date extraction (M10.6)
+
+    func test_extractDate_chineseFullDate() {
+        let result = SubscriptionExtractor.extractDate(in: "将于2027年1月4日到期")
+        XCTAssertNotNil(result)
+        let cal = Calendar(identifier: .gregorian)
+        XCTAssertEqual(cal.component(.year,  from: result!), 2027)
+        XCTAssertEqual(cal.component(.month, from: result!), 1)
+        XCTAssertEqual(cal.component(.day,   from: result!), 4)
+    }
+
+    func test_extractDate_chineseMonthDay_resolvesToNextOccurrence() {
+        // "today" pinned to May 17 2026.
+        let cal = Calendar(identifier: .gregorian)
+        let today = cal.date(from: DateComponents(year: 2026, month: 5, day: 17))!
+
+        // "6月11日续期" — same year, later month → June 11 2026.
+        let june = SubscriptionExtractor.extractDate(in: "6月11日续期", now: today)
+        XCTAssertEqual(cal.component(.year,  from: june!), 2026)
+        XCTAssertEqual(cal.component(.month, from: june!), 6)
+
+        // "3月5日到期" — already passed in 2026 → 2027.
+        let march = SubscriptionExtractor.extractDate(in: "3月5日到期", now: today)
+        XCTAssertEqual(cal.component(.year, from: march!), 2027)
+    }
+
+    func test_extractDate_noMatch_returnsNil() {
+        XCTAssertNil(SubscriptionExtractor.extractDate(in: "just some words"))
+    }
+
+    func test_extract_appliesDateToSubscription() throws {
+        let presets = try PresetBundleLoader.loadBundled().items
+        let result = SubscriptionExtractor.extract(
+            lines: ["即刻App", "Jike Yellow", "¥128.00", "12月26日续期"],
+            presets: presets
+        )
+        XCTAssertNotNil(result.nextBillingDate)
+        var draft = SubscriptionDraft.empty(defaultCurrency: "CNY")
+        result.apply(to: &draft)
+        XCTAssertEqual(draft.startDate, result.nextBillingDate)
+    }
+
     // MARK: - matchPreset
 
     func test_matchPreset_caseInsensitive() throws {

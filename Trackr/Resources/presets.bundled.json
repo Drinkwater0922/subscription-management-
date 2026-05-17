@@ -1,6 +1,36 @@
 {
-  "version": "2.1.0",
+  "version": "2.2.0",
   "items": [
+    {
+      "id": "plaud.ai",
+      "name": "Plaud",
+      "defaultPlanName": "AI MemberShip",
+      "defaultAmount": "1099.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "yearly",
+      "category": "ai",
+      "iconRef": "preset:plaud.ai"
+    },
+    {
+      "id": "maimai.member",
+      "name": "脉脉",
+      "defaultPlanName": "会员",
+      "defaultAmount": "688.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "yearly",
+      "category": "productivity",
+      "iconRef": "preset:maimai.member"
+    },
+    {
+      "id": "xunfei.tingjian",
+      "name": "讯飞听见",
+      "defaultPlanName": "录音转写包",
+      "defaultAmount": "30.00",
+      "defaultCurrency": "CNY",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:xunfei.tingjian"
+    },
     {
       "id": "iqiyi.vip",
       "name": "爱奇艺",

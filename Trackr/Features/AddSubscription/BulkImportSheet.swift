@@ -90,7 +90,10 @@ struct BulkImportSheet: View {
                 checkbox(isOn: isOn)
                 MonoSquareIcon(
                     name: candidate.displayName,
-                    glyph: candidate.matchedPreset.map { PresetIcons.glyph(for: $0) },
+                    // When the row didn't match any preset, use a generic
+                    // bookmark glyph so the icon column doesn't fall back to
+                    // a meaningless 2-char monogram for unknown brands.
+                    glyph: candidate.matchedPreset.map { PresetIcons.glyph(for: $0) } ?? "🔖",
                     assetName: candidate.matchedPreset.flatMap { PresetIcons.assetName(for: $0) },
                     assetTint: candidate.matchedPreset.flatMap { PresetIcons.tint(for: $0) }
                 )

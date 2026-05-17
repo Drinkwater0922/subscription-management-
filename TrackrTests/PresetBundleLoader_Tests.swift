@@ -12,8 +12,8 @@ final class PresetBundleLoaderTests: XCTestCase {
 
     func test_loadBundledCatalog_versionMatchesSeed() throws {
         let catalog = try PresetBundleLoader.loadBundled()
-        XCTAssertEqual(catalog.version, "2.1.0",
-                       "M10.5 added Chinese app presets; bump deliberately")
+        XCTAssertEqual(catalog.version, "2.2.0",
+                       "M10.6 added Plaud / 脉脉 / 讯飞听见 + date extraction fixes")
     }
 
     func test_loadBundledCatalog_includesChinesePresets() throws {

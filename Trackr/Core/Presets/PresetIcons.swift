@@ -143,6 +143,9 @@ enum PresetIcons {
         "amazon.prime":          "🛒",
         "costco.gold":           "🛍",
         // Chinese apps
+        "plaud.ai":              "🎙",
+        "maimai.member":         "🔵",
+        "xunfei.tingjian":       "🎤",
         "iqiyi.vip":             "🎬",
         "tencent.video.vip":     "📺",
         "youku.vip":             "📺",
