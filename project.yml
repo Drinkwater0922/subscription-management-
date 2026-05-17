@@ -53,6 +53,11 @@ targets:
         # Required by App Store validation. iPhone-only + portrait-only.
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        # Permanent answer to ASC's "App 加密文稿" prompt: we only use
+        # Apple's built-in HTTPS/TLS via URLSession (and Apple-handled
+        # StoreKit + CloudKit). Exempt from US export compliance —
+        # setting this to `false` tells ASC to stop asking every build.
+        ITSAppUsesNonExemptEncryption: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jingxue.pennyloop
