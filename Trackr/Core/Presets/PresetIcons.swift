@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 /// Brand-icon resolution for the library and Home rows. Three-tier lookup:
 ///
@@ -160,6 +161,65 @@ enum PresetIcons {
     static func assetName(for sub: Subscription) -> String? {
         guard let presetId = sub.presetId else { return nil }
         return assetByPresetId[presetId]
+    }
+
+    /// Official brand colors per Simple Icons. Used to tint the bundled SVG
+    /// so logos read at a glance instead of disappearing into a sea of
+    /// monochrome. Brands whose official color is black / near-black (Apple,
+    /// X, Tidal, JetBrains, NYTimes, Notion, GitHub Copilot, Cursor) are
+    /// deliberately omitted — they're invisible on our dark background, so
+    /// we let them fall back to the foreground white in `MonoSquareIcon`.
+    static let tintByPresetId: [String: Color] = [
+        // AI
+        "chatgpt.plus":          Color(hex: 0x10A37F),   // OpenAI green
+        "chatgpt.pro":           Color(hex: 0x10A37F),
+        "claude.pro":            Color(hex: 0xD97757),   // Anthropic orange
+        "claude.max5x":          Color(hex: 0xD97757),
+        "claude.max20x":         Color(hex: 0xD97757),
+        "gemini.advanced":       Color(hex: 0x8E75B2),   // Gemini purple
+        "perplexity.pro":        Color(hex: 0x20B8CD),   // Perplexity teal
+        // Streaming
+        "netflix.standard":      Color(hex: 0xE50914),   // Netflix red
+        "hbomax.standard":       Color(hex: 0x002BE7),   // Max blue
+        "hulu.basic":            Color(hex: 0x1CE783),   // Hulu green
+        "primevideo.standalone": Color(hex: 0x00A8E1),   // Prime Video cyan
+        "youtube.premium":       Color(hex: 0xFF0000),   // YouTube red
+        // Music
+        "spotify.premium":       Color(hex: 0x1DB954),   // Spotify green
+        "apple.music":           Color(hex: 0xFA243C),   // Apple Music pink-red
+        // Games
+        "psn.plus.essential":    Color(hex: 0x006FCD),   // PlayStation blue
+        "xbox.gamepass.ultimate":Color(hex: 0x107C10),   // Xbox green
+        "nintendo.switch.online":Color(hex: 0xE60012),   // Nintendo red
+        // Cloud
+        "icloud.50":             Color(hex: 0x3693F3),   // iCloud blue
+        "icloud.200":            Color(hex: 0x3693F3),
+        "icloud.2tb":            Color(hex: 0x3693F3),
+        "googleone.200":         Color(hex: 0x4285F4),   // Google blue
+        "dropbox.plus":          Color(hex: 0x0061FF),   // Dropbox blue
+        // Productivity
+        "microsoft365.personal": Color(hex: 0xD83B01),   // MS Office red
+        "1password.individual":  Color(hex: 0x3B66BC),   // 1Password blue
+        // Dev / News / Fitness / Learning / Shopping
+        "jetbrains.allproducts": Color(hex: 0xFF318C),   // JetBrains magenta accent (logo has it)
+        "strava.premium":        Color(hex: 0xFC4C02),   // Strava orange
+        "duolingo.super":        Color(hex: 0x58CC02),   // Duolingo green
+        "amazon.prime":          Color(hex: 0xFF9900),   // Amazon orange
+        // Intentionally omitted (use white foreground for visibility on dark bg):
+        //   suno.pro, cursor.pro, grok.*, apple.arcade, fitness.plus,
+        //   appletv.plus, github.copilot, notion.plus, nytimes.allaccess
+    ]
+
+    /// Brand tint for a preset library row, or `nil` to use the default
+    /// foreground color (white).
+    static func tint(for preset: PresetItem) -> Color? {
+        tintByPresetId[preset.id]
+    }
+
+    /// Brand tint for a stored subscription.
+    static func tint(for sub: Subscription) -> Color? {
+        guard let presetId = sub.presetId else { return nil }
+        return tintByPresetId[presetId]
     }
 
     /// Resolves a glyph for a preset library row. The row's `iconRef` is

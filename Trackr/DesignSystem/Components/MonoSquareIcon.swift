@@ -22,6 +22,7 @@ struct MonoSquareIcon: View {
     let name: String
     let glyph: String?
     let assetName: String?
+    let assetTint: Color?
     let size: CGFloat
     let backgroundColor: Color
     let foregroundColor: Color
@@ -30,6 +31,7 @@ struct MonoSquareIcon: View {
         name: String,
         glyph: String? = nil,
         assetName: String? = nil,
+        assetTint: Color? = nil,
         size: CGFloat = 36,
         background: Color = TrackrColors.bg3,
         foreground: Color = TrackrColors.fg
@@ -37,6 +39,7 @@ struct MonoSquareIcon: View {
         self.name = name
         self.glyph = glyph
         self.assetName = assetName
+        self.assetTint = assetTint
         self.size = size
         self.backgroundColor = background
         self.foregroundColor = foreground
@@ -62,7 +65,7 @@ struct MonoSquareIcon: View {
                 .renderingMode(.template)
                 .resizable()
                 .scaledToFit()
-                .foregroundStyle(foregroundColor)
+                .foregroundStyle(assetTint ?? foregroundColor)
                 .frame(width: size * Self.assetScaleFactor,
                        height: size * Self.assetScaleFactor)
         } else if let glyph, !glyph.isEmpty {
