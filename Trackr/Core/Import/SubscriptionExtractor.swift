@@ -53,9 +53,16 @@ struct ExtractedSubscription: Equatable {
         }
         if let currency { draft.currency = currency }
         if let billingCycle { draft.billingCycle = billingCycle }
-        // `Subscription.makeSubscription()` sets nextBillingDate = startDate,
-        // so writing through startDate is enough.
-        if let nextBillingDate { draft.startDate = nextBillingDate }
+        // iOS Subscriptions screenshots show the *future* renewal date, not
+        // the original start. Anchor `startDate` one full cycle before so the
+        // Detail page reads "STARTED Dec 26 last year → NEXT Dec 26 this
+        // year" instead of "STARTED today → NEXT today".
+        if let nextBillingDate {
+            draft.nextBillingDate = nextBillingDate
+            draft.startDate = SubscriptionExtractor.startOfCycleBefore(
+                end: nextBillingDate, cycle: draft.billingCycle
+            )
+        }
     }
 
     private static func canonicalAmountString(_ d: Decimal) -> String {
@@ -249,6 +256,23 @@ enum SubscriptionExtractor {
         comps.day = day
         comps.hour = 12   // noon, to avoid timezone-boundary surprises
         return Calendar(identifier: .gregorian).date(from: comps)
+    }
+
+    /// Walks back one full billing cycle from `end`. Used by import to derive
+    /// the *current cycle's* start date when we only know the future
+    /// renewal date.
+    static func startOfCycleBefore(end: Date, cycle: BillingCycle) -> Date {
+        let cal = Calendar(identifier: .gregorian)
+        switch cycle {
+        case .monthly:
+            return cal.date(byAdding: .month, value: -1, to: end) ?? end
+        case .yearly:
+            return cal.date(byAdding: .year, value: -1, to: end) ?? end
+        case .weekly:
+            return cal.date(byAdding: .weekOfYear, value: -1, to: end) ?? end
+        case .customDays(let days):
+            return cal.date(byAdding: .day, value: -days, to: end) ?? end
+        }
     }
 
     /// Pick a best-guess subscription name from a row's OCR lines when no

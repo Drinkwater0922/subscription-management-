@@ -201,16 +201,66 @@ final class SubscriptionExtractorTests: XCTestCase {
         XCTAssertNil(SubscriptionExtractor.extractDate(in: "just some words"))
     }
 
-    func test_extract_appliesDateToSubscription() throws {
+    func test_extract_appliesDateToSubscription_anchorsCycleStart() throws {
+        // 即刻App is a YEARLY preset; the screenshot date "12月26日续期" is the
+        // *next* renewal. apply(to:) should:
+        //   - set draft.nextBillingDate to the parsed date
+        //   - set draft.startDate one year before (= current cycle start)
         let presets = try PresetBundleLoader.loadBundled().items
         let result = SubscriptionExtractor.extract(
             lines: ["即刻App", "Jike Yellow", "¥128.00", "12月26日续期"],
             presets: presets
         )
         XCTAssertNotNil(result.nextBillingDate)
+        XCTAssertEqual(result.matchedPreset?.id, "jike.app")
+
         var draft = SubscriptionDraft.empty(defaultCurrency: "CNY")
         result.apply(to: &draft)
-        XCTAssertEqual(draft.startDate, result.nextBillingDate)
+        XCTAssertEqual(draft.nextBillingDate, result.nextBillingDate)
+
+        let cal = Calendar(identifier: .gregorian)
+        let expectedStart = cal.date(byAdding: .year, value: -1,
+                                      to: result.nextBillingDate!)
+        XCTAssertEqual(draft.startDate, expectedStart,
+                       "yearly sub: startDate must be one year before next bill")
+
+        // And the eventual Subscription carries both dates correctly.
+        let sub = try draft.makeSubscription()
+        XCTAssertEqual(sub.startDate, expectedStart)
+        XCTAssertEqual(sub.nextBillingDate, result.nextBillingDate)
+    }
+
+    func test_apply_monthlyCycle_anchorsStartOneMonthBack() throws {
+        // Monthly sub renewing on June 11, 2026 should anchor at May 11, 2026.
+        var draft = SubscriptionDraft.empty(defaultCurrency: "CNY")
+        draft.billingCycle = .monthly
+        let cal = Calendar(identifier: .gregorian)
+        let nextBill = cal.date(from: DateComponents(year: 2026, month: 6, day: 11))!
+        let result = ExtractedSubscription(
+            amount: 25, currency: "CNY", billingCycle: .monthly,
+            matchedPreset: nil, inferredName: nil,
+            nextBillingDate: nextBill, confidence: 0.5
+        )
+        result.apply(to: &draft)
+        let expectedStart = cal.date(from: DateComponents(year: 2026, month: 5, day: 11))!
+        XCTAssertEqual(draft.startDate, expectedStart)
+        XCTAssertEqual(draft.nextBillingDate, nextBill)
+    }
+
+    func test_apply_noExtractedDate_leavesDatesAlone() throws {
+        // When OCR found no date, draft's startDate stays at .now and
+        // nextBillingDate stays nil (which makes makeSubscription fall back
+        // to "next bill = start" — fine for manually-typed subs).
+        var draft = SubscriptionDraft.empty(defaultCurrency: "USD")
+        let originalStart = draft.startDate
+        let result = ExtractedSubscription(
+            amount: 9.99, currency: "USD", billingCycle: .monthly,
+            matchedPreset: nil, inferredName: nil,
+            nextBillingDate: nil, confidence: 0.5
+        )
+        result.apply(to: &draft)
+        XCTAssertEqual(draft.startDate, originalStart)
+        XCTAssertNil(draft.nextBillingDate)
     }
 
     // MARK: - matchPreset

@@ -13,6 +13,12 @@ struct SubscriptionDraft: Equatable {
     /// picker can switch between cycles without losing the user's typed value.
     var customDays: Int
     var startDate: Date
+    /// Optional override for the next billing date. Only set by import flows
+    /// where we know an *absolute future renewal date* (e.g. the iOS
+    /// Subscriptions screenshot says "12月26日续期"). When nil, the next
+    /// billing falls back to `startDate` — the "fresh sub starting today"
+    /// case used by the manual Add form.
+    var nextBillingDate: Date?
     var category: Category
     var notes: String = ""
     var urlString: String = ""
@@ -61,7 +67,7 @@ struct SubscriptionDraft: Equatable {
             amount: amount,
             currency: currency.uppercased(),
             billingCycle: resolvedCycle,
-            nextBillingDate: startDate,
+            nextBillingDate: nextBillingDate ?? startDate,
             startDate: startDate,
             category: category,
             notes: notes.isEmpty ? nil : notes,
