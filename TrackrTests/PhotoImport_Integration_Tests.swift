@@ -148,6 +148,50 @@ final class PhotoImportIntegrationTests: XCTestCase {
 
     // MARK: - Row grouping
 
+    /// Real-world failure mode (M10.6): on the actual iOS Subscriptions
+    /// screenshot the user fed in, the cards are stacked tightly —
+    /// intra-card gaps (~0.020) and inter-card gaps (~0.015) are too similar
+    /// for any pure Y-distance grouping to separate. The date-anchor
+    /// algorithm splits cleanly because every card ends with a date line.
+    func test_extractAll_tightlyStackedCards_splitsOnDateAnchor() throws {
+        let presets = try PresetBundleLoader.loadBundled().items
+        let lines: [RecognizedTextLine] = [
+            // Card 1: Plaud (date at bottom)
+            .init(text: "Plaud",                bounds: rect(y: 0.10, h: 0.015)),
+            .init(text: "AI MemberShip",        bounds: rect(y: 0.13, h: 0.015)),
+            .init(text: "¥1,099.00",            bounds: rect(y: 0.11, h: 0.015)),
+            .init(text: "2027年1月14日续期",    bounds: rect(y: 0.16, h: 0.015)),
+            // Card 2: 即刻 (similar Y spacing — under tight layout)
+            .init(text: "即刻App",              bounds: rect(y: 0.19, h: 0.015)),
+            .init(text: "Jike Yellow - 年度订阅", bounds: rect(y: 0.22, h: 0.015)),
+            .init(text: "¥128.00",              bounds: rect(y: 0.20, h: 0.015)),
+            .init(text: "12月26日续期",         bounds: rect(y: 0.25, h: 0.015)),
+            // Card 3: 脉脉
+            .init(text: "脉脉-找人脉找工作求职招聘", bounds: rect(y: 0.28, h: 0.015)),
+            .init(text: "会员",                 bounds: rect(y: 0.31, h: 0.015)),
+            .init(text: "¥688.00",              bounds: rect(y: 0.29, h: 0.015)),
+            .init(text: "2027年4月23日续期",    bounds: rect(y: 0.34, h: 0.015)),
+        ]
+        let candidates = SubscriptionExtractor.extractAll(textLines: lines,
+                                                          presets: presets)
+        XCTAssertEqual(candidates.count, 3,
+                       "tight-stacked cards should split on date anchors")
+
+        // Each candidate must carry its date — that's what was broken before.
+        XCTAssertTrue(candidates.allSatisfy { $0.nextBillingDate != nil },
+                      "every card has a date in the OCR; extractor must keep it")
+
+        // Plaud + 脉脉 + 即刻 are all preset-matched now.
+        let ids = Set(candidates.compactMap { $0.matchedPreset?.id })
+        XCTAssertTrue(ids.contains("plaud.ai"))
+        XCTAssertTrue(ids.contains("maimai.member"))
+        XCTAssertTrue(ids.contains("jike.app"))
+
+        // Prices: 1099 (not 1.09), 128, 688
+        let amounts = candidates.compactMap(\.amount).sorted()
+        XCTAssertEqual(amounts, [Decimal(128), Decimal(688), Decimal(1099)])
+    }
+
     func test_groupIntoRows_clustersByYProximity() {
         let lines: [RecognizedTextLine] = [
             .init(text: "A1", bounds: rect(y: 0.10, h: 0.02)),

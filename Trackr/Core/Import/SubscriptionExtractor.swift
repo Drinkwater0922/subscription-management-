@@ -98,35 +98,69 @@ enum SubscriptionExtractor {
         }
     }
 
-    /// Cluster `RecognizedTextLine`s into visual rows by Y proximity.
-    /// Exposed for tests.
+    /// Cluster `RecognizedTextLine`s into visual rows / "cards".
+    ///
+    /// **Structural algorithm.** Pure Y-distance grouping doesn't work for
+    /// iOS Subscriptions screenshots: intra-card line gaps (~40px between
+    /// app name → plan → date) and inter-card gaps (~30-40px between two
+    /// cells) are too similar for any fixed-or-adaptive threshold to
+    /// separate cards cleanly. Either the cards merge into a mega-row or
+    /// each card splits into 2-4 fragments — neither captures "one
+    /// candidate per visual subscription".
+    ///
+    /// Observation: every iOS Subscriptions card has **exactly one date
+    /// line** ("X月X日续期", "将于YYYY年X月X日到期") at the bottom. That
+    /// makes the date a perfect *structural* anchor for card boundaries.
+    /// We split rows when we encounter a second date in the same group,
+    /// AND we have a secondary Y-gap fallback for screenshots that don't
+    /// follow the iOS Subscriptions pattern (e.g. a single-card photo).
     static func groupIntoRows(_ lines: [RecognizedTextLine]) -> [[RecognizedTextLine]] {
+        guard !lines.isEmpty else { return [] }
         let sorted = lines.sorted { $0.bounds.midY < $1.bounds.midY }
-        var rows: [[RecognizedTextLine]] = []
-        var current: [RecognizedTextLine] = []
-        var currentBottom: CGFloat = -1
-        // Threshold tuned for iOS Subscriptions screenshots: rows are ~280px
-        // tall on a ~2800px screenshot, with ~30px padding between cards.
-        // 0.012 of image height (~30-40px) is comfortably under one row but
-        // safely above intra-row text gaps.
-        let gapThreshold: CGFloat = 0.012
+        guard sorted.count > 1 else { return [sorted] }
 
-        for line in sorted {
-            if current.isEmpty {
-                current = [line]
-                currentBottom = line.bounds.maxY
-                continue
-            }
-            let gap = line.bounds.minY - currentBottom
-            if gap > gapThreshold {
+        // Consecutive gaps for the Y-fallback path.
+        var gaps: [CGFloat] = []
+        gaps.reserveCapacity(sorted.count - 1)
+        for i in 1..<sorted.count {
+            let g = sorted[i].bounds.minY - sorted[i - 1].bounds.maxY
+            gaps.append(max(0, g))
+        }
+        // Generous Y fallback — only splits when the gap is obviously large.
+        let median = gaps.sorted()[gaps.count / 2]
+        let yFallback = max(median * 2.5, 0.04)
+
+        var rows: [[RecognizedTextLine]] = []
+        var current: [RecognizedTextLine] = [sorted[0]]
+        var currentHasDate = extractDate(in: sorted[0].text) != nil
+
+        for i in 1..<sorted.count {
+            let line = sorted[i]
+            let lineIsDate = extractDate(in: line.text) != nil
+            let gap = gaps[i - 1]
+
+            // Card boundary signals, in priority order:
+            //   1. We already saw a date in the current group AND this is
+            //      another date — definitively a new card.
+            //   2. We already saw a date AND this is a non-date line —
+            //      probably the next card's title (date is always the last
+            //      line in an iOS Subscriptions card).
+            //   3. Y gap blows past the fallback threshold (single-card
+            //      screenshots, edge cases).
+            let boundary = (currentHasDate && lineIsDate)
+                        || (currentHasDate && gap > 0.005)
+                        || (gap > yFallback)
+
+            if boundary {
                 rows.append(current)
                 current = [line]
+                currentHasDate = lineIsDate
             } else {
                 current.append(line)
+                if lineIsDate { currentHasDate = true }
             }
-            currentBottom = max(currentBottom, line.bounds.maxY)
         }
-        if !current.isEmpty { rows.append(current) }
+        rows.append(current)
         return rows
     }
 
@@ -339,7 +373,8 @@ enum SubscriptionExtractor {
     static func extractCycle(in text: String) -> BillingCycle? {
         let lower = text.lowercased()
         // Chinese hints (token-level, no spaces).
-        if lower.contains("每年") || lower.contains("年付") || lower.contains("/年") {
+        if lower.contains("每年") || lower.contains("年付") || lower.contains("/年")
+            || lower.contains("年度") || lower.contains("包年") {
             return .yearly
         }
         if lower.contains("每月") || lower.contains("月付") || lower.contains("/月") {
