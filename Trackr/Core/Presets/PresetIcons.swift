@@ -70,17 +70,33 @@ enum PresetIcons {
         "duolingo.super":        "duolingo",
         // Shopping
         "amazon.prime":          "amazon",
-        // Chinese brands with a Simple Icons match (Dingtalk has no
-        // Simple Icons entry; falls back to the 💼 emoji.)
-        "bilibili.premium":      "bilibili",
-        "douyin.vip":            "tiktok",      // Douyin is TikTok's Chinese sibling
-        "wechat.reading":        "wechat",
-        "qq.music":              "qq",
         "icloud.2tb.cn":         "icloud",
-        // Midjourney, masterclass, costco, disneyplus, wsj, plus most
-        // Chinese-only brands (iQIYI, Tencent Video, Youku, Mango TV,
-        // NetEase Music, Xiaoyuzhou, Caixin, Jike, Xiaohongshu, Feishu,
-        // Apple Developer) have no Simple Icons entry — emoji handles those.
+        // Chinese apps + Plaud + Apple Developer — real App Store icons
+        // fetched via Apple's public iTunes Search API. These imagesets use
+        // `template-rendering-intent: original` so they render in full
+        // colour (App Store icons are colourful, not monochrome).
+        "plaud.ai":              "plaud",
+        "maimai.member":         "maimai",
+        "xunfei.tingjian":       "xunfei",
+        "iqiyi.vip":             "iqiyi",
+        "tencent.video.vip":     "tencent-video",
+        "youku.vip":             "youku",
+        "bilibili.premium":      "bilibili-app",       // overrides Simple Icons
+        "mango.tv.vip":          "mango-tv",
+        "netease.music":         "netease-music",
+        "qq.music":              "qq-music",           // overrides Simple Icons
+        "wechat.reading":        "wechat-reading",     // overrides Simple Icons
+        "xiaoyuzhou.plus":       "xiaoyuzhou",
+        "jike.app":              "jike",
+        "caixin.pro":            "caixin",
+        "douyin.vip":            "douyin-app",         // overrides Simple Icons
+        "xiaohongshu":           "xiaohongshu",
+        "dingtalk.pro":          "dingtalk-app",
+        "feishu.pro":            "feishu",
+        "apple.developer":       "apple-developer",
+        // Midjourney, masterclass, costco, disneyplus, wsj — no Simple
+        // Icons entry and not worth fetching as full App Store icons until
+        // there's user demand; emoji handles those.
     ]
 
 

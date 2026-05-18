@@ -61,8 +61,13 @@ struct MonoSquareIcon: View {
         if let assetName,
            !assetName.isEmpty,
            UIImage(named: assetName) != nil {
+            // No explicit .renderingMode — the asset catalog's
+            // `template-rendering-intent` governs:
+            //   - Simple Icons SVGs are marked "template" → tinted by
+            //     `foregroundStyle` (brand colour or fg fallback).
+            //   - App Store PNGs are marked "original" → full colour;
+            //     `foregroundStyle` has no effect.
             Image(assetName)
-                .renderingMode(.template)
                 .resizable()
                 .scaledToFit()
                 .foregroundStyle(assetTint ?? foregroundColor)
