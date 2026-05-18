@@ -515,23 +515,6 @@
         }
       }
     },
-    "PRO MONTHLY" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PRO MONTHLY"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PRO 月度"
-          }
-        }
-      }
-    },
     "PRO STATUS" : {
       "extractionState" : "stale",
       "localizations" : {

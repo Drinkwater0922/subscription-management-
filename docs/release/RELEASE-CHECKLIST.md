@@ -32,16 +32,14 @@
 
 ## 3. In-App Purchase
 
-- [ ] `Configuration.storekit` product IDs match production ASC IAP records
-      one-for-one
-- [ ] Monthly auto-renewing subscription record exists, is "Ready to Submit",
-      and has localized display names + descriptions in English + Simplified
-      Chinese
-- [ ] Lifetime non-consumable record exists, "Ready to Submit", same locales
-- [ ] Subscription group name + summary localized in both languages
+- [ ] `Configuration.storekit` product ID matches the production ASC IAP
+      record one-for-one (`com.jingxue.pennyloop.pro.lifetime`)
+- [ ] Lifetime non-consumable record exists, is "Ready to Submit", and has
+      localized display names + descriptions in English + Simplified Chinese
+- [ ] Storekit `displayPrice` matches ASC tier ($7.99 / Tier 8)
 - [ ] App Review notes describe how to test Pro: paste a sandbox tester
       Apple ID and explain that the StoreKit configuration ships with the
-      production product IDs
+      production product ID
 
 ## 4. Notifications
 
@@ -90,8 +88,8 @@
       states on the lowest-supported device (iPhone 11 / iOS 17)
 - [ ] **3.1.1 In-App Purchase** — All Pro-gated features prompt the user to
       purchase via StoreKit, never an external link
-- [ ] **3.1.2 Subscriptions** — Auto-renewing terms disclosed in the paywall
-      with monthly price + renewal terms + link to manage subscriptions
+- [ ] **3.1.1 (Non-Consumable)** — Lifetime IAP discloses one-time price and
+      restore path; no language implies a subscription
 - [ ] **4.2 Minimum Functionality** — App provides real value without
       requiring a Pro purchase (free tier supports 5 subs, full CRUD,
       reminders, in-app banner for price changes)

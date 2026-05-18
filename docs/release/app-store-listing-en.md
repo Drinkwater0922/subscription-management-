@@ -45,9 +45,8 @@ iCloud+, ChatGPT, your gym, the magazine you forgot you signed up for.
 • iCloud sync across all your devices
 • Home-screen widget
 
-Pro is available as a monthly subscription ($2.99/mo) or a one-time
-lifetime purchase ($29.99). Cancel anytime. Subscriptions auto-renew unless
-turned off in your Apple ID settings at least 24 hours before the period ends.
+Pro is a one-time purchase ($7.99). No subscription, no renewal.
+Restore on any device signed into the same Apple ID.
 
 **Your data is yours**
 

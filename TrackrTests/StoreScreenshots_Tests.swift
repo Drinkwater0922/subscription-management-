@@ -40,8 +40,7 @@ final class StoreScreenshotsTests: XCTestCase {
     private func mount<V: View>(_ view: V) -> some View {
         let client = FakeStoreKitClient()
         client.products = [
-            ProProductDisplay(productID: ProProductID.monthly,  priceDisplay: "$2.99"),
-            ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$29.99"),
+            ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$7.99"),
         ]
         let entitlement = ProEntitlement(client: client, container: container)
         return view
@@ -102,8 +101,7 @@ final class StoreScreenshotsTests: XCTestCase {
     func test_store_paywall() async {
         let client = FakeStoreKitClient()
         client.products = [
-            ProProductDisplay(productID: ProProductID.monthly,  priceDisplay: "$2.99"),
-            ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$29.99"),
+            ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$7.99"),
         ]
         let entitlement = ProEntitlement(client: client, container: container)
         let view = PaywallView(reason: .subscriptionLimit)

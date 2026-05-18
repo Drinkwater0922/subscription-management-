@@ -87,10 +87,7 @@ struct PaywallView: View {
         VStack(spacing: 12) {
             productCard(productID: ProProductID.lifetime,
                         title: "LIFETIME",
-                        subtitle: "ONE-TIME PURCHASE")
-            productCard(productID: ProProductID.monthly,
-                        title: "MONTHLY",
-                        subtitle: "AUTO-RENEWS · CANCEL ANYTIME")
+                        subtitle: "ONE-TIME PURCHASE · NO RECURRING CHARGE")
         }
     }
 

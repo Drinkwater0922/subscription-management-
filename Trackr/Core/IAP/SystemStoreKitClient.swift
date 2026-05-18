@@ -6,19 +6,11 @@ import StoreKit
 final class SystemStoreKitClient: StoreKitClient {
 
     func currentEntitlement() async -> ProStatus {
-        var resolved: ProStatus = .free
         for await result in Transaction.currentEntitlements {
             guard case .verified(let txn) = result else { continue }
-            switch txn.productID {
-            case ProProductID.lifetime:
-                return .proLifetime // strictly the highest tier — short-circuit
-            case ProProductID.monthly:
-                resolved = .proMonthly
-            default:
-                continue
-            }
+            if txn.productID == ProProductID.lifetime { return .proLifetime }
         }
-        return resolved
+        return .free
     }
 
     func purchase(productID: String) async throws -> ProStatus {
@@ -58,7 +50,7 @@ final class SystemStoreKitClient: StoreKitClient {
     }
 
     func availableProducts() async -> [ProProductDisplay] {
-        let ids = [ProProductID.monthly, ProProductID.lifetime]
+        let ids = [ProProductID.lifetime]
         guard let products = try? await Product.products(for: ids) else { return [] }
         return products.map { product in
             ProProductDisplay(productID: product.id,

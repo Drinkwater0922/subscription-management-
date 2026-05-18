@@ -24,7 +24,7 @@ enum FeatureGate {
         switch status {
         case .free:
             return false
-        case .proMonthly, .proLifetime:
+        case .proLifetime:
             return true
         }
     }

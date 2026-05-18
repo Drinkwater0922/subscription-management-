@@ -8,10 +8,6 @@ final class SyncDeciderTests: XCTestCase {
             SyncDecider.decide(proStatus: .proLifetime, iCloud: .available),
             .cloudKit
         )
-        XCTAssertEqual(
-            SyncDecider.decide(proStatus: .proMonthly, iCloud: .available),
-            .cloudKit
-        )
     }
 
     func test_free_evenWithICloud_isLocalOnly() {

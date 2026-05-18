@@ -1,8 +1,8 @@
 import Foundation
 
 /// Product display info pulled from the App Store (or local `.storekit` config).
-/// `priceDisplay` is the already-formatted localized price string ("$2.99",
-/// "¥21.00"); we never re-format it.
+/// `priceDisplay` is the already-formatted localized price string ("$7.99",
+/// "¥58.00"); we never re-format it.
 struct ProProductDisplay: Equatable {
     let productID: String
     let priceDisplay: String
@@ -25,14 +25,13 @@ protocol StoreKitClient: AnyObject {
     /// `Transaction.updates` event. Used by `ProEntitlement` for live updates.
     func transactionUpdates() -> AsyncStream<ProStatus>
 
-    /// Display info for both Pro products. Reads from the App Store / local
-    /// `.storekit` config. Returns an empty array if products can't be loaded.
+    /// Display info for the Pro product. Reads from the App Store / local
+    /// `.storekit` config. Returns an empty array if the product can't be loaded.
     func availableProducts() async -> [ProProductDisplay]
 }
 
-/// Product IDs for the two Pro tiers — kept here so `FeatureGate`, `PaywallView`,
+/// Product ID for the single Pro tier — kept here so `FeatureGate`, `PaywallView`,
 /// and the StoreKit config all share one source of truth.
 enum ProProductID {
-    static let monthly  = "com.jingxue.pennyloop.pro.monthly"
     static let lifetime = "com.jingxue.pennyloop.pro.lifetime"
 }

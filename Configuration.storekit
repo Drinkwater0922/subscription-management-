@@ -3,13 +3,13 @@
   "nonRenewingSubscriptions" : [],
   "products" : [
     {
-      "displayPrice" : "29.99",
-      "familyShareable" : false,
+      "displayPrice" : "7.99",
+      "familyShareable" : true,
       "internalID" : "F0E1D2C3",
       "localizations" : [
         {
           "description" : "One-time purchase — Pro features forever.",
-          "displayName" : "PennyLoop Pro Lifetime",
+          "displayName" : "PennyLoop Pro",
           "locale" : "en_US"
         }
       ],
@@ -24,35 +24,7 @@
     "_storefront" : "USA",
     "_storeKitErrors" : []
   },
-  "subscriptionGroups" : [
-    {
-      "id" : "BA1A2B3C",
-      "localizations" : [],
-      "name" : "PennyLoop Pro",
-      "subscriptions" : [
-        {
-          "adHocOffers" : [],
-          "codeOffers" : [],
-          "displayPrice" : "2.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "A1B2C3D4",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "Auto-renewing monthly subscription with all Pro features.",
-              "displayName" : "PennyLoop Pro Monthly",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "com.jingxue.pennyloop.pro.monthly",
-          "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Pro Monthly",
-          "type" : "RecurringSubscription"
-        }
-      ]
-    }
-  ],
+  "subscriptionGroups" : [],
   "version" : {
     "major" : 4,
     "minor" : 0

@@ -33,10 +33,4 @@ final class PriceChangePushPublisherTests: XCTestCase {
         XCTAssertEqual(fake.addedRequests.count, 0)
     }
 
-    func test_proMonthly_alsoSchedules() async throws {
-        let fake = FakeNotificationCenter()
-        let pub = PriceChangePushPublisher(center: fake)
-        try await pub.publish(alerts: [alert()], proStatus: .proMonthly)
-        XCTAssertEqual(fake.addedRequests.count, 1)
-    }
 }

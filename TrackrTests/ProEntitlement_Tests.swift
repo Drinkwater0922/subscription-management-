@@ -33,16 +33,16 @@ final class ProEntitlementTests: XCTestCase {
     }
 
     func test_purchase_flipsCurrent_andWritesSettings() async throws {
-        client.purchaseResults[ProProductID.monthly] = .success(.proMonthly)
+        client.purchaseResults[ProProductID.lifetime] = .success(.proLifetime)
 
         let entitlement = ProEntitlement(client: client, container: container)
         await entitlement.start()
 
-        try await entitlement.purchase(productID: ProProductID.monthly)
-        XCTAssertEqual(entitlement.current, .proMonthly)
+        try await entitlement.purchase(productID: ProProductID.lifetime)
+        XCTAssertEqual(entitlement.current, .proLifetime)
         XCTAssertEqual(client.purchaseCallCount, 1)
         let s = try SettingsRepository(context: container.mainContext).currentSettings()
-        XCTAssertEqual(s.proStatus, .proMonthly)
+        XCTAssertEqual(s.proStatus, .proLifetime)
     }
 
     func test_transactionUpdate_updatesCurrent() async throws {
@@ -62,11 +62,10 @@ final class ProEntitlementTests: XCTestCase {
 
     func test_availableProducts_passesThroughClient() async {
         client.products = [
-            ProProductDisplay(productID: ProProductID.monthly, priceDisplay: "$2.99"),
-            ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$29.99"),
+            ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$7.99"),
         ]
         let entitlement = ProEntitlement(client: client, container: container)
         let products = await entitlement.availableProducts()
-        XCTAssertEqual(products.map(\.priceDisplay), ["$2.99", "$29.99"])
+        XCTAssertEqual(products.map(\.priceDisplay), ["$7.99"])
     }
 }

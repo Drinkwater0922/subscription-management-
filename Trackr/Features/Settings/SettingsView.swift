@@ -256,7 +256,6 @@ struct SettingsView: View {
     private var proStatusLabel: LocalizedStringKey {
         switch entitlement.current {
         case .free:        return LocalizedStringKey("FREE")
-        case .proMonthly:  return LocalizedStringKey("PRO MONTHLY")
         case .proLifetime: return LocalizedStringKey("PRO LIFETIME")
         }
     }

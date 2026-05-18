@@ -23,16 +23,11 @@ You may not:
 
 ## 3. In-app purchases
 
-PennyLoop offers an optional Pro tier via two products:
+PennyLoop offers an optional Pro tier via one product:
 
-- **PennyLoop Pro Monthly** — auto-renewing monthly subscription
-- **PennyLoop Pro Lifetime** — one-time purchase, perpetual
+- **PennyLoop Pro Lifetime** — one-time, non-consumable purchase that unlocks Pro features perpetually.
 
-Both are sold through Apple. Pricing is shown in the app at the point of sale.
-
-- Subscriptions auto-renew unless cancelled at least 24 hours before the end of the current period.
-- Cancellation does not refund the current period.
-- Manage and cancel subscriptions at **Settings → [your name] → Subscriptions** on your device.
+Sold through Apple. Pricing is shown in the app at the point of sale. No subscription, no auto-renewal. Restore on any device signed into the same Apple ID.
 
 ## 4. Refunds
 
@@ -85,16 +80,11 @@ PennyLoop 是授权给你使用,而非出售给你。我们授予你在你拥有
 
 ## 3. 内购
 
-PennyLoop 提供可选的 Pro 等级,通过两个产品:
+PennyLoop 提供可选的 Pro 等级,通过一个产品:
 
-- **PennyLoop Pro 月度** — 自动续订的月度订阅
-- **PennyLoop Pro 终身** — 一次性买断,永久使用
+- **PennyLoop Pro 终身** — 一次性非消耗型购买,永久解锁 Pro 功能。
 
-两者均通过 Apple 销售。具体定价在 app 内购买点展示。
-
-- 订阅会自动续费,除非在本期结束前至少 24 小时取消。
-- 取消不会退本期费用。
-- 在 **设置 → [你的名字] → 订阅** 中管理和取消订阅。
+通过 Apple 销售。具体定价在 app 内购买点展示。无订阅、无自动续费。同一 Apple ID 在任意设备可恢复购买。
 
 ## 4. 退款
 

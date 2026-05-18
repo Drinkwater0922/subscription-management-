@@ -94,8 +94,8 @@ Edit:
 3. **`Trackr.entitlements`** — `com.apple.security.application-groups` array
    and `com.apple.developer.icloud-container-identifiers` array
 4. **`Widgets.entitlements`** — `com.apple.security.application-groups`
-5. **`Configuration.storekit`** — both `productID` fields:
-   `app.trackr.ios.pro.monthly` and `app.trackr.ios.pro.lifetime`
+5. **`Configuration.storekit`** — the `productID` field:
+   `app.trackr.ios.pro.lifetime`
 6. **App Store Connect** — create matching IAP product records with the new
    IDs and approve them for sale
 

@@ -27,8 +27,7 @@ final class PaywallViewSnapshotTests: XCTestCase {
     private func host() -> some View {
         let client = FakeStoreKitClient()
         client.products = [
-            ProProductDisplay(productID: ProProductID.monthly,  priceDisplay: "$2.99"),
-            ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$29.99"),
+            ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$7.99"),
         ]
         let entitlement = ProEntitlement(client: client, container: container)
         return PaywallView(reason: .subscriptionLimit)
