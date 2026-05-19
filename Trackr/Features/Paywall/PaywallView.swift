@@ -88,7 +88,26 @@ struct PaywallView: View {
             productCard(productID: ProProductID.lifetime,
                         title: "LIFETIME",
                         subtitle: "ONE-TIME PURCHASE · NO RECURRING CHARGE")
+            // TODO(M11-launch): remove this debug overlay before final App Store submission.
+            debugProductDump
         }
+    }
+
+    /// Renders `availableProducts()` raw output in the system font (NOT VT323),
+    /// so we can confirm whether bad price text is a font-rendering bug or a
+    /// data-flow bug. Visible only in TestFlight builds during launch QA.
+    private var debugProductDump: some View {
+        let dump: String = {
+            if products.isEmpty { return "DEBUG: no products fetched (StoreKit returned empty)" }
+            return products
+                .map { "DEBUG: id=\($0.productID) price=\"\($0.priceDisplay)\"" }
+                .joined(separator: "\n")
+        }()
+        return Text(dump)
+            .font(.system(size: 11, weight: .regular, design: .monospaced))
+            .foregroundStyle(TrackrColors.warn)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 4)
     }
 
     private func productCard(productID: String,

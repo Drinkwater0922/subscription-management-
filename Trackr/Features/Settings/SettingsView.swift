@@ -249,6 +249,10 @@ struct SettingsView: View {
             TrackrButton(String(localized: "RESTORE PURCHASES"), variant: .outlined) {
                 Task { await entitlement.refresh() }
             }
+            // TODO(M11-launch): remove this debug button before final App Store submission.
+            TrackrButton("[DEBUG] RESET PRO TO FREE", variant: .outlined) {
+                Task { await entitlement.debugResetToFree() }
+            }
             Rectangle().fill(TrackrColors.border).frame(height: 1)
         }
     }
