@@ -11,6 +11,7 @@ A pixel-aesthetic subscription tracker for iOS.
 
 - [Privacy Policy](legal/privacy/) / [隐私政策](legal/privacy/)
 - [Terms of Service](legal/terms/) / [服务条款](legal/terms/)
+- [Support](support/) / [技术支持](support/)
 
 ## Project
 

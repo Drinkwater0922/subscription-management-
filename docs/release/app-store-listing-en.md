@@ -1,101 +1,97 @@
 # PennyLoop — App Store Listing (English)
 
-> Canonical English marketing copy. Copy-paste into App Store Connect → App
-> Information / App Privacy / Version Release.
+Canonical English metadata for App Store Connect.
 
-## Name
+## App Information
 
-**PennyLoop** (display name — must also match `BrandConfig.appDisplayName` and
-`CFBundleDisplayName`).
+| Field | Value |
+|---|---|
+| Name | PennyLoop |
+| Subtitle | Subscription budget tracker |
+| Primary Category | Finance |
+| Secondary Category | Productivity |
+| Content Rights | No, this app does not contain, show, or access third-party content beyond user-entered subscription names/logos used for identification. |
+| Age Rating | 4+ |
+| Privacy Policy URL | https://drinkwater0922.github.io/subscription-management-/legal/privacy/ |
+| License Agreement | Apple's standard EULA |
 
-## Subtitle (30 chars max)
+## Version Information
 
-Track every subscription, never miss a renewal.
+### Promotional Text
 
-## Promotional Text (170 chars max)
+Track renewals, totals, and price changes in one local-first app. Import from screenshots, get reminders before charges, and unlock Pro once for lifetime access.
 
-See your full monthly subscription bill at a glance. Get notified before every
-renewal. Catch price changes the moment they happen.
+### Description
 
-## Description (4000 chars max)
+PennyLoop keeps every recurring payment in one clean, local-first tracker.
 
-PennyLoop keeps every subscription you pay for in one place — Netflix, Spotify,
-iCloud+, ChatGPT, your gym, the magazine you forgot you signed up for.
+Add subscriptions manually, choose from the built-in service library, or import details from a screenshot using on-device text recognition. PennyLoop turns scattered renewals into a clear monthly view so you know what is coming before the charge lands.
 
-**Why people love PennyLoop**
+Key features:
 
-• Monthly total at a glance. One number, every currency you pay in, on the
-  home screen.
-• Reminders before every renewal. Pick how many days ahead — 7, 3, 1 — and
-  the time of day. We'll never spam.
-• Price-change alerts. When a service quietly raises its price, you see it
-  before the charge hits your card.
-• Beautiful, pixel-perfect design. The retro typography and FAB take the
-  visual noise of a normal subscription tracker and turn it into something
-  you actually want to open.
-• Built for the long haul. Local-first, syncs through your iCloud (Pro), and
-  the price catalog updates from a curated remote source so popular services
-  stay accurate.
+• See your monthly subscription total at a glance
+• Track renewal dates, billing cycles, amounts, currencies, categories, and notes
+• Get local reminders before renewals
+• Import subscription details from screenshots with on-device Apple Vision OCR
+• Review spending insights by month, year, and category
+• Use Home Screen widgets for upcoming renewals
+• Keep data local by default, with optional iCloud sync for Pro users
+• No accounts, no ads, no analytics SDKs
 
-**Pro features**
+PennyLoop Pro is a one-time purchase. It unlocks unlimited tracked subscriptions, Insights, price-change alerts, iCloud sync, and widgets for life. No recurring charge.
 
-• Unlimited subscriptions (free tier: 5)
-• Insights dashboard with monthly and yearly totals
-• Push notifications on price changes
-• iCloud sync across all your devices
-• Home-screen widget
+Your data stays under your control. Subscription details are stored on your device with Apple's SwiftData framework. Optional sync uses your private iCloud account through CloudKit. Screenshot import is processed on-device, and the selected image is not uploaded to our servers.
 
-Pro is a one-time purchase ($7.99). No subscription, no renewal.
-Restore on any device signed into the same Apple ID.
+Privacy Policy:
+https://drinkwater0922.github.io/subscription-management-/legal/privacy/
 
-**Your data is yours**
+Terms of Service:
+https://drinkwater0922.github.io/subscription-management-/legal/terms/
 
-Subscriptions live on-device in Apple's SwiftData store. Pro users get
-end-to-end encrypted sync through their own private iCloud database. We
-never see your data, never sell it, never share it.
+### Keywords
 
-Privacy policy: https://trackr.placeholder/privacy
-Terms of service: https://trackr.placeholder/terms
+subscription,tracker,renewal,reminder,budget,bill,recurring,payment,spending,finance,expense
 
-(Replace placeholder URLs with the real ones before submission — see
-`PRE-LAUNCH.md`.)
+### Support URL
 
-## Keywords (100 chars max, comma-separated)
+https://drinkwater0922.github.io/subscription-management-/support/
 
-subscription,tracker,renewal,reminder,bill,saas,budget,netflix,spotify,icloud,manage,recurring
+### Marketing URL
 
-## Support URL
+https://drinkwater0922.github.io/subscription-management-/
 
-https://trackr.placeholder/support
+### What's New
 
-## Marketing URL
+First public release of PennyLoop: track recurring payments, import from screenshots, get renewal reminders, review spending insights, and unlock Pro once for lifetime access.
 
-https://trackr.placeholder
+## App Privacy
 
-## What's New (Version 1.0.0)
+Recommended App Privacy answer for the current app behavior:
 
-Welcome to PennyLoop 1.0. Track every subscription, get notified before every
-renewal, and see your full monthly bill at a glance. Built for iPhone and
-iPad, with a home-screen widget and iCloud sync for Pro users.
+| Data Type | Collected | Linked to User | Used For |
+|---|---:|---:|---|
+| Purchases | Yes | Yes | App functionality: Pro entitlement verification through Apple StoreKit |
+| User Content | No developer collection | No | Subscription data is stored locally and, when enabled, in the user's private iCloud account |
+| Diagnostics | No | No | No analytics or crash SDK is included |
+| Identifiers | No | No | No advertising ID or tracking identifier is collected |
 
-## App Privacy — Data Linked to User
+Tracking: No.
 
-The following data is collected and linked to the user:
+Third-party advertising: No.
 
-• Purchases — In-App Purchase history (for entitlement verification only;
-  managed entirely by Apple's StoreKit framework)
+Data sold or shared with data brokers: No.
 
-The following data is collected on-device and NOT linked to the user:
+## Review Notes
 
-• Subscription names, amounts, billing cycles, and renewal dates — stored
-  in Apple's SwiftData/CloudKit container under the user's own Apple ID.
-  Never transmitted to any server we operate.
+PennyLoop is a local-first subscription tracker. It supports manual entry, built-in subscription presets, screenshot import using on-device Apple Vision OCR, local renewal reminders, optional CloudKit sync, and a non-consumable Pro lifetime purchase.
 
-## Age Rating
+To test the Pro purchase:
 
-4+ (no restricted content)
+1. Launch the app.
+2. Add five subscriptions from the home screen.
+3. Tap the add button again to trigger the Pro paywall.
+4. Choose PennyLoop Pro.
+5. Complete purchase with an App Store sandbox tester.
+6. Confirm Settings shows "PRO LIFETIME" and the sixth subscription can be saved.
 
-## App Category
-
-Primary: Finance
-Secondary: Productivity
+The in-app purchase product ID is `com.jingxue.pennyloop.pro.lifetime`.

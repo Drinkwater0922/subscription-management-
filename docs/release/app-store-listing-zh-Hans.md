@@ -1,88 +1,97 @@
 # PennyLoop — App Store 上架文案（简体中文）
 
-> 简体中文上架文案，准备好后从这里复制到 App Store Connect → App 信息 /
-> 隐私 / 版本发布。
+App Store Connect 简体中文字段，可直接复制。
 
-## 名称
+## App 信息
 
-**PennyLoop**（显示名 — 同时与 `BrandConfig.appDisplayName` 和
-`CFBundleDisplayName` 保持一致）。
+| 字段 | 内容 |
+|---|---|
+| 名称 | PennyLoop |
+| 副标题 | 订阅预算追踪器 |
+| 主分类 | 财务 |
+| 副分类 | 效率 |
+| 内容版权 | 否。App 不内置展示第三方内容；用户输入的服务名称和识别图标仅用于订阅识别。 |
+| 年龄分级 | 4+ |
+| 隐私政策 URL | https://drinkwater0922.github.io/subscription-management-/legal/privacy/ |
+| 许可协议 | 使用 Apple 标准 EULA |
 
-## 副标题（最多 30 字符）
+## 版本信息
 
-管好每笔订阅，再无意外扣款。
+### 推广文本
 
-## 推广文本（最多 170 字符）
+集中追踪续费日期、月度总额和价格变化。支持截图导入、续费前提醒，一次买断 Pro，终身解锁。
 
-一眼看清每月订阅总开销。续费前提前提醒。价格变动第一时间收到。
+### 描述
 
-## 介绍（最多 4000 字符）
+PennyLoop 是一款本地优先的订阅追踪器，帮你把每一笔周期性扣款放到同一个清晰视图里。
 
-PennyLoop 帮你管好每一笔订阅 —— Netflix、Spotify、iCloud+、ChatGPT、健身房、
-那本忘了取消的杂志，统统集中到一个地方。
+你可以手动添加订阅，也可以从内置服务库快速选择，或者用截图导入功能读取订阅信息。PennyLoop 会把分散的续费日期、金额、币种和周期整理成月度视图，让你在扣款前就知道下一笔钱会花在哪里。
 
-**为什么大家喜欢 PennyLoop**
+主要功能：
 
-• 每月总开销一目了然。一个数字，按币种汇总，首页直接看到。
-• 续费前主动提醒。提前 7 天、3 天还是 1 天？哪个时间点？你定。绝不打扰。
-• 价格变动提醒。某项服务悄悄涨价时，扣款前你就会知道。
-• 像素风设计。复古字体配大号悬浮按钮，告别杂乱无章的订阅表格，每次打开都想多看两眼。
-• 长期主义打造。本地优先存储，Pro 用户通过 iCloud 同步，价格库从精挑细选的远程
-  源更新，热门服务始终保持最新。
+• 首页一眼查看每月订阅总额
+• 追踪续费日期、扣款周期、金额、币种、分类和备注
+• 续费前本地提醒
+• 使用 Apple Vision 在设备本地识别截图内容
+• 查看月度、年度和分类维度的支出洞察
+• 用主屏小组件查看即将续费的订阅
+• 默认本地存储，Pro 用户可选择通过 iCloud 同步
+• 无账号、无广告、无 analytics SDK
 
-**Pro 特权**
+PennyLoop Pro 是一次性买断内购。购买后终身解锁不限数量订阅、数据洞察、价格变化提醒、iCloud 同步和小组件。无自动续费。
 
-• 无限订阅条目（免费版上限 5 条）
-• 财务洞察面板：月度与年度总览
-• 价格变动推送通知
-• 全设备 iCloud 同步
-• 主屏小组件
+你的数据始终由你掌控。订阅数据通过 Apple SwiftData 保存在设备本地；可选同步使用你自己的 iCloud 私有数据库。截图导入完全在设备本地处理，图片不会上传到我们的服务器。
 
-Pro 一次性买断（¥58），终身解锁，无续费。同一 Apple ID 在任意设备恢复购买。
+隐私政策：
+https://drinkwater0922.github.io/subscription-management-/legal/privacy/
 
-**数据始终在你手里**
+服务条款：
+https://drinkwater0922.github.io/subscription-management-/legal/terms/
 
-订阅数据通过 Apple 的 SwiftData 存储在设备本地。Pro 用户的同步通过 iCloud
-端到端加密私有数据库完成。我们看不到你的数据，永远不会出售，永远不会分享。
+### 关键词
 
-隐私政策：https://trackr.placeholder/privacy
-服务条款：https://trackr.placeholder/terms
+订阅管理,续费提醒,自动扣款,预算,账单,记账,支出,消费,周期付款,财务
 
-（占位 URL 提交前请替换为正式地址 —— 详见 `PRE-LAUNCH.md`。）
+### 技术支持网址
 
-## 关键词（最多 100 字符，逗号分隔）
+https://drinkwater0922.github.io/subscription-management-/support/
 
-订阅,管理,续费,提醒,账单,记账,预算,saas,netflix,spotify,icloud,自动续费
+### 营销网址
 
-## 客服 URL
+https://drinkwater0922.github.io/subscription-management-/
 
-https://trackr.placeholder/support
+### 新版本说明
 
-## 营销 URL
+PennyLoop 首个公开版本：追踪周期性扣款、从截图导入订阅、续费前提醒、查看支出洞察，并可一次买断 Pro 终身解锁。
 
-https://trackr.placeholder
+## App 隐私
 
-## 更新说明（1.0.0 版本）
+建议按当前 App 行为填写：
 
-欢迎使用 PennyLoop 1.0。管好每一笔订阅，续费前提前提醒，每月总开销一目了然。
-适配 iPhone 与 iPad，附带主屏小组件，Pro 用户还可享受 iCloud 同步。
+| 数据类型 | 是否收集 | 是否与用户关联 | 用途 |
+|---|---:|---:|---|
+| 购买项目 | 是 | 是 | App 功能：通过 Apple StoreKit 验证 Pro 权益 |
+| 用户内容 | 开发者不收集 | 否 | 订阅数据只保存在设备本地；开启同步时保存在用户自己的 iCloud 私有数据库 |
+| 诊断 | 否 | 否 | 未集成 analytics 或崩溃统计 SDK |
+| 标识符 | 否 | 否 | 不收集广告 ID 或追踪标识符 |
 
-## App 隐私 —— 与用户身份关联的数据
+追踪用户：否。
 
-会收集并与用户关联的数据：
+第三方广告：否。
 
-• 购买 —— 应用内购买历史（仅用于权益验证，完全由 Apple 的 StoreKit 框架管理）
+向数据经纪商出售或共享数据：否。
 
-收集但不与用户关联的数据：
+## 审核备注
 
-• 订阅名称、金额、计费周期、下次续费日期 —— 通过 Apple 的 SwiftData /
-  CloudKit 容器保存在用户的 Apple ID 之下。不会向我方运营的任何服务器传输。
+PennyLoop 是本地优先的订阅追踪器，支持手动添加、内置服务预设、使用 Apple Vision 在设备本地识别截图、本地续费提醒、可选 CloudKit 同步，以及非消耗型 Pro 终身版内购。
 
-## 年龄分级
+Pro 购买测试路径：
 
-4+（无受限内容）
+1. 启动 App。
+2. 从首页添加 5 个订阅。
+3. 再次点击添加按钮，触发 Pro 付费页。
+4. 选择 PennyLoop Pro。
+5. 使用 App Store 沙盒测试账号完成购买。
+6. 确认设置页显示“PRO LIFETIME”，并且第 6 个订阅可以保存。
 
-## 应用分类
-
-主分类：财务
-副分类：效率
+内购产品 ID：`com.jingxue.pennyloop.pro.lifetime`。
