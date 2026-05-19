@@ -57,16 +57,6 @@ final class ProEntitlement {
         await update(to: resolved)
     }
 
-    // TODO(M11-launch): remove this debug helper before final App Store submission.
-    /// Local-only reset of the UI-facing entitlement to `.free`. Does NOT refund
-    /// or void the underlying StoreKit transaction — used during pre-launch
-    /// paywall QA in TestFlight so we can re-trigger the paywall after a sandbox
-    /// purchase. The next `start()` (cold launch) will resolve back to whatever
-    /// `currentEntitlements` reports.
-    func debugResetToFree() async {
-        await update(to: .free)
-    }
-
     deinit {
         listenerTask?.cancel()
     }

@@ -1,5 +1,4 @@
 import SwiftUI
-import StoreKit
 
 struct PaywallView: View {
 
@@ -11,8 +10,6 @@ struct PaywallView: View {
     @State private var products: [ProProductDisplay] = []
     @State private var purchaseInFlight = false
     @State private var errorMessage: String?
-    // TODO(M11-launch): remove this debug state before final App Store submission.
-    @State private var debugReport: String = "DEBUG: …"
 
     var body: some View {
         ZStack {
@@ -39,10 +36,7 @@ struct PaywallView: View {
                 }
             }
         }
-        .task {
-            products = await entitlement.availableProducts()
-            await collectDebugReport()
-        }
+        .task { products = await entitlement.availableProducts() }
     }
 
     private var header: some View {
@@ -94,46 +88,7 @@ struct PaywallView: View {
             productCard(productID: ProProductID.lifetime,
                         title: "LIFETIME",
                         subtitle: "ONE-TIME PURCHASE · NO RECURRING CHARGE")
-            // TODO(M11-launch): remove this debug overlay before final App Store submission.
-            debugProductDump
         }
-    }
-
-    /// Renders raw StoreKit data in the system font (NOT VT323), so we can
-    /// distinguish a font-rendering bug from a data/storefront bug. Visible
-    /// only in TestFlight builds during launch QA.
-    private var debugProductDump: some View {
-        Text(debugReport)
-            .font(.system(size: 11, weight: .regular, design: .monospaced))
-            .foregroundStyle(TrackrColors.warn)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 4)
-    }
-
-    private func collectDebugReport() async {
-        var lines: [String] = []
-        if let sf = await Storefront.current {
-            lines.append("storefront: code=\(sf.countryCode) id=\(sf.id)")
-        } else {
-            lines.append("storefront: nil")
-        }
-        do {
-            let raw = try await Product.products(for: [ProProductID.lifetime])
-            if raw.isEmpty {
-                lines.append("products: <empty>")
-            }
-            for p in raw {
-                lines.append("id: \(p.id)")
-                lines.append("displayName: \(p.displayName)")
-                lines.append("displayPrice: \"\(p.displayPrice)\"")
-                lines.append("price: \(p.price)")
-                lines.append("currency: \(p.priceFormatStyle.currencyCode)")
-                lines.append("locale: \(p.priceFormatStyle.locale.identifier)")
-            }
-        } catch {
-            lines.append("products error: \(error)")
-        }
-        debugReport = lines.joined(separator: "\n")
     }
 
     private func productCard(productID: String,
