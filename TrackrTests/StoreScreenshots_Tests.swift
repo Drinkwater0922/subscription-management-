@@ -43,9 +43,11 @@ final class StoreScreenshotsTests: XCTestCase {
         await withSnapshotTesting(record: .missing) {}
     }
 
-    // 6.7" iPhone (e.g., iPhone 16 Pro Max) — 430×932 points.
-    private let storeFrameWidth: CGFloat = 430
-    private let storeFrameHeight: CGFloat = 932
+    // 6.5" iPhone (e.g., iPhone 11 Pro Max / 14 Pro Max) — 428×926 points.
+    // Renders at 3× to 1284×2778 px, which App Store Connect accepts for the
+    // iPhone screenshot slot.
+    private let storeFrameWidth: CGFloat = 428
+    private let storeFrameHeight: CGFloat = 926
 
     private func mount<V: View>(_ view: V, proStatus: ProStatus = .free) async -> some View {
         let client = FakeStoreKitClient()
