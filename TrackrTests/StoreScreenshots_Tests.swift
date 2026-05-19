@@ -52,6 +52,45 @@ final class StoreScreenshotsTests: XCTestCase {
             .preferredColorScheme(.dark)
     }
 
+    /// Wraps a raw screen mount in App Store-style marketing decoration:
+    /// lime headline banner pinned to the top, the screen fills the rest of
+    /// the canvas. Total stays 430×932 so the PNG hits the App Store's exact
+    /// 1290×2796 spec at 3× scale.
+    private func decorated<Content: View>(
+        headline: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        let lime = Color(red: 204/255, green: 255/255, blue: 102/255)
+        return ZStack(alignment: .top) {
+            // Backdrop: actual screen at full canvas size.
+            content()
+                .frame(width: storeFrameWidth, height: storeFrameHeight)
+
+            // Top banner: lime block with VT323 headline. Overlays the app's
+            // own status-bar area — standard practice for marketing shots.
+            VStack(spacing: 0) {
+                Text(headline)
+                    .font(.custom("VT323", size: 42))
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(2)
+                    .lineLimit(2)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 64)
+                    .padding(.bottom, 24)
+                    .frame(maxWidth: .infinity)
+                    .background(lime)
+
+                // Hairline seam so the banner reads as an intentional overlay
+                // rather than a render glitch.
+                Rectangle()
+                    .fill(Color.black)
+                    .frame(height: 3)
+            }
+        }
+        .frame(width: storeFrameWidth, height: storeFrameHeight)
+    }
+
     private func seed(_ rows: [(String, Decimal, BillingCycle, Date)]) throws {
         for (name, amount, cycle, billing) in rows {
             let sub = Subscription(
@@ -68,18 +107,28 @@ final class StoreScreenshotsTests: XCTestCase {
     }
 
     func test_store_home_empty() {
-        assertSnapshot(of: mount(HomeView()), as: .image)
+        let view = decorated(headline: "EVERY SUBSCRIPTION\nIN ONE PLACE") {
+            mount(HomeView())
+        }
+        assertSnapshot(of: view, as: .image)
     }
 
     func test_store_home_populated() throws {
         let base = Date(timeIntervalSince1970: 1_750_000_000)
         try seed([
-            ("Netflix", 15.49, .monthly, base.addingTimeInterval(86_400 * 3)),
-            ("Spotify", 10.99, .monthly, base.addingTimeInterval(86_400 * 7)),
-            ("iCloud+", 0.99,  .monthly, base.addingTimeInterval(86_400 * 12)),
-            ("ChatGPT Plus", 20, .monthly, base.addingTimeInterval(86_400 * 19)),
+            ("Netflix",       15.49, .monthly, base.addingTimeInterval(86_400 * 1)),
+            ("Spotify",       10.99, .monthly, base.addingTimeInterval(86_400 * 3)),
+            ("iCloud+",        2.99, .monthly, base.addingTimeInterval(86_400 * 5)),
+            ("ChatGPT Plus",     20, .monthly, base.addingTimeInterval(86_400 * 8)),
+            ("Notion",            8, .monthly, base.addingTimeInterval(86_400 * 12)),
+            ("YouTube Premium", 13.99, .monthly, base.addingTimeInterval(86_400 * 14)),
+            ("Disney+",        9.99, .monthly, base.addingTimeInterval(86_400 * 18)),
+            ("1Password",      2.99, .monthly, base.addingTimeInterval(86_400 * 22)),
         ])
-        assertSnapshot(of: mount(HomeView()), as: .image)
+        let view = decorated(headline: "YOUR MONTHLY BILL\nAT A GLANCE") {
+            mount(HomeView())
+        }
+        assertSnapshot(of: view, as: .image)
     }
 
     func test_store_detail() throws {
@@ -94,8 +143,10 @@ final class StoreScreenshotsTests: XCTestCase {
         )
         container.mainContext.insert(sub)
         try container.mainContext.save()
-        assertSnapshot(of: mount(SubscriptionDetailView(subscription: sub)),
-                       as: .image)
+        let view = decorated(headline: "NEVER MISS\nA RENEWAL") {
+            mount(SubscriptionDetailView(subscription: sub))
+        }
+        assertSnapshot(of: view, as: .image)
     }
 
     func test_store_paywall() async {
@@ -104,11 +155,13 @@ final class StoreScreenshotsTests: XCTestCase {
             ProProductDisplay(productID: ProProductID.lifetime, priceDisplay: "$7.99"),
         ]
         let entitlement = ProEntitlement(client: client, container: container)
-        let view = PaywallView(reason: .subscriptionLimit)
-            .modelContainer(container)
-            .environment(entitlement)
-            .frame(width: storeFrameWidth, height: storeFrameHeight)
-            .preferredColorScheme(.dark)
+        let view = decorated(headline: "GO PRO ONCE.\nUNLOCK FOREVER.") {
+            PaywallView(reason: .subscriptionLimit)
+                .modelContainer(container)
+                .environment(entitlement)
+                .frame(width: storeFrameWidth, height: storeFrameHeight)
+                .preferredColorScheme(.dark)
+        }
         assertSnapshot(of: view, as: .image)
     }
 
@@ -117,6 +170,9 @@ final class StoreScreenshotsTests: XCTestCase {
         settings.leadDays = [7, 3, 1]
         settings.notifyHour = 9
         try container.mainContext.save()
-        assertSnapshot(of: mount(SettingsView()), as: .image)
+        let view = decorated(headline: "BUILT FOR\nTHE LONG HAUL") {
+            mount(SettingsView())
+        }
+        assertSnapshot(of: view, as: .image)
     }
 }
