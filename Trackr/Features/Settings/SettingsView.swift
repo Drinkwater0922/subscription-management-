@@ -1,5 +1,7 @@
 import SwiftUI
 import SwiftData
+import StoreKit
+import UIKit
 
 struct SettingsView: View {
 
@@ -30,6 +32,7 @@ struct SettingsView: View {
                         languageSection
                         importSection
                         proStatusSection
+                        feedbackSection
                         linksSection
                     }
                     .padding(20)
@@ -259,6 +262,73 @@ struct SettingsView: View {
         case .proLifetime: return LocalizedStringKey("PRO LIFETIME")
         }
     }
+
+    // MARK: - Feedback
+
+    private var feedbackSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PixelText(LocalizedStringKey("FEEDBACK"),
+                      size: TrackrTypography.Scale.sectionLabel,
+                      color: TrackrColors.fg2, tracking: 2)
+
+            feedbackRow(label: LocalizedStringKey("EMAIL FEEDBACK"),
+                        action: openEmailFeedback)
+
+            feedbackRow(label: LocalizedStringKey("RATE ON APP STORE"),
+                        action: openAppStoreRating)
+
+            feedbackRow(label: LocalizedStringKey("GITHUB ISSUE"),
+                        action: { openURL(BrandConfig.supportIssueURL) })
+
+            Rectangle().fill(TrackrColors.border).frame(height: 1)
+        }
+    }
+
+    private func feedbackRow(label: LocalizedStringKey,
+                             action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                PixelText(label,
+                          size: TrackrTypography.Scale.body,
+                          color: TrackrColors.accent,
+                          tracking: 1.5)
+                Spacer()
+                PixelText("→",
+                          size: TrackrTypography.Scale.body,
+                          color: TrackrColors.accent,
+                          tracking: 0)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func openEmailFeedback() {
+        let info = Bundle.main.infoDictionary
+        let builder = FeedbackEmailBuilder(
+            appVersion:  (info?["CFBundleShortVersionString"] as? String) ?? "?",
+            buildNumber: (info?["CFBundleVersion"] as? String) ?? "?",
+            iOSVersion:  UIDevice.current.systemVersion,
+            language:    Locale.current.identifier,
+            proStatus:   entitlement.current
+        )
+        if let url = builder.mailtoURL(to: BrandConfig.supportEmail) {
+            openURL(url)
+        }
+    }
+
+    private func openAppStoreRating() {
+        // Prefer Apple's in-app review controller when a foreground scene is
+        // available. On simulator / TestFlight the system may decide to no-op,
+        // which is fine — we don't try to fall back to an App Store URL until
+        // the production App ID is known.
+        guard let scene = UIApplication.shared.connectedScenes
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+        else { return }
+        SKStoreReviewController.requestReview(in: scene)
+    }
+
+    // MARK: - Links
 
     private var linksSection: some View {
         VStack(alignment: .leading, spacing: 12) {

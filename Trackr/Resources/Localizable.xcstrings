@@ -1,6 +1,23 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "ADD %d SUBSCRIPTIONS" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ADD %d SUBSCRIPTIONS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加 %d 条订阅"
+          }
+        }
+      }
+    },
     "Apple doesn't let apps read your subscription list. Use the three-step trick below — it takes about 30 seconds per sub." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -123,6 +140,39 @@
         }
       }
     },
+    "DESELECT ALL" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DESELECT ALL"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全不选"
+          }
+        }
+      }
+    },
+    "EMAIL FEEDBACK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EMAIL FEEDBACK"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邮件反馈"
+          }
+        }
+      }
+    },
     "ENABLE NOTIFICATIONS" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -174,6 +224,22 @@
         }
       }
     },
+    "FEEDBACK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEEDBACK"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "意见反馈"
+          }
+        }
+      }
+    },
     "FREE" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -204,6 +270,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "从 APPLE 订阅"
+          }
+        }
+      }
+    },
+    "GITHUB ISSUE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GITHUB ISSUE"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Issue"
           }
         }
       }
@@ -243,6 +325,7 @@
       }
     },
     "IMPORT" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -254,70 +337,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "导入"
-          }
-        }
-      }
-    },
-    "SELECT ALL" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SELECT ALL"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全选"
-          }
-        }
-      }
-    },
-    "DESELECT ALL" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DESELECT ALL"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全不选"
-          }
-        }
-      }
-    },
-    "ADD %d SUBSCRIPTIONS" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ADD %d SUBSCRIPTIONS"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "添加 %d 条订阅"
-          }
-        }
-      }
-    },
-    "PICK SOME ROWS" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PICK SOME ROWS"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请勾选要导入的"
           }
         }
       }
@@ -481,6 +500,23 @@
         }
       }
     },
+    "PICK SOME ROWS" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PICK SOME ROWS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请勾选要导入的"
+          }
+        }
+      }
+    },
     "PRIVACY POLICY" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -532,6 +568,22 @@
         }
       }
     },
+    "RATE ON APP STORE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RATE ON APP STORE"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store 评分"
+          }
+        }
+      }
+    },
     "REMIND ME" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -579,6 +631,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一眼看清每月总开销"
+          }
+        }
+      }
+    },
+    "SELECT ALL" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SELECT ALL"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全选"
           }
         }
       }
@@ -702,7 +771,7 @@
         }
       }
     },
-    "Upgrade to Trackr Pro to see totals, trends, and category breakdowns." : {
+    "Upgrade to PennyLoop Pro to see totals, trends, and category breakdowns." : {
 
     },
     "We'll only ping you a few days before each renewal — never spam." : {

@@ -20,12 +20,23 @@ final class StoreScreenshotsTests: XCTestCase {
 
     override class func setUp() {
         super.setUp()
-        // Force the running test process to resolve `String(localized:)`
-        // lookups through the English (`en`) localization, regardless of
-        // the host simulator's language. Without this, settings labels
-        // like "RESTORE PURCHASES" render in zh-Hans on a Chinese sim.
-        UserDefaults.standard.set(["en"], forKey: "AppleLanguages")
-        UserDefaults.standard.set("en_US", forKey: "AppleLocale")
+        // Force the entire test process — and via persisted UserDefaults the
+        // simulator container itself — to resolve `String(localized:)`
+        // lookups through the English (`en`) localization, regardless of the
+        // host simulator's language. Without this, settings labels like
+        // "RESTORE PURCHASES" render in zh-Hans on a Chinese sim and break
+        // the App Store screenshot baselines.
+        //
+        // Side effect (intentional, do not "fix" with a tearDown): the
+        // override persists across test invocations on the same simulator,
+        // which keeps *every* snapshot test class in en regardless of order.
+        // Adding a tearDown that restores the original value makes the rest
+        // of the snapshot suite drift back to the sim's natural locale, and
+        // their baselines (also recorded in en) start failing. If you ever
+        // need an isolated zh-Hans render in this test bundle, do it under
+        // a `withUserDefaults`-style scope inside a single test, not here.
+        UserDefaults.standard.set(["en"],   forKey: "AppleLanguages")
+        UserDefaults.standard.set("en_US",  forKey: "AppleLocale")
     }
 
     override func setUpWithError() throws {

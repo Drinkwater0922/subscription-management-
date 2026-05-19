@@ -41,4 +41,28 @@ final class BrandConfigTests: XCTestCase {
     func test_presetCatalogURL_isAbsoluteHTTPS() {
         XCTAssertEqual(BrandConfig.presetCatalogURL.scheme, "https")
     }
+
+    // MARK: - Feedback / support (v1.0.1)
+
+    func test_supportURL_isAbsoluteHTTPS() {
+        XCTAssertEqual(BrandConfig.supportURL.scheme, "https")
+        XCTAssertNotNil(BrandConfig.supportURL.host)
+    }
+
+    func test_supportIssueURL_isAbsoluteHTTPS() {
+        XCTAssertEqual(BrandConfig.supportIssueURL.scheme, "https")
+        XCTAssertNotNil(BrandConfig.supportIssueURL.host)
+    }
+
+    /// Refuses to ship a `TODO_`-prefixed placeholder. If this test starts
+    /// failing in CI it means somebody bumped the version without filling in
+    /// the real maintainer mailbox.
+    func test_supportEmail_isConfigured() {
+        let email = BrandConfig.supportEmail
+        XCTAssertFalse(email.isEmpty, "supportEmail must not be empty")
+        XCTAssertFalse(email.hasPrefix("TODO_"),
+                       "supportEmail must not ship with a TODO_ placeholder: \(email)")
+        XCTAssertTrue(email.contains("@"),
+                      "supportEmail must look like an email address: \(email)")
+    }
 }

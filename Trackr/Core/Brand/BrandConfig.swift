@@ -40,6 +40,22 @@ enum BrandConfig {
     /// Apple ID subscriptions on iOS.
     static let manageSubscriptionURL = URL(string: "https://apps.apple.com/account/subscriptions")!
 
+    /// Public support page — hosted on GitHub Pages alongside the legal docs.
+    /// Currently a static page that points users at email / App Store rating /
+    /// GitHub issue. The v1.0.1 Settings UI surfaces those three channels
+    /// directly, so this constant exists mainly for external linking.
+    static let supportURL = URL(string: "https://drinkwater0922.github.io/subscription-management-/support/")!
+
+    /// Direct link to the GitHub issue creation form — the technical-fallback
+    /// feedback channel. Avoids dragging Chinese users without a GitHub
+    /// account through the support page just to file a bug.
+    static let supportIssueURL = URL(string: "https://github.com/Drinkwater0922/subscription-management-/issues/new")!
+
+    /// Inbox monitored by the maintainer for `EMAIL FEEDBACK` mailto: links
+    /// surfaced in Settings. Must be a real, monitored mailbox — the
+    /// BrandConfig test suite refuses to ship a `TODO_`-prefixed placeholder.
+    static let supportEmail = "pennyloop0708@gmail.com"
+
     /// Remote preset catalog endpoint. Production swaps the host once the CDN
     /// is provisioned; until then `presets.invalid` makes every fetch fail and
     /// the bundled seed drives the LIBRARY tab.
