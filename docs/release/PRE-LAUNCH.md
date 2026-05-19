@@ -1,4 +1,4 @@
-# Trackr — Pre-Launch Operational Runbook
+# PennyLoop — Pre-Launch Operational Runbook
 
 > Steps the human owner runs after `m9-launch` is tagged. Each section is an
 > independent track and they overlap in time. Engineering is done; this is
@@ -34,31 +34,33 @@ Week 4
 
 ## Track A — Name lock
 
-Currently the app is built as "Trackr". Verify in parallel:
+The app is being shipped as **PennyLoop** (bundle ID `com.jingxue.pennyloop`,
+ASC App ID matches). The internal Xcode target / folder name remains
+`Trackr` — that's the engineering codename and changing it touches the
+xcodeproj plus a hundred Swift import sites, which we deliberately defer.
+
+Pre-launch trademark / availability checks for **PennyLoop**:
 
 1. **USPTO trademark search** — https://tmsearch.uspto.gov/ — look for
-   live registrations / pending applications on "Trackr" (and variants
-   "Trakr", "Trackrr", "TrackrApp") in classes 9 (downloadable software)
-   and 42 (SaaS).
+   live registrations / pending applications on "PennyLoop" in classes 9
+   (downloadable software) and 42 (SaaS).
 2. **App Store search** — App Store app on iPhone + https://www.apple.com/app-store/
-   — type "Trackr" and confirm no popular existing app holds the name.
-3. **Domain check** — `trackr.app`, `trackr.io`, `gettrackr.com` — register
-   whichever variant is available via Namecheap / Cloudflare.
+   — type "PennyLoop" and confirm no popular existing app holds the name.
+3. **Domain check** — `pennyloop.app`, `pennyloop.io`, `getpennyloop.com` —
+   register whichever variant is available via Namecheap / Cloudflare.
 4. **China region** — additional check via 中国商标网 (https://sbj.cnipa.gov.cn/)
    if planning a China region App Store release.
 
-**If the name needs to change**, follow "Name Swap" below.
-
 ### Name Swap (only if step A1-A4 reveals a conflict)
 
-If the final name differs from "Trackr", edit these files (Swift first, then
-the build-time duplicates):
+If the final name differs from "PennyLoop", edit these files (Swift first,
+then the build-time duplicates):
 
 1. `Trackr/Core/Brand/BrandConfig.swift` — `appDisplayName`
 2. `project.yml` — `CFBundleDisplayName` in both `Trackr:` and `Widgets:`
    target `info.properties` blocks
 3. `docs/release/app-store-listing-en.md` and `app-store-listing-zh-Hans.md` —
-   replace every "Trackr" with the new name
+   replace every "PennyLoop" with the new name
 4. `docs/release/RELEASE-CHECKLIST.md` — same
 5. (Cosmetic) repo and folder renames — defer until after submission
 
@@ -76,7 +78,7 @@ regenerate the next time `StoreScreenshotsTests` runs.
 ### Identifier Swap (when the Team ID is known)
 
 The placeholder identifiers across the project need a one-time substitution.
-Let `TEAM = A1B2C3D4E5` and (assuming the name stays "Trackr") let the new
+Let `TEAM = A1B2C3D4E5` and (assuming the name stays "PennyLoop") let the new
 identifiers be:
 
 - Bundle ID: `app.trackr.ios`  *(or whatever rDNS root you registered)*
@@ -138,7 +140,7 @@ xcodebuild -project Trackr.xcodeproj -scheme Trackr test
    (a) upload as-is for the first version, or
    (b) wrap each in a marketing frame (device bezels, headline copy) before
        upload.
-2. **App Store Connect upload** — App Store Connect → Trackr → Version 1.0.0
+2. **App Store Connect upload** — App Store Connect → PennyLoop → Version 1.0.0
    → Screenshots → drag in the 6.7" set first, then any other supported
    sizes.
 3. **Localized listings** — paste
@@ -191,7 +193,7 @@ detection in production:
 
 ## Submit for Review
 
-1. App Store Connect → Trackr → Version 1.0.0 → "Submit for Review".
+1. App Store Connect → PennyLoop → Version 1.0.0 → "Submit for Review".
 2. App Review notes: include the sandbox Apple ID for the IAP test path
    and a quick "how to reach Pro features" guide.
 3. Typical review turnaround: 24-48 hours.

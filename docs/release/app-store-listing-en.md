@@ -1,11 +1,11 @@
-# Trackr — App Store Listing (English)
+# PennyLoop — App Store Listing (English)
 
 > Canonical English marketing copy. Copy-paste into App Store Connect → App
 > Information / App Privacy / Version Release.
 
 ## Name
 
-**Trackr** (display name — must also match `BrandConfig.appDisplayName` and
+**PennyLoop** (display name — must also match `BrandConfig.appDisplayName` and
 `CFBundleDisplayName`).
 
 ## Subtitle (30 chars max)
@@ -19,10 +19,10 @@ renewal. Catch price changes the moment they happen.
 
 ## Description (4000 chars max)
 
-Trackr keeps every subscription you pay for in one place — Netflix, Spotify,
+PennyLoop keeps every subscription you pay for in one place — Netflix, Spotify,
 iCloud+, ChatGPT, your gym, the magazine you forgot you signed up for.
 
-**Why people love Trackr**
+**Why people love PennyLoop**
 
 • Monthly total at a glance. One number, every currency you pay in, on the
   home screen.
@@ -74,7 +74,7 @@ https://trackr.placeholder
 
 ## What's New (Version 1.0.0)
 
-Welcome to Trackr 1.0. Track every subscription, get notified before every
+Welcome to PennyLoop 1.0. Track every subscription, get notified before every
 renewal, and see your full monthly bill at a glance. Built for iPhone and
 iPad, with a home-screen widget and iCloud sync for Pro users.
 

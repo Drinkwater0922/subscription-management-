@@ -1,4 +1,4 @@
-# Trackr — Release Checklist
+# PennyLoop — Release Checklist
 
 > Walk this end-to-end before clicking **Submit for Review**. Every box must
 > be checked or have a documented waiver.
@@ -26,7 +26,7 @@
 - [ ] Terms of Service URL (`BrandConfig.termsOfServiceURL`) returns 200
 - [ ] App Privacy nutrition labels in App Store Connect match the
       "App Privacy" section in `app-store-listing-en.md`
-- [ ] No third-party SDK collects PII (Trackr has zero third-party SDKs)
+- [ ] No third-party SDK collects PII (PennyLoop has zero third-party SDKs)
 - [ ] CloudKit private-database sync is the only network egress the app
       performs; no analytics, no crash reporters, no ad networks
 
@@ -95,7 +95,7 @@
       reminders, in-app banner for price changes)
 - [ ] **5.1.1 Data Collection** — Privacy nutrition labels accurate, privacy
       policy URL works
-- [ ] **5.1.2 Data Use & Sharing** — Trackr collects no PII off-device;
+- [ ] **5.1.2 Data Use & Sharing** — PennyLoop collects no PII off-device;
       label accordingly
 
 ## 9. TestFlight

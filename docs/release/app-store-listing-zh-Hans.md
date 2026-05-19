@@ -1,11 +1,11 @@
-# Trackr — App Store 上架文案（简体中文）
+# PennyLoop — App Store 上架文案（简体中文）
 
 > 简体中文上架文案，准备好后从这里复制到 App Store Connect → App 信息 /
 > 隐私 / 版本发布。
 
 ## 名称
 
-**Trackr**（显示名 — 同时与 `BrandConfig.appDisplayName` 和
+**PennyLoop**（显示名 — 同时与 `BrandConfig.appDisplayName` 和
 `CFBundleDisplayName` 保持一致）。
 
 ## 副标题（最多 30 字符）
@@ -18,10 +18,10 @@
 
 ## 介绍（最多 4000 字符）
 
-Trackr 帮你管好每一笔订阅 —— Netflix、Spotify、iCloud+、ChatGPT、健身房、
+PennyLoop 帮你管好每一笔订阅 —— Netflix、Spotify、iCloud+、ChatGPT、健身房、
 那本忘了取消的杂志，统统集中到一个地方。
 
-**为什么大家喜欢 Trackr**
+**为什么大家喜欢 PennyLoop**
 
 • 每月总开销一目了然。一个数字，按币种汇总，首页直接看到。
 • 续费前主动提醒。提前 7 天、3 天还是 1 天？哪个时间点？你定。绝不打扰。
@@ -64,7 +64,7 @@ https://trackr.placeholder
 
 ## 更新说明（1.0.0 版本）
 
-欢迎使用 Trackr 1.0。管好每一笔订阅，续费前提前提醒，每月总开销一目了然。
+欢迎使用 PennyLoop 1.0。管好每一笔订阅，续费前提前提醒，每月总开销一目了然。
 适配 iPhone 与 iPad，附带主屏小组件，Pro 用户还可享受 iCloud 同步。
 
 ## App 隐私 —— 与用户身份关联的数据
