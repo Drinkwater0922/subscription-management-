@@ -91,15 +91,16 @@ final class StoreScreenshotsTests: XCTestCase {
         .frame(width: storeFrameWidth, height: storeFrameHeight)
     }
 
-    private func seed(_ rows: [(String, Decimal, BillingCycle, Date)]) throws {
-        for (name, amount, cycle, billing) in rows {
+    private func seed(_ rows: [(name: String, presetId: String, category: Trackr.Category, amount: Decimal, cycle: BillingCycle, billing: Date)]) throws {
+        for row in rows {
             let sub = Subscription(
-                name: name,
-                amount: amount, currency: "USD",
-                billingCycle: cycle,
-                nextBillingDate: billing,
+                name: row.name,
+                amount: row.amount, currency: "USD",
+                billingCycle: row.cycle,
+                nextBillingDate: row.billing,
                 startDate: Date(timeIntervalSince1970: 1_700_000_000),
-                category: .streaming
+                category: row.category,
+                presetId: row.presetId
             )
             container.mainContext.insert(sub)
         }
@@ -116,14 +117,14 @@ final class StoreScreenshotsTests: XCTestCase {
     func test_store_home_populated() throws {
         let base = Date(timeIntervalSince1970: 1_750_000_000)
         try seed([
-            ("Netflix",       15.49, .monthly, base.addingTimeInterval(86_400 * 1)),
-            ("Spotify",       10.99, .monthly, base.addingTimeInterval(86_400 * 3)),
-            ("iCloud+",        2.99, .monthly, base.addingTimeInterval(86_400 * 5)),
-            ("ChatGPT Plus",     20, .monthly, base.addingTimeInterval(86_400 * 8)),
-            ("Notion",            8, .monthly, base.addingTimeInterval(86_400 * 12)),
-            ("YouTube Premium", 13.99, .monthly, base.addingTimeInterval(86_400 * 14)),
-            ("Disney+",        9.99, .monthly, base.addingTimeInterval(86_400 * 18)),
-            ("1Password",      2.99, .monthly, base.addingTimeInterval(86_400 * 22)),
+            (name: "Netflix",         presetId: "netflix.standard",     category: .streaming,    amount: 15.49, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 1)),
+            (name: "Spotify",         presetId: "spotify.premium",      category: .music,        amount: 10.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 3)),
+            (name: "iCloud+",         presetId: "icloud.200",           category: .cloud,        amount:  2.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 5)),
+            (name: "ChatGPT Plus",    presetId: "chatgpt.plus",         category: .ai,           amount:    20, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 8)),
+            (name: "Notion",          presetId: "notion.plus",          category: .productivity, amount:     8, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 12)),
+            (name: "YouTube Premium", presetId: "youtube.premium",      category: .streaming,    amount: 13.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 14)),
+            (name: "HBO Max",         presetId: "hbomax.standard",      category: .streaming,    amount: 15.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 18)),
+            (name: "1Password",       presetId: "1password.individual", category: .productivity, amount:  2.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 22)),
         ])
         let view = decorated(headline: "YOUR MONTHLY BILL\nAT A GLANCE") {
             mount(HomeView())
@@ -139,7 +140,8 @@ final class StoreScreenshotsTests: XCTestCase {
             nextBillingDate: Date(timeIntervalSince1970: 1_750_000_000),
             startDate: Date(timeIntervalSince1970: 1_700_000_000),
             category: .productivity,
-            notes: "Switched from the team plan in June."
+            notes: "Switched from the team plan in June.",
+            presetId: "notion.plus"
         )
         container.mainContext.insert(sub)
         try container.mainContext.save()
