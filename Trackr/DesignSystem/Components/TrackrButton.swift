@@ -14,12 +14,21 @@ struct TrackrButton: View {
         case outlined
     }
 
-    let label: String
+    let label: LocalizedStringKey
     let variant: Variant
     let action: () -> Void
 
-    init(_ label: String, variant: Variant = .filled, action: @escaping () -> Void) {
+    init(_ label: LocalizedStringKey, variant: Variant = .filled, action: @escaping () -> Void) {
         self.label = label
+        self.variant = variant
+        self.action = action
+    }
+
+    /// Plain-string overload — used by call sites that already resolve their
+    /// label through `String(localized:)` and need to bypass the SwiftUI
+    /// environment locale (e.g. error messages composed at runtime).
+    init(_ verbatim: String, variant: Variant = .filled, action: @escaping () -> Void) {
+        self.label = LocalizedStringKey(verbatim)
         self.variant = variant
         self.action = action
     }

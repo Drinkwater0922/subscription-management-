@@ -83,7 +83,7 @@ struct InsightsView: View {
         VStack(alignment: .leading, spacing: 20) {
             PixelText("INSIGHTS ARE PRO",
                       size: TrackrTypography.Scale.title, tracking: 2)
-            Text("Upgrade to Trackr Pro to see totals, trends, and category breakdowns.")
+            Text("Upgrade to PennyLoop Pro to see totals, trends, and category breakdowns.")
                 .font(TrackrTypography.sans(size: TrackrTypography.Scale.body))
                 .foregroundStyle(TrackrColors.fg2)
             TrackrButton("UPGRADE") {

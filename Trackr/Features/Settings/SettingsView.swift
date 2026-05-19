@@ -246,7 +246,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            TrackrButton(String(localized: "RESTORE PURCHASES"), variant: .outlined) {
+            TrackrButton(LocalizedStringKey("RESTORE PURCHASES"), variant: .outlined) {
                 Task { await entitlement.refresh() }
             }
             Rectangle().fill(TrackrColors.border).frame(height: 1)
