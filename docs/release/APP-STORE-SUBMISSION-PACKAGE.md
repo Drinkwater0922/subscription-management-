@@ -13,15 +13,17 @@ This file is the operational source for copying metadata into App Store Connect.
 | SKU | `pennyloop-ios-001` |
 | Apple Developer Team ID | `Y5NK4T6CXG` |
 | Version | `1.0.0` |
-| Build | `12` |
+| Build | `13` |
 | Primary Language | English (U.S.) |
 | Primary Category | Finance |
 | Secondary Category | Productivity |
 | Age Rating | 4+ |
 | Made for Kids | No |
+| Copyright | `2026 Jingxue` for an individual developer account, or `2026 <legal company name>` if submitting under a company account. Do not include `©`; Apple adds it automatically. |
 | License Agreement | Apple standard EULA |
 | Export Compliance | Uses only exempt Apple/URLSession HTTPS encryption; `ITSAppUsesNonExemptEncryption=false` is already set. |
 | Content Rights | No third-party content requiring separate rights. User-entered names and service icons are used only for identification. |
+| Routing App Coverage File | Leave blank. PennyLoop is not a Maps routing/navigation app and the binary does not declare routing support. |
 
 ## Required URLs
 

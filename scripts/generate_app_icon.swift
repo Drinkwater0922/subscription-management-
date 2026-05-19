@@ -3,18 +3,20 @@
 // generate_app_icon.swift
 //
 // One-off generator for the 1024×1024 App Store icon. Renders the brand
-// mark with AppKit (no Xcode target / pbxproj plumbing needed) and writes
-// the PNG into the AppIcon.appiconset.
+// mark with Core Graphics directly (controls exact pixel dimensions and
+// strips alpha — both required by App Store Connect) and writes the PNG
+// into the AppIcon.appiconset.
 //
 // Run from the repo root:
 //   swift scripts/generate_app_icon.swift
 //
 // Design: pure black canvas, chunky lime "$" in VT323 (the "penny"),
-// inside a square pixel frame (the "loop"), with a small lime tick-mark
-// stamp in the top-right corner for retro/pixel texture.
+// inside a square pixel frame (the "loop").
 
 import AppKit
 import CoreText
+import ImageIO
+import UniformTypeIdentifiers
 
 // MARK: - Paths
 
@@ -31,60 +33,75 @@ guard CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, &fontError) e
     exit(1)
 }
 
-// MARK: - Palette
+// MARK: - Palette + canvas
 
-let canvasSize: CGFloat = 1024
-let bg = NSColor(red: 10/255, green: 10/255, blue: 10/255, alpha: 1)
-let accent = NSColor(red: 204/255, green: 255/255, blue: 102/255, alpha: 1)
+let canvasSize: Int = 1024
+let bgComponents: [CGFloat] = [10/255, 10/255, 10/255, 1.0]
+let accentComponents: [CGFloat] = [204/255, 255/255, 102/255, 1.0]
 
-// MARK: - Render
+let colorSpace = CGColorSpaceCreateDeviceRGB()
+let bgColor = CGColor(colorSpace: colorSpace, components: bgComponents)!
+let accentColor = CGColor(colorSpace: colorSpace, components: accentComponents)!
 
-let image = NSImage(size: NSSize(width: canvasSize, height: canvasSize))
-image.lockFocus()
+// Opaque (no alpha) bitmap context — App Store rejects icons with alpha.
+guard let ctx = CGContext(
+    data: nil,
+    width: canvasSize,
+    height: canvasSize,
+    bitsPerComponent: 8,
+    bytesPerRow: 0,
+    space: colorSpace,
+    bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+) else {
+    fputs("Failed to create CGContext\n", stderr)
+    exit(1)
+}
 
-// 1. Black canvas
-bg.setFill()
-NSBezierPath(rect: NSRect(x: 0, y: 0, width: canvasSize, height: canvasSize)).fill()
+let canvas = CGFloat(canvasSize)
 
-// 2. Lime square "loop" border, inset
+// 1. Black background
+ctx.setFillColor(bgColor)
+ctx.fill(CGRect(x: 0, y: 0, width: canvas, height: canvas))
+
+// 2. Lime square "loop" border
 let borderSize: CGFloat = 760
-let borderInset = (canvasSize - borderSize) / 2
-let borderRect = NSRect(x: borderInset, y: borderInset, width: borderSize, height: borderSize)
-let border = NSBezierPath(rect: borderRect)
-border.lineWidth = 56
-accent.setStroke()
-border.stroke()
+let borderInset = (canvas - borderSize) / 2
+let borderLineWidth: CGFloat = 56
+ctx.setStrokeColor(accentColor)
+ctx.setLineWidth(borderLineWidth)
+ctx.stroke(CGRect(x: borderInset, y: borderInset, width: borderSize, height: borderSize))
 
-// 3. VT323 "$" glyph, centered (with a small baseline nudge)
-let font = NSFont(name: "VT323-Regular", size: 720)
-    ?? NSFont(name: "VT323", size: 720)
-    ?? NSFont.systemFont(ofSize: 720, weight: .bold)
-let dollarAttrs: [NSAttributedString.Key: Any] = [
-    .font: font,
-    .foregroundColor: accent,
+// 3. VT323 "$" glyph, centered
+// Bridge into Core Text to draw with exact font + color.
+let glyph = "$" as CFString
+let attrs: [CFString: Any] = [
+    kCTFontAttributeName: CTFontCreateWithName("VT323-Regular" as CFString, 720, nil),
+    kCTForegroundColorAttributeName: accentColor,
 ]
-let dollar = NSAttributedString(string: "$", attributes: dollarAttrs)
-let dollarSize = dollar.size()
-let dollarRect = NSRect(
-    x: (canvasSize - dollarSize.width) / 2,
-    y: (canvasSize - dollarSize.height) / 2 - 40,
-    width: dollarSize.width,
-    height: dollarSize.height
-)
-dollar.draw(in: dollarRect)
+let attrString = CFAttributedStringCreate(nil, glyph, attrs as CFDictionary)!
+let line = CTLineCreateWithAttributedString(attrString)
+let glyphBounds = CTLineGetImageBounds(line, ctx)
 
-image.unlockFocus()
+// Center the glyph rect within canvas, then nudge down a touch for optical balance.
+let glyphX = (canvas - glyphBounds.width) / 2 - glyphBounds.origin.x
+let glyphY = (canvas - glyphBounds.height) / 2 - glyphBounds.origin.y - 28
+ctx.textPosition = CGPoint(x: glyphX, y: glyphY)
+CTLineDraw(line, ctx)
 
 // MARK: - Encode & write
 
-guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-    fputs("Failed to obtain CGImage\n", stderr)
+guard let image = ctx.makeImage() else {
+    fputs("Failed to create CGImage from context\n", stderr)
     exit(1)
 }
-let bitmap = NSBitmapImageRep(cgImage: cgImage)
-guard let pngData = bitmap.representation(using: .png, properties: [:]) else {
-    fputs("Failed to encode PNG\n", stderr)
+guard let dest = CGImageDestinationCreateWithURL(outputURL as CFURL, UTType.png.identifier as CFString, 1, nil) else {
+    fputs("Failed to create PNG destination\n", stderr)
     exit(1)
 }
-try pngData.write(to: outputURL)
-print("Wrote \(pngData.count) bytes → \(outputURL.path)")
+CGImageDestinationAddImage(dest, image, nil)
+guard CGImageDestinationFinalize(dest) else {
+    fputs("Failed to finalize PNG\n", stderr)
+    exit(1)
+}
+
+print("Wrote \(image.width)×\(image.height) opaque PNG → \(outputURL.path)")
