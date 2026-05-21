@@ -13,19 +13,29 @@
     --bg:#000000; --bg2:#0E0E10; --bg3:#1A1A1D; --border:#2A2A2D;
     --fg:#F5F5F7; --fg2:#8A8A8D; --fg3:#4A4A4D;
     --accent:#C7F284; --onAccent:#000000; --warn:#A8453D;
-    --up:#A8453D;            /* price increase — warn red */
-    --down:#C7F284;          /* price decrease — accent lime */
+    --up:#A8453D; --down:#C7F284;
+    --coin:#C7F284; --coinrim:#E6FFB0; --coinedge:#8FB958;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
     background:#161618; min-height:100vh;
-    display:flex; flex-direction:column; align-items:center; gap:18px;
-    padding:32px 12px 60px;
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    padding:28px 12px 60px;
     font-family:'VT323',monospace;
-    -webkit-font-smoothing:none; font-smoothing:none;
+    -webkit-font-smoothing:none;
   }
   .caption{color:#7a7a7e; font-size:20px; letter-spacing:1px; text-align:center;}
   .caption b{color:var(--accent);}
+  .caption.small{font-size:16px; color:#5a5a5e;}
+
+  /* ── hero variant switcher (page chrome, not in-phone) ── */
+  .switcher{display:flex; gap:8px;}
+  .swbtn{
+    font-family:'VT323',monospace; font-size:17px; letter-spacing:1.5px;
+    padding:7px 14px; background:#1f1f22; color:var(--fg2);
+    border:1px solid var(--border); cursor:pointer;
+  }
+  .swbtn.active{background:var(--accent); color:var(--onAccent); border-color:var(--accent);}
 
   /* ── phone frame ── */
   .phone{
@@ -41,15 +51,10 @@
   .screen.hidden{display:none;}
   .screen::-webkit-scrollbar{width:0;}
 
-  /* pixel-art baseline: VT323, uppercase, tracked, sharp corners */
-  .px{font-family:'VT323',monospace; letter-spacing:1.5px;}
   .sans{font-family:-apple-system,'Segoe UI',sans-serif; letter-spacing:0;}
 
-  /* ── shared ── */
-  .pad{padding-left:20px; padding-right:20px;}
   .divider{height:1px; background:var(--border); margin:14px 20px;}
   .dashed{border-top:1px dashed var(--border); margin:14px 20px;}
-  .label{color:var(--fg2); font-size:17px; letter-spacing:2px;}
 
   /* ── HOME: top bar ── */
   .topbar{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 0;}
@@ -63,14 +68,65 @@
   }
   .iconrow{display:flex; gap:12px;}
 
-  /* ── HOME: hero (NEW — "this month" triage) ── */
-  .hero{padding:22px 20px 4px; display:flex; gap:14px;}
-  .hero .col{flex:1;}
-  .hero .col.next{text-align:right;}
-  .hero .htext-lg{color:var(--fg); font-size:46px; line-height:.95; letter-spacing:1px;}
-  .hero .htext-md{color:var(--fg); font-size:24px; line-height:1; letter-spacing:1px;}
-  .hero .hlabel{color:var(--fg2); font-size:15px; letter-spacing:2px; margin-bottom:6px;}
-  .hero .hsub{color:var(--fg2); font-size:16px; letter-spacing:1px; margin-top:4px;}
+  /* ════ HERO VARIANTS ════ */
+  .hero{display:none;}
+  .hero.show{display:block;}
+
+  /* V1 — baseline triage */
+  .heroV1{padding:22px 20px 4px; display:flex; gap:14px;}
+  .heroV1 .col{flex:1;}
+  .heroV1 .col.next{text-align:right;}
+  .heroV1 .htext-lg{color:var(--fg); font-size:46px; line-height:.95; letter-spacing:1px;}
+  .heroV1 .htext-md{color:var(--fg); font-size:24px; line-height:1; letter-spacing:1px;}
+  .heroV1 .hlabel{color:var(--fg2); font-size:15px; letter-spacing:2px; margin-bottom:6px;}
+  .heroV1 .hsub{color:var(--fg2); font-size:16px; letter-spacing:1px; margin-top:4px;}
+
+  /* coin sprite — chunky 8-bit beveled disc */
+  .coin{
+    width:78px; height:17px; background:var(--coin);
+    border-top:3px solid var(--coinrim);
+    border-bottom:3px solid var(--coinedge);
+    clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),
+      calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px);
+  }
+  .coinstack{display:flex; flex-direction:column-reverse; align-items:center;}
+  .coinstack .coin{margin-top:-7px;}
+  .coinstack .coin:first-child{margin-top:0;}
+
+  /* V2 — coin pile, tap to cycle month/year/all-time */
+  .heroV2{padding:14px 20px 6px; display:flex; gap:18px; align-items:flex-end;}
+  .heroV2 .coinwrap{display:flex; flex-direction:column; align-items:center; min-width:96px;}
+  .heroV2 .coinbase{
+    width:104px; height:6px; background:var(--coinedge); margin-top:2px;
+  }
+  .heroV2 .meta{flex:1;}
+  .heroV2 .hlabel{color:var(--fg2); font-size:16px; letter-spacing:2px;}
+  .heroV2 .bignum{
+    color:var(--fg); font-size:58px; line-height:.9; letter-spacing:1px;
+    margin:4px 0 6px; cursor:pointer;
+  }
+  .heroV2 .hsub{color:var(--fg2); font-size:15px; letter-spacing:1px;}
+  .heroV2 .hsub .hint{color:var(--accent);}
+  .heroV2 .alltime{color:var(--warn);}
+
+  /* V3 — coin pile (compact) + triage coexist */
+  .heroV3{padding:16px 20px 6px; display:flex; gap:16px; align-items:center;}
+  .heroV3 .coinwrap{display:flex; flex-direction:column; align-items:center; min-width:88px;}
+  .heroV3 .coinbase{width:92px; height:5px; background:var(--coinedge); margin-top:2px;}
+  .heroV3 .coincap{color:var(--fg2); font-size:14px; letter-spacing:1.5px; margin-top:5px;}
+  .heroV3 .coincap b{color:var(--fg);}
+  .heroV3 .triage{flex:1; border-left:1px solid var(--border); padding-left:16px;}
+  .heroV3 .trow{margin-bottom:12px;}
+  .heroV3 .trow:last-child{margin-bottom:0;}
+  .heroV3 .tlabel{color:var(--fg2); font-size:14px; letter-spacing:2px;}
+  .heroV3 .tbig{color:var(--fg); font-size:34px; line-height:1; letter-spacing:1px; margin-top:2px;}
+  .heroV3 .tmd{color:var(--fg); font-size:20px; line-height:1; letter-spacing:1px; margin-top:2px;}
+  .heroV3 .tsub{color:var(--fg2); font-size:14px; letter-spacing:1px; margin-top:3px;}
+
+  /* coin stack sizes per hero */
+  .heroV2 .coin{width:88px;}
+  .heroV3 .coin{width:74px; height:14px;}
+  .heroV3 .coinstack .coin{margin-top:-6px;}
 
   /* ── group header ── */
   .group{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 2px;}
@@ -86,7 +142,7 @@
   .ico{
     width:44px; height:44px; background:var(--bg3); flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    font-size:22px; font-weight:700;
+    font-size:22px; font-weight:700; font-family:'VT323',monospace;
   }
   .ico.nf{color:#E50914;} .ico.sp{color:#1DB954;} .ico.di{color:#3a7ae0;}
   .ico.no{color:#F5F5F7;} .ico.ic{color:#3a9ae0;}
@@ -102,35 +158,30 @@
     position:absolute; right:24px; bottom:28px;
     width:58px; height:58px; background:var(--accent); color:var(--onAccent);
     font-size:34px; display:flex; align-items:center; justify-content:center;
-    cursor:pointer; border:none;
+    cursor:pointer; border:none; font-family:'VT323',monospace;
     box-shadow:0 0 24px rgba(199,242,132,.45);
   }
 
   /* ── DETAIL ── */
   .dhead{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 0;}
-  .dback{background:transparent;border:none;color:var(--fg2);font-size:22px;cursor:pointer;letter-spacing:1px;}
+  .dback{background:transparent;border:none;color:var(--fg2);font-size:22px;cursor:pointer;
+    letter-spacing:1px;font-family:'VT323',monospace;}
   .dtitle{color:var(--fg); font-size:22px; letter-spacing:2px;}
-  .dedit{background:transparent;border:none;color:var(--accent);font-size:18px;cursor:pointer;letter-spacing:1.5px;}
-
+  .dedit{background:transparent;border:none;color:var(--accent);font-size:18px;cursor:pointer;
+    letter-spacing:1.5px;font-family:'VT323',monospace;}
   .dident{display:flex; align-items:center; gap:14px; padding:22px 20px 6px;}
   .dident .ico{width:60px; height:60px; font-size:30px;}
   .dident .dn{color:var(--fg); font-size:30px; letter-spacing:1.5px;}
   .dident .da{color:var(--fg); font-size:30px; letter-spacing:1px; margin-top:2px;}
-
-  /* renewal countdown — NEW, prominent */
   .countdown{
     margin:8px 20px 4px; padding:10px 14px;
     border:1px solid var(--accent); color:var(--accent);
     font-size:22px; letter-spacing:2px; text-align:center;
   }
-
-  /* field rows */
   .field{display:flex; justify-content:space-between; padding:9px 20px;}
   .field .fk{color:var(--fg2); font-size:17px; letter-spacing:2px;}
   .field .fv{color:var(--fg); font-size:18px; letter-spacing:1px;}
   .field .fv.link{color:var(--accent); cursor:pointer;}
-
-  /* card (price history, notes) */
   .card{margin:12px 20px; border:1px solid var(--border); background:var(--bg2);}
   .card .ctitle{color:var(--fg2); font-size:16px; letter-spacing:2px; padding:11px 14px 4px;}
   .ph{display:flex; align-items:center; justify-content:space-between; padding:7px 14px;}
@@ -140,24 +191,24 @@
   .ph .phdelta.down{color:var(--down);}
   .ph .phdelta.flat{color:var(--fg3);}
   .ph .phprice{color:var(--fg); font-size:19px; letter-spacing:1px; min-width:64px; text-align:right;}
-  .notes-body{
-    padding:6px 14px 13px; color:var(--fg2); font-size:14px; line-height:1.5;
-  }
+  .notes-body{padding:6px 14px 13px; color:var(--fg2); font-size:14px; line-height:1.5;}
   .empty{color:var(--fg3); font-size:16px; letter-spacing:1px; padding:10px 14px 14px;}
-
-  /* action buttons */
   .actions{padding:18px 20px 32px; display:flex; flex-direction:column; gap:10px;}
-  .btn{
-    width:100%; padding:13px; font-family:'VT323',monospace;
-    font-size:20px; letter-spacing:2px; cursor:pointer; background:transparent;
-  }
+  .btn{width:100%; padding:13px; font-family:'VT323',monospace;
+    font-size:20px; letter-spacing:2px; cursor:pointer; background:transparent;}
   .btn.pause{border:1px solid var(--border); color:var(--fg);}
   .btn.delete{border:1px solid var(--warn); color:var(--warn);}
 </style>
 </head>
 <body>
 
-<div class="caption">PennyLoop · <b>Home + Detail 闭环原型</b> · 点订阅行进详情,详情页左上角返回</div>
+<div class="caption">PennyLoop · <b>Home + Detail 闭环原型</b> · 切换上方 hero 变体 · 点订阅行进详情</div>
+
+<div class="switcher">
+  <button class="swbtn active" data-hero="1" onclick="setHero(1)">① 现状 triage</button>
+  <button class="swbtn" data-hero="2" onclick="setHero(2)">② 金币堆</button>
+  <button class="swbtn" data-hero="3" onclick="setHero(3)">③ 金币 + triage</button>
+</div>
 
 <div class="phone">
 
@@ -171,8 +222,8 @@
       </div>
     </div>
 
-    <!-- NEW hero: this-month triage -->
-    <div class="hero">
+    <!-- ── HERO V1: baseline triage ── -->
+    <div class="hero heroV1 show" id="hero1">
       <div class="col">
         <div class="hlabel">THIS MONTH LEFT</div>
         <div class="htext-lg">$30.58</div>
@@ -184,9 +235,43 @@
         <div class="hsub">IN 3 DAYS · $15.49</div>
       </div>
     </div>
+
+    <!-- ── HERO V2: coin pile, tap to cycle ── -->
+    <div class="hero heroV2" id="hero2">
+      <div class="coinwrap">
+        <div class="coinstack" id="stack2"></div>
+        <div class="coinbase"></div>
+      </div>
+      <div class="meta">
+        <div class="hlabel" id="lbl2">PER YEAR</div>
+        <div class="bignum" id="num2" onclick="cycleCoin()">$437</div>
+        <div class="hsub" id="sub2"><span class="hint">▸ TAP</span> · MONTH / YEAR / ALL-TIME</div>
+      </div>
+    </div>
+
+    <!-- ── HERO V3: coin pile + triage coexist ── -->
+    <div class="hero heroV3" id="hero3">
+      <div class="coinwrap">
+        <div class="coinstack" id="stack3"></div>
+        <div class="coinbase"></div>
+        <div class="coincap">YEAR <b>$437</b></div>
+      </div>
+      <div class="triage">
+        <div class="trow">
+          <div class="tlabel">THIS MONTH LEFT</div>
+          <div class="tbig">$30.58</div>
+          <div class="tsub">3 CHARGES</div>
+        </div>
+        <div class="trow">
+          <div class="tlabel">NEXT</div>
+          <div class="tmd">NETFLIX · IN 3 DAYS</div>
+          <div class="tsub">$15.49</div>
+        </div>
+      </div>
+    </div>
+
     <div class="dashed"></div>
 
-    <!-- NEW: free trials grouped + surfaced first -->
     <div class="group">
       <div class="gname">FREE TRIALS</div>
       <div class="gcount">1</div>
@@ -244,7 +329,6 @@
       <div class="dtitle">DETAIL</div>
       <button class="dedit">EDIT</button>
     </div>
-
     <div class="dident">
       <div id="d-ico" class="ico nf">N</div>
       <div>
@@ -252,29 +336,22 @@
         <div id="d-amt" class="da">$15.49</div>
       </div>
     </div>
-
-    <!-- NEW: prominent renewal countdown -->
     <div id="d-countdown" class="countdown">RENEWS IN 3 DAYS</div>
     <div class="dashed"></div>
-
     <div class="field"><div class="fk">CYCLE</div><div id="d-cycle" class="fv">MONTHLY</div></div>
     <div class="field"><div class="fk">CATEGORY</div><div id="d-cat" class="fv">STREAMING</div></div>
     <div class="field"><div class="fk">STARTED</div><div id="d-start" class="fv">2024-08-14</div></div>
     <div class="field"><div class="fk">NEXT</div><div id="d-next" class="fv">2026-05-24</div></div>
     <div class="field"><div class="fk">STATUS</div><div id="d-status" class="fv">ACTIVE</div></div>
     <div class="field"><div class="fk">URL</div><div id="d-url" class="fv link">netflix.com ↗</div></div>
-
-    <!-- NEW: price history, color-coded -->
     <div class="card">
       <div class="ctitle">PRICE HISTORY</div>
       <div id="d-pricehistory"></div>
     </div>
-
     <div class="card">
       <div class="ctitle">NOTES</div>
-      <div id="d-notes" class="notes-body sans">Shared with family. Cancel before the kids forget about it.</div>
+      <div id="d-notes" class="notes-body sans">Shared with family.</div>
     </div>
-
     <div class="actions">
       <button class="btn pause">PAUSE</button>
       <button class="btn delete">DELETE SUBSCRIPTION</button>
@@ -283,18 +360,49 @@
 
 </div>
 
-<div class="caption" style="font-size:17px;color:#5a5a5e;">
-  纯交互原型 · 像素风 token 取自 Colors.swift · 价格历史涨=红 跌=绿
-</div>
+<div class="caption small">像素风 token 取自 Colors.swift · 价格历史涨=红 跌=绿 · 金币堆越高 = 花得越多</div>
 
 <script>
-  // Per-subscription demo data. Netflix is the fully-fleshed example
-  // (real price history); the others show the empty-history state.
+  /* ── hero variant switching ── */
+  function setHero(n){
+    [1,2,3].forEach(i=>{
+      document.getElementById('hero'+i).classList.toggle('show', i===n);
+      document.querySelector('.swbtn[data-hero="'+i+'"]').classList.toggle('active', i===n);
+    });
+  }
+
+  /* ── coin stack rendering: count encodes magnitude ── */
+  function renderStack(elId, count){
+    const el = document.getElementById(elId);
+    el.innerHTML = '';
+    for(let i=0;i<count;i++){ const c=document.createElement('div'); c.className='coin'; el.appendChild(c); }
+  }
+
+  /* V2 — tap the number to cycle month → year → all-time */
+  const COIN_MODES = [
+    {lbl:'PER MONTH',     num:'$36.43',   coins:6,  alltime:false},
+    {lbl:'PER YEAR',      num:'$437',     coins:12, alltime:false},
+    {lbl:'SINCE 2024 · ALL-TIME', num:'$1,284', coins:18, alltime:true}
+  ];
+  let coinIdx = 1;
+  function applyCoin(){
+    const m = COIN_MODES[coinIdx];
+    document.getElementById('lbl2').textContent = m.lbl;
+    const num = document.getElementById('num2');
+    num.textContent = m.num;
+    num.classList.toggle('alltime', m.alltime);
+    renderStack('stack2', m.coins);
+  }
+  function cycleCoin(){ coinIdx = (coinIdx+1)%3; applyCoin(); }
+
+  applyCoin();                 // V2 initial
+  renderStack('stack3', 12);   // V3 fixed at yearly
+
+  /* ── detail data ── */
   const SUBS = {
     netflix:{ico:'nf',glyph:'N',name:'NETFLIX',amt:'$15.49',countdown:'RENEWS IN 3 DAYS',
       cycle:'MONTHLY',cat:'STREAMING',start:'2024-08-14',next:'2026-05-24',status:'ACTIVE',
-      url:'netflix.com ↗',
-      notes:'Shared with family. Cancel before the kids forget about it.',
+      url:'netflix.com ↗',notes:'Shared with family. Cancel before the kids forget about it.',
       history:[
         {d:'2026-02-01',delta:'↑ $1.50',cls:'up',price:'$15.49'},
         {d:'2025-05-12',delta:'↑ $2.00',cls:'up',price:'$13.99'},
@@ -302,21 +410,14 @@
       ]},
     spotify:{ico:'sp',glyph:'●',name:'SPOTIFY',amt:'$5.10',countdown:'TRIAL ENDS IN 4 DAYS',
       cycle:'MONTHLY',cat:'MUSIC',start:'2025-11-21',next:'2025-11-28',status:'FREE TRIAL',
-      url:'spotify.com ↗',
-      notes:'Free trial. Decide before it converts to paid.',
-      history:[]},
+      url:'spotify.com ↗',notes:'Free trial. Decide before it converts to paid.',history:[]},
     disney:{ico:'di',glyph:'D',name:'DISNEY+',amt:'$9.99',countdown:'RENEWS IN 12 DAYS',
       cycle:'MONTHLY',cat:'STREAMING',start:'2025-09-02',next:'2026-06-02',status:'ACTIVE',
-      url:'disneyplus.com ↗',
-      notes:'',
-      history:[]},
+      url:'disneyplus.com ↗',notes:'',history:[]},
     notion:{ico:'no',glyph:'N',name:'NOTION',amt:'$8.00',countdown:'RENEWS IN 18 DAYS',
       cycle:'MONTHLY',cat:'PRODUCTIVITY',start:'2024-11-30',next:'2026-06-08',status:'ACTIVE',
-      url:'notion.so ↗',
-      notes:'Personal Pro plan.',
-      history:[]}
+      url:'notion.so ↗',notes:'Personal Pro plan.',history:[]}
   };
-
   function openDetail(key){
     const s = SUBS[key];
     document.getElementById('d-ico').className = 'ico ' + s.ico;
@@ -330,21 +431,16 @@
     document.getElementById('d-next').textContent = s.next;
     document.getElementById('d-status').textContent = s.status;
     document.getElementById('d-url').textContent = s.url;
-
     const notes = document.getElementById('d-notes');
     if(s.notes){ notes.textContent = s.notes; notes.className = 'notes-body sans'; }
     else { notes.textContent = 'No notes.'; notes.className = 'empty'; }
-
     const ph = document.getElementById('d-pricehistory');
     if(s.history.length){
       ph.innerHTML = s.history.map(h =>
         `<div class="ph"><div class="phd">${h.d}</div>`+
         `<div class="phdelta ${h.cls}">${h.delta}</div>`+
         `<div class="phprice">${h.price}</div></div>`).join('');
-    } else {
-      ph.innerHTML = '<div class="empty">No price changes recorded yet.</div>';
-    }
-
+    } else { ph.innerHTML = '<div class="empty">No price changes recorded yet.</div>'; }
     document.getElementById('screen-home').classList.add('hidden');
     document.getElementById('screen-detail').classList.remove('hidden');
     document.getElementById('screen-detail').scrollTop = 0;
