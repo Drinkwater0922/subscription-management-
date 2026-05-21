@@ -14,9 +14,9 @@ struct SettingsView: View {
     @State private var currency: String = "USD"
     @State private var language: String = "auto"
     @State private var showAppleImportSheet = false
+    @State private var showUpgradePaywall = false
     @Environment(\.openURL) private var openURL
     @Environment(ProEntitlement.self) private var entitlement
-    @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
 
     var body: some View {
         ZStack {
@@ -46,6 +46,12 @@ struct SettingsView: View {
                 onDismiss: { showAppleImportSheet = false }
             )
             .preferredColorScheme(.dark)
+        }
+        .sheet(isPresented: $showUpgradePaywall) {
+            PaywallView(reason: .manual)
+                .modelContext(context)
+                .environment(entitlement)
+                .preferredColorScheme(.dark)
         }
     }
 
@@ -236,7 +242,7 @@ struct SettingsView: View {
                           tracking: 1.5)
                 Spacer()
                 if entitlement.current == .free {
-                    Button(action: { paywallTrigger.present(reason: .manual) }) {
+                    Button(action: { showUpgradePaywall = true }) {
                         PixelText(LocalizedStringKey("UPGRADE"),
                                   size: TrackrTypography.Scale.body,
                                   color: TrackrColors.accent, tracking: 1.5)

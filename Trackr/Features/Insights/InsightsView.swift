@@ -6,12 +6,18 @@ import SwiftData
 struct InsightsView: View {
 
     @Environment(ProEntitlement.self) private var entitlement
-    @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
     @Query(sort: \Subscription.nextBillingDate, order: .forward)
     private var subscriptions: [Subscription]
+
+    /// InsightsView is itself presented as a sheet from `HomeView`. Routing
+    /// the paywall through the shared `PaywallTriggerCoordinator` would ask
+    /// HomeView to present a second sheet while this one is still up — which
+    /// silently no-ops (the "unresponsive upgrade button" App Review caught
+    /// on iPad). Present the paywall locally from this sheet instead.
+    @State private var showUpgradePaywall = false
 
     private var currentCurrency: String {
         do {
@@ -34,6 +40,12 @@ struct InsightsView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $showUpgradePaywall) {
+            PaywallView(reason: .insightsLocked)
+                .modelContext(context)
+                .environment(entitlement)
+                .preferredColorScheme(.dark)
         }
     }
 
@@ -87,7 +99,7 @@ struct InsightsView: View {
                 .font(TrackrTypography.sans(size: TrackrTypography.Scale.body))
                 .foregroundStyle(TrackrColors.fg2)
             TrackrButton("UPGRADE") {
-                paywallTrigger.present(reason: .insightsLocked)
+                showUpgradePaywall = true
             }
         }
         .padding(20)

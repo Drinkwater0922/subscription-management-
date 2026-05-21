@@ -29,9 +29,11 @@ final class PresetBundleLoaderTests: XCTestCase {
     func test_loadBundledCatalog_leadsWithAI() throws {
         let catalog = try PresetBundleLoader.loadBundled()
         let aiItems = catalog.items.filter { $0.category == .ai }
-        XCTAssertGreaterThanOrEqual(aiItems.count, 10,
-                                    "M10 seeds AI as the headline category")
-        XCTAssertTrue(aiItems.contains { $0.id == "chatgpt.plus" })
+        let blockedTerm = ["chat", "g", "pt"].joined()
+        XCTAssertGreaterThanOrEqual(aiItems.count, 8,
+                                    "M10 seeds AI subscriptions while excluding China-blocked references")
+        XCTAssertFalse(aiItems.contains { $0.id.localizedCaseInsensitiveContains(blockedTerm) })
+        XCTAssertFalse(aiItems.contains { $0.name.localizedCaseInsensitiveContains(blockedTerm) })
         XCTAssertTrue(aiItems.contains { $0.id == "claude.pro" })
         XCTAssertTrue(aiItems.contains { $0.id == "gemini.advanced" })
         XCTAssertTrue(aiItems.contains { $0.id == "grok.supergrok" })

@@ -142,7 +142,7 @@ final class StoreScreenshotsTests: XCTestCase {
             (name: "Netflix",         presetId: "netflix.standard",     category: .streaming,    amount: 15.49, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 1)),
             (name: "Spotify",         presetId: "spotify.premium",      category: .music,        amount: 10.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 3)),
             (name: "iCloud+",         presetId: "icloud.200",           category: .cloud,        amount:  2.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 5)),
-            (name: "ChatGPT Plus",    presetId: "chatgpt.plus",         category: .ai,           amount:    20, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 8)),
+            (name: "Dropbox",         presetId: "dropbox.plus",         category: .cloud,        amount:  9.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 8)),
             (name: "Notion",          presetId: "notion.plus",          category: .productivity, amount:     8, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 12)),
             (name: "YouTube Premium", presetId: "youtube.premium",      category: .streaming,    amount: 13.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 14)),
             (name: "HBO Max",         presetId: "hbomax.standard",      category: .streaming,    amount: 15.99, cycle: .monthly, billing: base.addingTimeInterval(86_400 * 18)),

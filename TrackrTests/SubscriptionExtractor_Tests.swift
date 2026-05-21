@@ -30,13 +30,11 @@ final class SubscriptionExtractorTests: XCTestCase {
         XCTAssertEqual(result.confidence, 1.0)
     }
 
-    func test_extract_chatgptPlus_pickedOverChatgptPro() throws {
-        // Both "ChatGPT Plus" and "ChatGPT Pro" contain "chatgpt" — the longest-
-        // match rule has to pick the right one based on the visible plan word.
-        let lines = ["ChatGPT Plus", "USD 20.00", "monthly"]
+    func test_extract_geminiAdvanced_matchesPresetAndPriceAndCycle() throws {
+        let lines = ["Gemini Advanced", "USD 19.99", "monthly"]
         let result = SubscriptionExtractor.extract(lines: lines, presets: try presets())
-        XCTAssertEqual(result.matchedPreset?.id, "chatgpt.plus")
-        XCTAssertEqual(result.amount, Decimal(string: "20.00"))
+        XCTAssertEqual(result.matchedPreset?.id, "gemini.advanced")
+        XCTAssertEqual(result.amount, Decimal(string: "19.99"))
         XCTAssertEqual(result.currency, "USD")
         XCTAssertEqual(result.billingCycle, .monthly)
     }

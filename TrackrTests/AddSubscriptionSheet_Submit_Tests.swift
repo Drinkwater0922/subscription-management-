@@ -19,7 +19,7 @@ final class AddSubscriptionSheetSubmitTests: XCTestCase {
 
     func test_submit_validDraft_insertsRow() async throws {
         var draft = SubscriptionDraft.empty(defaultCurrency: "USD")
-        draft.name = "ChatGPT Plus"
+        draft.name = "Notion"
         draft.amountString = "20"
         draft.category = .ai
 
@@ -33,7 +33,7 @@ final class AddSubscriptionSheetSubmitTests: XCTestCase {
         XCTAssertNil(result, "submit should return nil error on success")
         XCTAssertTrue(dismissed)
         let all = try SubscriptionRepository(context: container.mainContext).fetchAll()
-        XCTAssertEqual(all.map(\.name), ["ChatGPT Plus"])
+        XCTAssertEqual(all.map(\.name), ["Notion"])
         XCTAssertEqual(all.first?.amount, 20)
         XCTAssertEqual(all.first?.category, .ai)
     }
