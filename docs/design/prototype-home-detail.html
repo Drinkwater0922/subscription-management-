@@ -14,7 +14,6 @@
     --fg:#F5F5F7; --fg2:#8A8A8D; --fg3:#4A4A4D;
     --accent:#C7F284; --onAccent:#000000; --warn:#A8453D;
     --up:#A8453D; --down:#C7F284;
-    --coin:#C7F284; --coinrim:#E6FFB0; --coinedge:#8FB958;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
@@ -27,15 +26,6 @@
   .caption{color:#7a7a7e; font-size:20px; letter-spacing:1px; text-align:center;}
   .caption b{color:var(--accent);}
   .caption.small{font-size:16px; color:#5a5a5e;}
-
-  /* ── hero variant switcher (page chrome, not in-phone) ── */
-  .switcher{display:flex; gap:8px;}
-  .swbtn{
-    font-family:'VT323',monospace; font-size:17px; letter-spacing:1.5px;
-    padding:7px 14px; background:#1f1f22; color:var(--fg2);
-    border:1px solid var(--border); cursor:pointer;
-  }
-  .swbtn.active{background:var(--accent); color:var(--onAccent); border-color:var(--accent);}
 
   /* ── phone frame ── */
   .phone{
@@ -50,9 +40,7 @@
   }
   .screen.hidden{display:none;}
   .screen::-webkit-scrollbar{width:0;}
-
   .sans{font-family:-apple-system,'Segoe UI',sans-serif; letter-spacing:0;}
-
   .divider{height:1px; background:var(--border); margin:14px 20px;}
   .dashed{border-top:1px dashed var(--border); margin:14px 20px;}
 
@@ -68,41 +56,20 @@
   }
   .iconrow{display:flex; gap:12px;}
 
-  /* ════ HERO VARIANTS ════ */
-  .hero{display:none;}
-  .hero.show{display:block;}
-
-  /* V1 — baseline triage */
-  .heroV1{padding:22px 20px 4px; display:flex; gap:14px;}
-  .heroV1 .col{flex:1;}
-  .heroV1 .col.next{text-align:right;}
-  .heroV1 .htext-lg{color:var(--fg); font-size:46px; line-height:.95; letter-spacing:1px;}
-  .heroV1 .htext-md{color:var(--fg); font-size:24px; line-height:1; letter-spacing:1px;}
-  .heroV1 .hlabel{color:var(--fg2); font-size:15px; letter-spacing:2px; margin-bottom:6px;}
-  .heroV1 .hsub{color:var(--fg2); font-size:16px; letter-spacing:1px; margin-top:4px;}
-
-  /* V2 — plain honest numbers: this year + cumulative all-time */
-  .heroV2{padding:20px 20px 6px;}
-  .heroV2 .blk{margin-bottom:14px;}
-  .heroV2 .blk:last-child{margin-bottom:0;}
-  .heroV2 .hlabel{color:var(--fg2); font-size:16px; letter-spacing:2px;}
-  .heroV2 .bignum{color:var(--fg); font-size:52px; line-height:.95; letter-spacing:1px; margin-top:3px;}
-  .heroV2 .bignum.alltime{color:var(--warn);}
-  .heroV2 .hsub{color:var(--fg2); font-size:15px; letter-spacing:1px; margin-top:3px;}
-
-  /* V3 — tangible conversion: money ≈ a real thing */
-  .heroV3{padding:20px 20px 6px;}
-  .heroV3 .hlabel{color:var(--fg2); font-size:16px; letter-spacing:2px;}
-  .heroV3 .bignum{color:var(--fg); font-size:52px; line-height:.95; letter-spacing:1px; margin:3px 0 12px;}
-  .heroV3 .convert{
+  /* ── HOME hero (LOCKED): annual spend + conversion + one stable line ── */
+  .hero{padding:20px 20px 6px;}
+  .hero .hlabel{color:var(--fg2); font-size:16px; letter-spacing:2px;}
+  .hero .bignum{color:var(--fg); font-size:54px; line-height:.95; letter-spacing:1px; margin:3px 0 12px;}
+  .hero .convert{
     display:flex; align-items:center; gap:12px; cursor:pointer;
     border:1px solid var(--border); background:var(--bg2); padding:12px 14px;
   }
-  .heroV3 .approx{color:var(--accent); font-size:30px; line-height:1;}
-  .heroV3 .cthing{flex:1;}
-  .heroV3 .cthing .cmain{color:var(--fg); font-size:24px; letter-spacing:1px; line-height:1;}
-  .heroV3 .cthing .cnote{color:var(--fg2); font-size:14px; letter-spacing:1px; margin-top:3px;}
-  .heroV3 .ctap{color:var(--fg3); font-size:14px; letter-spacing:1.5px;}
+  .hero .approx{color:var(--accent); font-size:30px; line-height:1;}
+  .hero .cthing{flex:1;}
+  .hero .cthing .cmain{color:var(--fg); font-size:24px; letter-spacing:1px; line-height:1;}
+  .hero .cthing .cnote{color:var(--fg2); font-size:14px; letter-spacing:1px; margin-top:3px;}
+  .hero .ctap{color:var(--fg3); font-size:14px; letter-spacing:1.5px;}
+  .hero .heroline{color:var(--fg2); font-size:18px; letter-spacing:1.5px; margin-top:13px;}
 
   /* ── group header ── */
   .group{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 2px;}
@@ -178,13 +145,7 @@
 </head>
 <body>
 
-<div class="caption">PennyLoop · <b>Home + Detail 闭环原型</b> · 切换上方 hero 变体 · 点订阅行进详情</div>
-
-<div class="switcher">
-  <button class="swbtn active" data-hero="1" onclick="setHero(1)">① 现状 triage</button>
-  <button class="swbtn" data-hero="2" onclick="setHero(2)">② 直白数字</button>
-  <button class="swbtn" data-hero="3" onclick="setHero(3)">③ 换算</button>
-</div>
+<div class="caption">PennyLoop · <b>Home + Detail 闭环原型</b>（已锁定）· 点订阅行进详情 · 点换算卡轮换</div>
 
 <div class="phone">
 
@@ -198,46 +159,19 @@
       </div>
     </div>
 
-    <!-- ── HERO V1: baseline triage ── -->
-    <div class="hero heroV1 show" id="hero1">
-      <div class="col">
-        <div class="hlabel">THIS MONTH LEFT</div>
-        <div class="htext-lg">$30.58</div>
-        <div class="hsub">3 CHARGES</div>
-      </div>
-      <div class="col next">
-        <div class="hlabel">NEXT</div>
-        <div class="htext-md">NETFLIX</div>
-        <div class="hsub">IN 3 DAYS · $15.49</div>
-      </div>
-    </div>
-
-    <!-- ── HERO V2: plain honest numbers ── -->
-    <div class="hero heroV2" id="hero2">
-      <div class="blk">
-        <div class="hlabel">订阅花费 · 今年</div>
-        <div class="bignum">$437</div>
-        <div class="hsub">7 个订阅 · 按当前算到年底</div>
-      </div>
-      <div class="blk">
-        <div class="hlabel">累计 · 自 2024 年开始追踪</div>
-        <div class="bignum alltime">$1,284</div>
-        <div class="hsub">这是你在订阅上花掉的总数</div>
-      </div>
-    </div>
-
-    <!-- ── HERO V3: tangible conversion ── -->
-    <div class="hero heroV3" id="hero3">
+    <!-- LOCKED hero: annual spend → conversion → one stable line -->
+    <div class="hero">
       <div class="hlabel">订阅花费 · 今年</div>
       <div class="bignum">$437</div>
       <div class="convert" onclick="cycleConvert()">
         <div class="approx">≈</div>
         <div class="cthing">
           <div class="cmain" id="c-main">一台 PlayStation 5</div>
-          <div class="cnote" id="c-note">每年的订阅,够买一台</div>
+          <div class="cnote" id="c-note">每年的订阅,够买一台游戏机</div>
         </div>
         <div class="ctap">▸ 点击</div>
       </div>
+      <div class="heroline">每月 $36 · 12 个订阅</div>
     </div>
 
     <div class="dashed"></div>
@@ -330,23 +264,17 @@
 
 </div>
 
-<div class="caption small">像素风 token 取自 Colors.swift · 价格历史涨=红 跌=绿 · ② 累计数用红色 · ③ 换算卡可点击轮换</div>
+<div class="caption small">
+  像素风 token 取自 Colors.swift · hero:年度花费 + 换算卡 + 一行稳定的「每月/订阅数」· 价格历史涨=红 跌=绿
+</div>
 
 <script>
-  /* ── hero variant switching ── */
-  function setHero(n){
-    [1,2,3].forEach(i=>{
-      document.getElementById('hero'+i).classList.toggle('show', i===n);
-      document.querySelector('.swbtn[data-hero="'+i+'"]').classList.toggle('active', i===n);
-    });
-  }
-
-  /* V3 — tap the conversion card to rotate equivalents */
+  /* hero conversion card — tap to rotate tangible anchors */
   const CONVERSIONS = [
-    {main:'一台 PlayStation 5',   note:'每年的订阅,够买一台游戏机'},
-    {main:'87 杯咖啡',            note:'一年的订阅 ≈ 每 4 天一杯'},
-    {main:'一趟周边游',           note:'两天一夜,够花了'},
-    {main:'半部 iPhone',          note:'两年订阅 ≈ 一部新手机'}
+    {main:'一台 PlayStation 5',  note:'每年的订阅,够买一台游戏机'},
+    {main:'87 杯咖啡',           note:'一年的订阅 ≈ 每 4 天一杯'},
+    {main:'一趟周边游',          note:'两天一夜,够花了'},
+    {main:'半部 iPhone',         note:'两年订阅 ≈ 一部新手机'}
   ];
   let convIdx = 0;
   function cycleConvert(){
@@ -355,7 +283,7 @@
     document.getElementById('c-note').textContent = CONVERSIONS[convIdx].note;
   }
 
-  /* ── detail data ── */
+  /* detail data — Netflix is the fully-fleshed example (price history) */
   const SUBS = {
     netflix:{ico:'nf',glyph:'N',name:'NETFLIX',amt:'$15.49',countdown:'RENEWS IN 3 DAYS',
       cycle:'MONTHLY',cat:'STREAMING',start:'2024-08-14',next:'2026-05-24',status:'ACTIVE',
