@@ -202,6 +202,26 @@
       "iconRef": "preset:icloud.2tb.cn"
     },
     {
+      "id": "chatgpt.plus",
+      "name": "ChatGPT Plus",
+      "defaultPlanName": "Plus",
+      "defaultAmount": "20.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:chatgpt.plus"
+    },
+    {
+      "id": "chatgpt.pro",
+      "name": "ChatGPT Pro",
+      "defaultPlanName": "Pro",
+      "defaultAmount": "200.00",
+      "defaultCurrency": "USD",
+      "defaultCycle": "monthly",
+      "category": "ai",
+      "iconRef": "preset:chatgpt.pro"
+    },
+    {
       "id": "claude.pro",
       "name": "Claude",
       "defaultPlanName": "Pro",

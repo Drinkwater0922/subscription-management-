@@ -5,8 +5,8 @@ final class PresetIconsTests: XCTestCase {
 
     func test_glyph_forKnownPreset_returnsMappedEmoji() throws {
         let items = try PresetBundleLoader.loadBundled().items
-        let claude = try XCTUnwrap(items.first { $0.id == "claude.pro" })
-        XCTAssertEqual(PresetIcons.glyph(for: claude), "🤖")
+        let chatgpt = try XCTUnwrap(items.first { $0.id == "chatgpt.plus" })
+        XCTAssertEqual(PresetIcons.glyph(for: chatgpt), "💬")
     }
 
     func test_glyph_forUnknownPreset_fallsBackToCategory() {
