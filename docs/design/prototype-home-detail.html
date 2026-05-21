@@ -81,52 +81,28 @@
   .heroV1 .hlabel{color:var(--fg2); font-size:15px; letter-spacing:2px; margin-bottom:6px;}
   .heroV1 .hsub{color:var(--fg2); font-size:16px; letter-spacing:1px; margin-top:4px;}
 
-  /* coin sprite — chunky 8-bit beveled disc */
-  .coin{
-    width:78px; height:17px; background:var(--coin);
-    border-top:3px solid var(--coinrim);
-    border-bottom:3px solid var(--coinedge);
-    clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),
-      calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px);
-  }
-  .coinstack{display:flex; flex-direction:column-reverse; align-items:center;}
-  .coinstack .coin{margin-top:-7px;}
-  .coinstack .coin:first-child{margin-top:0;}
-
-  /* V2 — coin pile, tap to cycle month/year/all-time */
-  .heroV2{padding:14px 20px 6px; display:flex; gap:18px; align-items:flex-end;}
-  .heroV2 .coinwrap{display:flex; flex-direction:column; align-items:center; min-width:96px;}
-  .heroV2 .coinbase{
-    width:104px; height:6px; background:var(--coinedge); margin-top:2px;
-  }
-  .heroV2 .meta{flex:1;}
+  /* V2 — plain honest numbers: this year + cumulative all-time */
+  .heroV2{padding:20px 20px 6px;}
+  .heroV2 .blk{margin-bottom:14px;}
+  .heroV2 .blk:last-child{margin-bottom:0;}
   .heroV2 .hlabel{color:var(--fg2); font-size:16px; letter-spacing:2px;}
-  .heroV2 .bignum{
-    color:var(--fg); font-size:58px; line-height:.9; letter-spacing:1px;
-    margin:4px 0 6px; cursor:pointer;
+  .heroV2 .bignum{color:var(--fg); font-size:52px; line-height:.95; letter-spacing:1px; margin-top:3px;}
+  .heroV2 .bignum.alltime{color:var(--warn);}
+  .heroV2 .hsub{color:var(--fg2); font-size:15px; letter-spacing:1px; margin-top:3px;}
+
+  /* V3 — tangible conversion: money ≈ a real thing */
+  .heroV3{padding:20px 20px 6px;}
+  .heroV3 .hlabel{color:var(--fg2); font-size:16px; letter-spacing:2px;}
+  .heroV3 .bignum{color:var(--fg); font-size:52px; line-height:.95; letter-spacing:1px; margin:3px 0 12px;}
+  .heroV3 .convert{
+    display:flex; align-items:center; gap:12px; cursor:pointer;
+    border:1px solid var(--border); background:var(--bg2); padding:12px 14px;
   }
-  .heroV2 .hsub{color:var(--fg2); font-size:15px; letter-spacing:1px;}
-  .heroV2 .hsub .hint{color:var(--accent);}
-  .heroV2 .alltime{color:var(--warn);}
-
-  /* V3 — coin pile (compact) + triage coexist */
-  .heroV3{padding:16px 20px 6px; display:flex; gap:16px; align-items:center;}
-  .heroV3 .coinwrap{display:flex; flex-direction:column; align-items:center; min-width:88px;}
-  .heroV3 .coinbase{width:92px; height:5px; background:var(--coinedge); margin-top:2px;}
-  .heroV3 .coincap{color:var(--fg2); font-size:14px; letter-spacing:1.5px; margin-top:5px;}
-  .heroV3 .coincap b{color:var(--fg);}
-  .heroV3 .triage{flex:1; border-left:1px solid var(--border); padding-left:16px;}
-  .heroV3 .trow{margin-bottom:12px;}
-  .heroV3 .trow:last-child{margin-bottom:0;}
-  .heroV3 .tlabel{color:var(--fg2); font-size:14px; letter-spacing:2px;}
-  .heroV3 .tbig{color:var(--fg); font-size:34px; line-height:1; letter-spacing:1px; margin-top:2px;}
-  .heroV3 .tmd{color:var(--fg); font-size:20px; line-height:1; letter-spacing:1px; margin-top:2px;}
-  .heroV3 .tsub{color:var(--fg2); font-size:14px; letter-spacing:1px; margin-top:3px;}
-
-  /* coin stack sizes per hero */
-  .heroV2 .coin{width:88px;}
-  .heroV3 .coin{width:74px; height:14px;}
-  .heroV3 .coinstack .coin{margin-top:-6px;}
+  .heroV3 .approx{color:var(--accent); font-size:30px; line-height:1;}
+  .heroV3 .cthing{flex:1;}
+  .heroV3 .cthing .cmain{color:var(--fg); font-size:24px; letter-spacing:1px; line-height:1;}
+  .heroV3 .cthing .cnote{color:var(--fg2); font-size:14px; letter-spacing:1px; margin-top:3px;}
+  .heroV3 .ctap{color:var(--fg3); font-size:14px; letter-spacing:1.5px;}
 
   /* ── group header ── */
   .group{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 2px;}
@@ -206,8 +182,8 @@
 
 <div class="switcher">
   <button class="swbtn active" data-hero="1" onclick="setHero(1)">① 现状 triage</button>
-  <button class="swbtn" data-hero="2" onclick="setHero(2)">② 金币堆</button>
-  <button class="swbtn" data-hero="3" onclick="setHero(3)">③ 金币 + triage</button>
+  <button class="swbtn" data-hero="2" onclick="setHero(2)">② 直白数字</button>
+  <button class="swbtn" data-hero="3" onclick="setHero(3)">③ 换算</button>
 </div>
 
 <div class="phone">
@@ -236,37 +212,31 @@
       </div>
     </div>
 
-    <!-- ── HERO V2: coin pile, tap to cycle ── -->
+    <!-- ── HERO V2: plain honest numbers ── -->
     <div class="hero heroV2" id="hero2">
-      <div class="coinwrap">
-        <div class="coinstack" id="stack2"></div>
-        <div class="coinbase"></div>
+      <div class="blk">
+        <div class="hlabel">订阅花费 · 今年</div>
+        <div class="bignum">$437</div>
+        <div class="hsub">7 个订阅 · 按当前算到年底</div>
       </div>
-      <div class="meta">
-        <div class="hlabel" id="lbl2">PER YEAR</div>
-        <div class="bignum" id="num2" onclick="cycleCoin()">$437</div>
-        <div class="hsub" id="sub2"><span class="hint">▸ TAP</span> · MONTH / YEAR / ALL-TIME</div>
+      <div class="blk">
+        <div class="hlabel">累计 · 自 2024 年开始追踪</div>
+        <div class="bignum alltime">$1,284</div>
+        <div class="hsub">这是你在订阅上花掉的总数</div>
       </div>
     </div>
 
-    <!-- ── HERO V3: coin pile + triage coexist ── -->
+    <!-- ── HERO V3: tangible conversion ── -->
     <div class="hero heroV3" id="hero3">
-      <div class="coinwrap">
-        <div class="coinstack" id="stack3"></div>
-        <div class="coinbase"></div>
-        <div class="coincap">YEAR <b>$437</b></div>
-      </div>
-      <div class="triage">
-        <div class="trow">
-          <div class="tlabel">THIS MONTH LEFT</div>
-          <div class="tbig">$30.58</div>
-          <div class="tsub">3 CHARGES</div>
+      <div class="hlabel">订阅花费 · 今年</div>
+      <div class="bignum">$437</div>
+      <div class="convert" onclick="cycleConvert()">
+        <div class="approx">≈</div>
+        <div class="cthing">
+          <div class="cmain" id="c-main">一台 PlayStation 5</div>
+          <div class="cnote" id="c-note">每年的订阅,够买一台</div>
         </div>
-        <div class="trow">
-          <div class="tlabel">NEXT</div>
-          <div class="tmd">NETFLIX · IN 3 DAYS</div>
-          <div class="tsub">$15.49</div>
-        </div>
+        <div class="ctap">▸ 点击</div>
       </div>
     </div>
 
@@ -360,7 +330,7 @@
 
 </div>
 
-<div class="caption small">像素风 token 取自 Colors.swift · 价格历史涨=红 跌=绿 · 金币堆越高 = 花得越多</div>
+<div class="caption small">像素风 token 取自 Colors.swift · 价格历史涨=红 跌=绿 · ② 累计数用红色 · ③ 换算卡可点击轮换</div>
 
 <script>
   /* ── hero variant switching ── */
@@ -371,32 +341,19 @@
     });
   }
 
-  /* ── coin stack rendering: count encodes magnitude ── */
-  function renderStack(elId, count){
-    const el = document.getElementById(elId);
-    el.innerHTML = '';
-    for(let i=0;i<count;i++){ const c=document.createElement('div'); c.className='coin'; el.appendChild(c); }
-  }
-
-  /* V2 — tap the number to cycle month → year → all-time */
-  const COIN_MODES = [
-    {lbl:'PER MONTH',     num:'$36.43',   coins:6,  alltime:false},
-    {lbl:'PER YEAR',      num:'$437',     coins:12, alltime:false},
-    {lbl:'SINCE 2024 · ALL-TIME', num:'$1,284', coins:18, alltime:true}
+  /* V3 — tap the conversion card to rotate equivalents */
+  const CONVERSIONS = [
+    {main:'一台 PlayStation 5',   note:'每年的订阅,够买一台游戏机'},
+    {main:'87 杯咖啡',            note:'一年的订阅 ≈ 每 4 天一杯'},
+    {main:'一趟周边游',           note:'两天一夜,够花了'},
+    {main:'半部 iPhone',          note:'两年订阅 ≈ 一部新手机'}
   ];
-  let coinIdx = 1;
-  function applyCoin(){
-    const m = COIN_MODES[coinIdx];
-    document.getElementById('lbl2').textContent = m.lbl;
-    const num = document.getElementById('num2');
-    num.textContent = m.num;
-    num.classList.toggle('alltime', m.alltime);
-    renderStack('stack2', m.coins);
+  let convIdx = 0;
+  function cycleConvert(){
+    convIdx = (convIdx+1) % CONVERSIONS.length;
+    document.getElementById('c-main').textContent = CONVERSIONS[convIdx].main;
+    document.getElementById('c-note').textContent = CONVERSIONS[convIdx].note;
   }
-  function cycleCoin(){ coinIdx = (coinIdx+1)%3; applyCoin(); }
-
-  applyCoin();                 // V2 initial
-  renderStack('stack3', 12);   // V3 fixed at yearly
 
   /* ── detail data ── */
   const SUBS = {
