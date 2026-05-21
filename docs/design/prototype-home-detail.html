@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PennyLoop — Home + Detail closed-loop prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+  /* ── PennyLoop design tokens (from Trackr/DesignSystem/Colors.swift) ── */
+  :root{
+    --bg:#000000; --bg2:#0E0E10; --bg3:#1A1A1D; --border:#2A2A2D;
+    --fg:#F5F5F7; --fg2:#8A8A8D; --fg3:#4A4A4D;
+    --accent:#C7F284; --onAccent:#000000; --warn:#A8453D;
+    --up:#A8453D;            /* price increase — warn red */
+    --down:#C7F284;          /* price decrease — accent lime */
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:#161618; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+    padding:32px 12px 60px;
+    font-family:'VT323',monospace;
+    -webkit-font-smoothing:none; font-smoothing:none;
+  }
+  .caption{color:#7a7a7e; font-size:20px; letter-spacing:1px; text-align:center;}
+  .caption b{color:var(--accent);}
+
+  /* ── phone frame ── */
+  .phone{
+    width:390px; height:844px; background:var(--bg);
+    border:2px solid #3a3a3e; border-radius:46px;
+    overflow:hidden; position:relative;
+    box-shadow:0 24px 60px rgba(0,0,0,.6);
+  }
+  .screen{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    overflow-y:auto; padding:54px 0 0;
+  }
+  .screen.hidden{display:none;}
+  .screen::-webkit-scrollbar{width:0;}
+
+  /* pixel-art baseline: VT323, uppercase, tracked, sharp corners */
+  .px{font-family:'VT323',monospace; letter-spacing:1.5px;}
+  .sans{font-family:-apple-system,'Segoe UI',sans-serif; letter-spacing:0;}
+
+  /* ── shared ── */
+  .pad{padding-left:20px; padding-right:20px;}
+  .divider{height:1px; background:var(--border); margin:14px 20px;}
+  .dashed{border-top:1px dashed var(--border); margin:14px 20px;}
+  .label{color:var(--fg2); font-size:17px; letter-spacing:2px;}
+
+  /* ── HOME: top bar ── */
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 0;}
+  .wordmark{display:flex; align-items:center; gap:8px;}
+  .wordmark .sq{width:9px; height:9px; background:var(--accent);}
+  .wordmark .name{color:var(--fg); font-size:26px; letter-spacing:3px;}
+  .iconbtn{
+    width:34px; height:34px; border:1px solid var(--border);
+    color:var(--fg2); font-size:17px; display:flex; align-items:center; justify-content:center;
+    background:transparent; cursor:pointer;
+  }
+  .iconrow{display:flex; gap:12px;}
+
+  /* ── HOME: hero (NEW — "this month" triage) ── */
+  .hero{padding:22px 20px 4px; display:flex; gap:14px;}
+  .hero .col{flex:1;}
+  .hero .col.next{text-align:right;}
+  .hero .htext-lg{color:var(--fg); font-size:46px; line-height:.95; letter-spacing:1px;}
+  .hero .htext-md{color:var(--fg); font-size:24px; line-height:1; letter-spacing:1px;}
+  .hero .hlabel{color:var(--fg2); font-size:15px; letter-spacing:2px; margin-bottom:6px;}
+  .hero .hsub{color:var(--fg2); font-size:16px; letter-spacing:1px; margin-top:4px;}
+
+  /* ── group header ── */
+  .group{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 2px;}
+  .group .gname{color:var(--fg2); font-size:17px; letter-spacing:2px;}
+  .group .gcount{color:var(--fg3); font-size:16px; letter-spacing:1px;}
+
+  /* ── subscription row ── */
+  .row{
+    display:flex; align-items:center; gap:12px; padding:11px 20px;
+    cursor:pointer; background:transparent; border:none; width:100%; text-align:left;
+  }
+  .row:active{background:var(--bg2);}
+  .ico{
+    width:44px; height:44px; background:var(--bg3); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:700;
+  }
+  .ico.nf{color:#E50914;} .ico.sp{color:#1DB954;} .ico.di{color:#3a7ae0;}
+  .ico.no{color:#F5F5F7;} .ico.ic{color:#3a9ae0;}
+  .row .mid{flex:1; min-width:0;}
+  .row .rname{color:var(--fg); font-size:21px; letter-spacing:1.5px;}
+  .row .rsub{color:var(--fg2); font-size:15px; letter-spacing:1.5px; margin-top:1px;}
+  .row .rsub .due{color:var(--accent);}
+  .row .ramt{color:var(--fg); font-size:21px; letter-spacing:1px;}
+  .rowdash{border-top:1px dashed var(--border); margin:0 20px;}
+
+  /* ── FAB ── */
+  .fab{
+    position:absolute; right:24px; bottom:28px;
+    width:58px; height:58px; background:var(--accent); color:var(--onAccent);
+    font-size:34px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border:none;
+    box-shadow:0 0 24px rgba(199,242,132,.45);
+  }
+
+  /* ── DETAIL ── */
+  .dhead{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 0;}
+  .dback{background:transparent;border:none;color:var(--fg2);font-size:22px;cursor:pointer;letter-spacing:1px;}
+  .dtitle{color:var(--fg); font-size:22px; letter-spacing:2px;}
+  .dedit{background:transparent;border:none;color:var(--accent);font-size:18px;cursor:pointer;letter-spacing:1.5px;}
+
+  .dident{display:flex; align-items:center; gap:14px; padding:22px 20px 6px;}
+  .dident .ico{width:60px; height:60px; font-size:30px;}
+  .dident .dn{color:var(--fg); font-size:30px; letter-spacing:1.5px;}
+  .dident .da{color:var(--fg); font-size:30px; letter-spacing:1px; margin-top:2px;}
+
+  /* renewal countdown — NEW, prominent */
+  .countdown{
+    margin:8px 20px 4px; padding:10px 14px;
+    border:1px solid var(--accent); color:var(--accent);
+    font-size:22px; letter-spacing:2px; text-align:center;
+  }
+
+  /* field rows */
+  .field{display:flex; justify-content:space-between; padding:9px 20px;}
+  .field .fk{color:var(--fg2); font-size:17px; letter-spacing:2px;}
+  .field .fv{color:var(--fg); font-size:18px; letter-spacing:1px;}
+  .field .fv.link{color:var(--accent); cursor:pointer;}
+
+  /* card (price history, notes) */
+  .card{margin:12px 20px; border:1px solid var(--border); background:var(--bg2);}
+  .card .ctitle{color:var(--fg2); font-size:16px; letter-spacing:2px; padding:11px 14px 4px;}
+  .ph{display:flex; align-items:center; justify-content:space-between; padding:7px 14px;}
+  .ph .phd{color:var(--fg2); font-size:17px; letter-spacing:1px;}
+  .ph .phdelta{font-size:18px; letter-spacing:1px;}
+  .ph .phdelta.up{color:var(--up);}
+  .ph .phdelta.down{color:var(--down);}
+  .ph .phdelta.flat{color:var(--fg3);}
+  .ph .phprice{color:var(--fg); font-size:19px; letter-spacing:1px; min-width:64px; text-align:right;}
+  .notes-body{
+    padding:6px 14px 13px; color:var(--fg2); font-size:14px; line-height:1.5;
+  }
+  .empty{color:var(--fg3); font-size:16px; letter-spacing:1px; padding:10px 14px 14px;}
+
+  /* action buttons */
+  .actions{padding:18px 20px 32px; display:flex; flex-direction:column; gap:10px;}
+  .btn{
+    width:100%; padding:13px; font-family:'VT323',monospace;
+    font-size:20px; letter-spacing:2px; cursor:pointer; background:transparent;
+  }
+  .btn.pause{border:1px solid var(--border); color:var(--fg);}
+  .btn.delete{border:1px solid var(--warn); color:var(--warn);}
+</style>
+</head>
+<body>
+
+<div class="caption">PennyLoop · <b>Home + Detail 闭环原型</b> · 点订阅行进详情,详情页左上角返回</div>
+
+<div class="phone">
+
+  <!-- ════════════════ HOME ════════════════ -->
+  <div id="screen-home" class="screen">
+    <div class="topbar">
+      <div class="wordmark"><div class="sq"></div><div class="name">PENNYLOOP</div></div>
+      <div class="iconrow">
+        <button class="iconbtn">≡</button>
+        <button class="iconbtn">⚙</button>
+      </div>
+    </div>
+
+    <!-- NEW hero: this-month triage -->
+    <div class="hero">
+      <div class="col">
+        <div class="hlabel">THIS MONTH LEFT</div>
+        <div class="htext-lg">$30.58</div>
+        <div class="hsub">3 CHARGES</div>
+      </div>
+      <div class="col next">
+        <div class="hlabel">NEXT</div>
+        <div class="htext-md">NETFLIX</div>
+        <div class="hsub">IN 3 DAYS · $15.49</div>
+      </div>
+    </div>
+    <div class="dashed"></div>
+
+    <!-- NEW: free trials grouped + surfaced first -->
+    <div class="group">
+      <div class="gname">FREE TRIALS</div>
+      <div class="gcount">1</div>
+    </div>
+    <button class="row" onclick="openDetail('spotify')">
+      <div class="ico sp">●</div>
+      <div class="mid">
+        <div class="rname">SPOTIFY</div>
+        <div class="rsub">TRIAL ENDS <span class="due">IN 4 DAYS</span> · 28 NOV</div>
+      </div>
+      <div class="ramt">$5.10</div>
+    </button>
+    <div class="rowdash"></div>
+
+    <div class="group" style="margin-top:8px;">
+      <div class="gname">ACTIVE</div>
+      <div class="gcount">3</div>
+    </div>
+    <button class="row" onclick="openDetail('netflix')">
+      <div class="ico nf">N</div>
+      <div class="mid">
+        <div class="rname">NETFLIX</div>
+        <div class="rsub">RENEWS <span class="due">IN 3 DAYS</span> · 24 MAY</div>
+      </div>
+      <div class="ramt">$15.49</div>
+    </button>
+    <div class="rowdash"></div>
+    <button class="row" onclick="openDetail('disney')">
+      <div class="ico di">D</div>
+      <div class="mid">
+        <div class="rname">DISNEY+</div>
+        <div class="rsub">RENEWS IN 12 DAYS · 02 JUN</div>
+      </div>
+      <div class="ramt">$9.99</div>
+    </button>
+    <div class="rowdash"></div>
+    <button class="row" onclick="openDetail('notion')">
+      <div class="ico no">N</div>
+      <div class="mid">
+        <div class="rname">NOTION</div>
+        <div class="rsub">RENEWS IN 18 DAYS · 08 JUN</div>
+      </div>
+      <div class="ramt">$8.00</div>
+    </button>
+    <div class="rowdash"></div>
+
+    <div style="height:90px;"></div>
+    <button class="fab">+</button>
+  </div>
+
+  <!-- ════════════════ DETAIL ════════════════ -->
+  <div id="screen-detail" class="screen hidden">
+    <div class="dhead">
+      <button class="dback" onclick="goHome()">‹ BACK</button>
+      <div class="dtitle">DETAIL</div>
+      <button class="dedit">EDIT</button>
+    </div>
+
+    <div class="dident">
+      <div id="d-ico" class="ico nf">N</div>
+      <div>
+        <div id="d-name" class="dn">NETFLIX</div>
+        <div id="d-amt" class="da">$15.49</div>
+      </div>
+    </div>
+
+    <!-- NEW: prominent renewal countdown -->
+    <div id="d-countdown" class="countdown">RENEWS IN 3 DAYS</div>
+    <div class="dashed"></div>
+
+    <div class="field"><div class="fk">CYCLE</div><div id="d-cycle" class="fv">MONTHLY</div></div>
+    <div class="field"><div class="fk">CATEGORY</div><div id="d-cat" class="fv">STREAMING</div></div>
+    <div class="field"><div class="fk">STARTED</div><div id="d-start" class="fv">2024-08-14</div></div>
+    <div class="field"><div class="fk">NEXT</div><div id="d-next" class="fv">2026-05-24</div></div>
+    <div class="field"><div class="fk">STATUS</div><div id="d-status" class="fv">ACTIVE</div></div>
+    <div class="field"><div class="fk">URL</div><div id="d-url" class="fv link">netflix.com ↗</div></div>
+
+    <!-- NEW: price history, color-coded -->
+    <div class="card">
+      <div class="ctitle">PRICE HISTORY</div>
+      <div id="d-pricehistory"></div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">NOTES</div>
+      <div id="d-notes" class="notes-body sans">Shared with family. Cancel before the kids forget about it.</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn pause">PAUSE</button>
+      <button class="btn delete">DELETE SUBSCRIPTION</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="caption" style="font-size:17px;color:#5a5a5e;">
+  纯交互原型 · 像素风 token 取自 Colors.swift · 价格历史涨=红 跌=绿
+</div>
+
+<script>
+  // Per-subscription demo data. Netflix is the fully-fleshed example
+  // (real price history); the others show the empty-history state.
+  const SUBS = {
+    netflix:{ico:'nf',glyph:'N',name:'NETFLIX',amt:'$15.49',countdown:'RENEWS IN 3 DAYS',
+      cycle:'MONTHLY',cat:'STREAMING',start:'2024-08-14',next:'2026-05-24',status:'ACTIVE',
+      url:'netflix.com ↗',
+      notes:'Shared with family. Cancel before the kids forget about it.',
+      history:[
+        {d:'2026-02-01',delta:'↑ $1.50',cls:'up',price:'$15.49'},
+        {d:'2025-05-12',delta:'↑ $2.00',cls:'up',price:'$13.99'},
+        {d:'2024-08-14',delta:'— start',cls:'flat',price:'$11.99'}
+      ]},
+    spotify:{ico:'sp',glyph:'●',name:'SPOTIFY',amt:'$5.10',countdown:'TRIAL ENDS IN 4 DAYS',
+      cycle:'MONTHLY',cat:'MUSIC',start:'2025-11-21',next:'2025-11-28',status:'FREE TRIAL',
+      url:'spotify.com ↗',
+      notes:'Free trial. Decide before it converts to paid.',
+      history:[]},
+    disney:{ico:'di',glyph:'D',name:'DISNEY+',amt:'$9.99',countdown:'RENEWS IN 12 DAYS',
+      cycle:'MONTHLY',cat:'STREAMING',start:'2025-09-02',next:'2026-06-02',status:'ACTIVE',
+      url:'disneyplus.com ↗',
+      notes:'',
+      history:[]},
+    notion:{ico:'no',glyph:'N',name:'NOTION',amt:'$8.00',countdown:'RENEWS IN 18 DAYS',
+      cycle:'MONTHLY',cat:'PRODUCTIVITY',start:'2024-11-30',next:'2026-06-08',status:'ACTIVE',
+      url:'notion.so ↗',
+      notes:'Personal Pro plan.',
+      history:[]}
+  };
+
+  function openDetail(key){
+    const s = SUBS[key];
+    document.getElementById('d-ico').className = 'ico ' + s.ico;
+    document.getElementById('d-ico').textContent = s.glyph;
+    document.getElementById('d-name').textContent = s.name;
+    document.getElementById('d-amt').textContent = s.amt;
+    document.getElementById('d-countdown').textContent = s.countdown;
+    document.getElementById('d-cycle').textContent = s.cycle;
+    document.getElementById('d-cat').textContent = s.cat;
+    document.getElementById('d-start').textContent = s.start;
+    document.getElementById('d-next').textContent = s.next;
+    document.getElementById('d-status').textContent = s.status;
+    document.getElementById('d-url').textContent = s.url;
+
+    const notes = document.getElementById('d-notes');
+    if(s.notes){ notes.textContent = s.notes; notes.className = 'notes-body sans'; }
+    else { notes.textContent = 'No notes.'; notes.className = 'empty'; }
+
+    const ph = document.getElementById('d-pricehistory');
+    if(s.history.length){
+      ph.innerHTML = s.history.map(h =>
+        `<div class="ph"><div class="phd">${h.d}</div>`+
+        `<div class="phdelta ${h.cls}">${h.delta}</div>`+
+        `<div class="phprice">${h.price}</div></div>`).join('');
+    } else {
+      ph.innerHTML = '<div class="empty">No price changes recorded yet.</div>';
+    }
+
+    document.getElementById('screen-home').classList.add('hidden');
+    document.getElementById('screen-detail').classList.remove('hidden');
+    document.getElementById('screen-detail').scrollTop = 0;
+  }
+  function goHome(){
+    document.getElementById('screen-detail').classList.add('hidden');
+    document.getElementById('screen-home').classList.remove('hidden');
+  }
+</script>
+</body>
+</html>
