@@ -30,12 +30,13 @@ final class SubscriptionExtractorTests: XCTestCase {
         XCTAssertEqual(result.confidence, 1.0)
     }
 
-    func test_extract_chatgptPlus_pickedOverChatgptPro() throws {
-        // Both "ChatGPT Plus" and "ChatGPT Pro" contain "chatgpt" — the longest-
-        // match rule has to pick the right one based on the visible plan word.
-        let lines = ["ChatGPT Plus", "USD 20.00", "monthly"]
+    func test_extract_codeTrailingPrice_matchesPresetAndCycle() throws {
+        // "USD 20.00" (currency-code-trailing form) + a keyword cycle, combined
+        // with a preset name match. The longest-name match rule itself is
+        // covered by `test_matchPreset_longestNameWins`.
+        let lines = ["Notion", "USD 20.00", "monthly"]
         let result = SubscriptionExtractor.extract(lines: lines, presets: try presets())
-        XCTAssertEqual(result.matchedPreset?.id, "chatgpt.plus")
+        XCTAssertEqual(result.matchedPreset?.id, "notion.plus")
         XCTAssertEqual(result.amount, Decimal(string: "20.00"))
         XCTAssertEqual(result.currency, "USD")
         XCTAssertEqual(result.billingCycle, .monthly)

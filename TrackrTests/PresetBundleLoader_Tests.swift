@@ -12,8 +12,8 @@ final class PresetBundleLoaderTests: XCTestCase {
 
     func test_loadBundledCatalog_versionMatchesSeed() throws {
         let catalog = try PresetBundleLoader.loadBundled()
-        XCTAssertEqual(catalog.version, "2.2.0",
-                       "M10.6 added Plaud / 脉脉 / 讯飞听见 + date extraction fixes")
+        XCTAssertEqual(catalog.version, "2.3.0",
+                       "v1.0.1 removed the ChatGPT presets for China-market compliance")
     }
 
     func test_loadBundledCatalog_includesChinesePresets() throws {
@@ -31,7 +31,6 @@ final class PresetBundleLoaderTests: XCTestCase {
         let aiItems = catalog.items.filter { $0.category == .ai }
         XCTAssertGreaterThanOrEqual(aiItems.count, 10,
                                     "M10 seeds AI as the headline category")
-        XCTAssertTrue(aiItems.contains { $0.id == "chatgpt.plus" })
         XCTAssertTrue(aiItems.contains { $0.id == "claude.pro" })
         XCTAssertTrue(aiItems.contains { $0.id == "gemini.advanced" })
         XCTAssertTrue(aiItems.contains { $0.id == "grok.supergrok" })

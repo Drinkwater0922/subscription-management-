@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// Asset names mirror our preset-id "slug" namespace, *not* Simple Icons'
 /// raw slug — so Grok (which has no Simple Icons entry) doesn't have an asset
-/// at all, and ChatGPT maps to `chatgpt` (containing the OpenAI logo SVG).
+/// at all and falls back to emoji.
 enum PresetIcons {
 
     /// Bundled SVG asset name, keyed by preset id. Asset Catalog lookup —
@@ -21,8 +21,6 @@ enum PresetIcons {
     /// Misses fall through to emoji.
     static let assetByPresetId: [String: String] = [
         // AI
-        "chatgpt.plus":          "chatgpt",
-        "chatgpt.pro":           "chatgpt",
         "claude.pro":            "claude",
         "claude.max5x":          "claude",
         "claude.max20x":         "claude",
@@ -104,8 +102,6 @@ enum PresetIcons {
     /// stored on `Subscription.presetId` when the row was added from the library).
     static let glyphByPresetId: [String: String] = [
         // AI
-        "chatgpt.plus":          "💬",
-        "chatgpt.pro":           "💬",
         "claude.pro":            "🤖",
         "claude.max5x":          "🤖",
         "claude.max20x":         "🤖",
@@ -217,8 +213,6 @@ enum PresetIcons {
     /// we let them fall back to the foreground white in `MonoSquareIcon`.
     static let tintByPresetId: [String: Color] = [
         // AI
-        "chatgpt.plus":          Color(hex: 0x10A37F),   // OpenAI green
-        "chatgpt.pro":           Color(hex: 0x10A37F),
         "claude.pro":            Color(hex: 0xD97757),   // Anthropic orange
         "claude.max5x":          Color(hex: 0xD97757),
         "claude.max20x":         Color(hex: 0xD97757),
