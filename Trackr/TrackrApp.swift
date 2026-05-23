@@ -14,6 +14,7 @@ struct TrackrApp: App {
     private let paywallTrigger: PaywallTriggerCoordinator
     private let haptics: Haptics
     private let fxClient: FXRateClient
+    private let fxLatestRatesClient: any FXLatestRatesClient
     private let photoImport: PhotoImportPipeline
 
     init() {
@@ -50,7 +51,17 @@ struct TrackrApp: App {
         self.paywallTrigger = PaywallTriggerCoordinator()
         self.haptics = SystemHaptics()
         self.fxClient = FrankfurterFXClient()
+        self.fxLatestRatesClient = FrankfurterLatestRatesClient()
         self.photoImport = FallbackPhotoImport()
+
+        // v1.1 FX bootstrap: seed the persisted rate table from the bundled
+        // fallback so first launch / offline still has rates to convert
+        // with. No-op if a table already exists. The Home-appear refresh
+        // hook (HomeView .task) keeps the table current after that.
+        let seedContext = container.mainContext
+        FXRateBootstrap.seedIfNeeded(
+            repository: FXRateTableRepository(context: seedContext)
+        )
 
         let catalogURL = BrandConfig.presetCatalogURL
         let pushPublisher = PriceChangePushPublisher(center: SystemNotificationCenter())
@@ -71,6 +82,7 @@ struct TrackrApp: App {
                 .environment(paywallTrigger)
                 .environment(\.haptics, haptics)
                 .environment(\.fxRateClient, fxClient)
+                .environment(\.fxLatestRatesClient, fxLatestRatesClient)
                 .environment(\.photoImportPipeline, photoImport)
                 .preferredColorScheme(.dark)
                 .task { await entitlement.start() }

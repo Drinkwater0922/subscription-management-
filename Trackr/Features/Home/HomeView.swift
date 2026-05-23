@@ -15,6 +15,7 @@ struct HomeView: View {
     @Environment(ProEntitlement.self) private var entitlement
     @Environment(PaywallTriggerCoordinator.self) private var paywallTrigger
     @Environment(\.haptics) private var haptics
+    @Environment(\.fxLatestRatesClient) private var fxLatestRatesClient
 
     @State private var showingAdd = false
     @State private var showingSettings = false
@@ -75,6 +76,16 @@ struct HomeView: View {
         }
         .task {
             try? await presetSync?.run()
+        }
+        .task {
+            // v1.1 FX refresh: if the persisted FXRateTable is older than
+            // ~24h and the network is up, refresh it on Home appear. Never
+            // blocks the UI; failures keep the cached table.
+            guard let client = fxLatestRatesClient else { return }
+            _ = await FXRateBootstrap.refreshIfStale(
+                repository: FXRateTableRepository(context: context),
+                client: client
+            )
         }
         .sheet(isPresented: Binding(
             get: { paywallTrigger.isShowing },
