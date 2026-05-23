@@ -251,6 +251,24 @@ struct SubscriptionDetailView: View {
                            coordinator: NotificationCoordinator? = nil) async -> String? {
         do {
             let built = try draft.makeSubscription()
+
+            // v1.1 price history: capture the user-edited amount/currency
+            // BEFORE mutating the model so an unchanged save (just notes
+            // or URL) does not pollute the history with a duplicate row.
+            let amountChanged = built.amount != subscription.amount
+            let currencyChanged = built.currency.uppercased()
+                != subscription.currency.uppercased()
+            if amountChanged || currencyChanged {
+                let entry = PriceHistoryEntry(
+                    subscription: subscription,
+                    amount: built.amount,
+                    currency: built.currency.uppercased(),
+                    recordedAt: .now,
+                    source: .userEdit
+                )
+                context.insert(entry)
+            }
+
             subscription.name = built.name
             subscription.planName = built.planName
             subscription.amount = built.amount
