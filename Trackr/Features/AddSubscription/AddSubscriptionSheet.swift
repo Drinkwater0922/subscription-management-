@@ -100,6 +100,7 @@ struct AddSubscriptionSheet: View {
             amountAndCurrency
             cycleField
             startDateField
+            trialEndsField
             categoryField
             planNameField
             notesField
@@ -323,6 +324,49 @@ struct AddSubscriptionSheet: View {
                 .datePickerStyle(.compact)
                 .labelsHidden()
                 .colorScheme(.dark)
+        }
+    }
+
+    /// v1.1 free-trial entry. Off by default; when the user toggles it on,
+    /// a date picker appears and the sub lands in the FREE TRIALS group on
+    /// Home until the date passes.
+    private var trialEndsField: some View {
+        let hasTrial = Binding<Bool>(
+            get: { draft.trialEndsAt != nil },
+            set: { isOn in
+                if isOn {
+                    if draft.trialEndsAt == nil {
+                        // Default to 7 days out — common free-trial length;
+                        // user can adjust.
+                        draft.trialEndsAt = Calendar.current.date(
+                            byAdding: .day, value: 7, to: draft.startDate
+                        ) ?? draft.startDate
+                    }
+                } else {
+                    draft.trialEndsAt = nil
+                }
+            }
+        )
+        let trialBinding = Binding<Date>(
+            get: { draft.trialEndsAt ?? draft.startDate },
+            set: { draft.trialEndsAt = $0 }
+        )
+        return labeled("FREE TRIAL") {
+            VStack(alignment: .leading, spacing: 8) {
+                Toggle(isOn: hasTrial) {
+                    PixelText("TRACK AS FREE TRIAL",
+                              size: TrackrTypography.Scale.caption,
+                              color: TrackrColors.fg2,
+                              tracking: 1.5)
+                }
+                .tint(TrackrColors.accent)
+                if hasTrial.wrappedValue {
+                    DatePicker("", selection: trialBinding, displayedComponents: .date)
+                        .datePickerStyle(.compact)
+                        .labelsHidden()
+                        .colorScheme(.dark)
+                }
+            }
         }
     }
 

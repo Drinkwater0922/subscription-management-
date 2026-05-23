@@ -31,6 +31,13 @@ final class Subscription {
     var isActive: Bool
     var pausedUntil: Date?
 
+    /// v1.1: when set, this subscription is a free trial that converts on
+    /// this date. Drives the FREE TRIALS grouping on Home (per the v1.1
+    /// triage design). Once `trialEndsAt` is in the past, the sub flows
+    /// into the ACTIVE group like any other ongoing charge. Optional so
+    /// existing TestFlight rows migrate without touching the schema.
+    var trialEndsAt: Date?
+
     // FX (M11) — pinned at creation when `currency != homeCurrency`. All three
     // fields are nilable + additive so old records (and CloudKit) keep working.
     /// FX rate at pin time. To convert `amount` into the home currency:
@@ -73,6 +80,7 @@ final class Subscription {
         presetId: String? = nil,
         isActive: Bool = true,
         pausedUntil: Date? = nil,
+        trialEndsAt: Date? = nil,
         exchangeRateToHome: Decimal? = nil,
         exchangeRateAsOf: Date? = nil,
         homeCurrencyAtCreation: String? = nil,
@@ -95,10 +103,21 @@ final class Subscription {
         self.presetId = presetId
         self.isActive = isActive
         self.pausedUntil = pausedUntil
+        self.trialEndsAt = trialEndsAt
         self.exchangeRateToHome = exchangeRateToHome
         self.exchangeRateAsOf = exchangeRateAsOf
         self.homeCurrencyAtCreation = homeCurrencyAtCreation
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+}
+
+extension Subscription {
+    /// v1.1 grouping: true while this is an in-progress free trial. Drives
+    /// the FREE TRIALS section on Home. A nil `trialEndsAt` or a date in
+    /// the past flows into the ACTIVE group.
+    func isTrial(at now: Date = .now) -> Bool {
+        guard let end = trialEndsAt else { return false }
+        return end > now
     }
 }

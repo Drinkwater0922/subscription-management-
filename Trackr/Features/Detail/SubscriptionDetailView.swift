@@ -225,7 +225,8 @@ struct SubscriptionDetailView: View {
             startDate: subscription.startDate,
             category: subscription.category,
             notes: subscription.notes ?? "",
-            urlString: subscription.url?.absoluteString ?? ""
+            urlString: subscription.url?.absoluteString ?? "",
+            trialEndsAt: subscription.trialEndsAt
         )
         editing = true
     }
@@ -258,6 +259,7 @@ struct SubscriptionDetailView: View {
             subscription.category = built.category
             subscription.notes = built.notes
             subscription.url = built.url
+            subscription.trialEndsAt = built.trialEndsAt
             subscription.updatedAt = .now
             try context.save()
             if let coordinator { try? await coordinator.refresh() }

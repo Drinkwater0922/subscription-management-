@@ -23,6 +23,11 @@ struct SubscriptionDraft: Equatable {
     var notes: String = ""
     var urlString: String = ""
 
+    /// v1.1: optional free-trial end date. When non-nil and in the
+    /// future, the resulting `Subscription` lands in the FREE TRIALS
+    /// group on Home until this date passes.
+    var trialEndsAt: Date? = nil
+
     enum ValidationError: Error, Equatable {
         case emptyName
         case invalidAmount
@@ -71,7 +76,8 @@ struct SubscriptionDraft: Equatable {
             startDate: startDate,
             category: category,
             notes: notes.isEmpty ? nil : notes,
-            url: URL(string: urlString)
+            url: URL(string: urlString),
+            trialEndsAt: trialEndsAt
         )
     }
 }
