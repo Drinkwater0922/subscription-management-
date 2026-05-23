@@ -65,6 +65,7 @@ enum ModelContainerConfig {
         UserSettings.self,
         PresetCache.self,
         PriceHistoryEntry.self,
+        FXRateTable.self,
     ])
 }
 

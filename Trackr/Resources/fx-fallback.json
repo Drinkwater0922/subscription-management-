@@ -1,0 +1,21 @@
+{
+  "baseCurrency": "USD",
+  "fetchedAt": "2026-05-01T00:00:00Z",
+  "note": "Static fallback rates shipped in the app bundle. Used when no FXRateTable has been persisted yet (first launch, no network). Rough mid-2026 rates — the v1.1 Home hero is an emotional estimate, so precision isn't required. Refreshed alongside major app updates.",
+  "rates": {
+    "CNY": 7.20,
+    "EUR": 0.92,
+    "JPY": 155.0,
+    "GBP": 0.79,
+    "HKD": 7.82,
+    "TWD": 32.5,
+    "KRW": 1380.0,
+    "SGD": 1.35,
+    "AUD": 1.51,
+    "CAD": 1.37,
+    "CHF": 0.90,
+    "INR": 83.5,
+    "MXN": 17.5,
+    "BRL": 5.1
+  }
+}

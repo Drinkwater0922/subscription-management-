@@ -33,9 +33,12 @@ targets:
         excludes:
           - "Resources/presets.bundled.json"
           - "Resources/Localizable.xcstrings"
+          - "Resources/fx-fallback.json"
       - path: Trackr/Resources/presets.bundled.json
         buildPhase: resources
       - path: Trackr/Resources/Localizable.xcstrings
+        buildPhase: resources
+      - path: Trackr/Resources/fx-fallback.json
         buildPhase: resources
     dependencies:
       - target: Widgets
