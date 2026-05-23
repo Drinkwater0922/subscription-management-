@@ -64,6 +64,7 @@ enum ModelContainerConfig {
         PriceChangeAlert.self,
         UserSettings.self,
         PresetCache.self,
+        PriceHistoryEntry.self,
     ])
 }
 

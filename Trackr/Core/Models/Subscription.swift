@@ -44,6 +44,14 @@ final class Subscription {
     /// invalidate every pinned rate in the store.
     var homeCurrencyAtCreation: String?
 
+    // Price history (v1.1) — per-subscription timeline of amount/currency
+    // snapshots. Populated by `SubscriptionRepository.insert` (`.initial`
+    // baseline) and the edit-save path (`.userEdit`). Cascade-delete so a
+    // removed sub takes its history with it. Default empty so existing call
+    // sites and TestFlight records continue to work without migration.
+    @Relationship(deleteRule: .cascade, inverse: \PriceHistoryEntry.subscription)
+    var priceHistory: [PriceHistoryEntry] = []
+
     // Timestamps
     var createdAt: Date
     var updatedAt: Date

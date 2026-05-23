@@ -13,6 +13,18 @@ struct SubscriptionRepository {
 
     func insert(_ sub: Subscription) throws {
         context.insert(sub)
+        // v1.1: write a `.initial` price-history baseline so the Detail
+        // screen has an anchor even for subs the user never edits. Per the
+        // v1.1 spec OQ2 resolution, history is per-subscription, sourced
+        // primarily from user edits — this baseline is point 1 of 3.
+        let baseline = PriceHistoryEntry(
+            subscription: sub,
+            amount: sub.amount,
+            currency: sub.currency,
+            recordedAt: sub.createdAt,
+            source: .initial
+        )
+        context.insert(baseline)
         try context.save()
     }
 
