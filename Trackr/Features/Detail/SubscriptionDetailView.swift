@@ -69,13 +69,36 @@ struct SubscriptionDetailView: View {
                 }
             }
             heroAmount
+            renewalCountdown
+            if PriceHistoryFormatter.hasChanges(subscription.priceHistory) {
+                DashedDivider()
+                PriceHistoryListView(
+                    rows: PriceHistoryFormatter.rows(from: subscription.priceHistory)
+                )
+            }
             DashedDivider()
             row("PLAN", subscription.planName ?? "—")
             row("CYCLE", cycleText)
             row("CATEGORY", subscription.category.displayName.uppercased())
             row("STARTED", iso(subscription.startDate))
             row("NEXT", iso(subscription.nextBillingDate))
-            row("STATUS", subscription.isActive ? "ACTIVE" : "PAUSED")
+            row("STATUS", statusText)
+            if let url = subscription.url {
+                Link(destination: url) {
+                    HStack(alignment: .firstTextBaseline) {
+                        PixelText("URL",
+                                  size: TrackrTypography.Scale.sectionLabel,
+                                  color: TrackrColors.fg2,
+                                  tracking: 2)
+                        Spacer()
+                        PixelText(url.host ?? url.absoluteString,
+                                  size: TrackrTypography.Scale.value,
+                                  color: TrackrColors.accent,
+                                  tracking: 1)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
             if let notes = subscription.notes, !notes.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     PixelText("NOTES",
@@ -89,6 +112,30 @@ struct SubscriptionDetailView: View {
             }
         }
         .padding(20)
+    }
+
+    /// v1.1 keep/kill aid: the renewal countdown as a prominent line,
+    /// not a row in the field table. For trials, surfaces the trial
+    /// conversion date instead of the billing date.
+    private var renewalCountdown: some View {
+        let target = subscription.isTrial()
+            ? (subscription.trialEndsAt ?? subscription.nextBillingDate)
+            : subscription.nextBillingDate
+        let label = RelativeRenewalText.shortLabel(
+            for: RelativeRenewalText.variant(nextBillingDate: target,
+                                              calendar: .current),
+            locale: .current
+        )
+        let prefix = subscription.isTrial() ? "TRIAL · " : ""
+        return PixelText("\(prefix)\(label)",
+                         size: TrackrTypography.Scale.title,
+                         color: TrackrColors.accent,
+                         tracking: 2)
+    }
+
+    private var statusText: String {
+        if subscription.isTrial() { return "FREE TRIAL" }
+        return subscription.isActive ? "ACTIVE" : "PAUSED"
     }
 
     private var editingBody: some View {
