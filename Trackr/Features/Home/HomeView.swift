@@ -132,20 +132,64 @@ struct HomeView: View {
         }
     }
 
+    @State private var anchorRotation: Int = 0
+
     private var heroAmount: some View {
         let currency = defaultCurrency
-        let total = MonthlyTotalCalculator.total(of: subscriptions,
-                                                 in: currency,
-                                                 rateTable: fxTables.first)
-        return VStack(alignment: .leading, spacing: 6) {
-            PixelText("MONTHLY · \(currency.uppercased())",
+        let table = fxTables.first
+        let monthly = MonthlyTotalCalculator.total(of: subscriptions,
+                                                   in: currency,
+                                                   rateTable: table)
+        let annualDisplay = monthly * 12
+        let annualUSD = AnnualSpendCalculator.total(of: subscriptions,
+                                                   in: "USD",
+                                                   rateTable: table)
+        let anchors = SpendAnchorCatalog.pick(annualSpendUSD: annualUSD, limit: 4)
+        let activeCount = subscriptions.filter { $0.isActive }.count
+
+        return VStack(alignment: .leading, spacing: 10) {
+            PixelText(annualLabel(currency: currency),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
-            PixelText(AmountFormatter.format(total, currency: currency),
+            PixelText(AmountFormatter.format(annualDisplay, currency: currency),
                       size: TrackrTypography.Scale.hero,
                       tracking: 1)
+            if !anchors.isEmpty {
+                Button {
+                    haptics?.play(.lightImpact)
+                    anchorRotation = (anchorRotation + 1) % anchors.count
+                } label: {
+                    PixelText(SpendAnchorRenderer.render(
+                                annualSpendUSD: annualUSD,
+                                anchor: anchors[anchorRotation % anchors.count]
+                              ),
+                              size: TrackrTypography.Scale.body,
+                              color: TrackrColors.accent,
+                              tracking: 1)
+                }
+                .buttonStyle(.plain)
+            }
+            PixelText(secondaryLine(monthly: monthly, currency: currency,
+                                     count: activeCount),
+                      size: TrackrTypography.Scale.caption,
+                      color: TrackrColors.fg2,
+                      tracking: 1.5)
         }
+    }
+
+    private func annualLabel(currency: String) -> String {
+        let isChinese = Locale.current.language.languageCode?.identifier == "zh"
+        if isChinese { return "今年订阅花费" }
+        return "SUBS · THIS YEAR · \(currency.uppercased())"
+    }
+
+    private func secondaryLine(monthly: Decimal, currency: String, count: Int) -> String {
+        let monthlyText = AmountFormatter.format(monthly, currency: currency)
+        let isChinese = Locale.current.language.languageCode?.identifier == "zh"
+        if isChinese { return "每月 \(monthlyText) · \(count) 个订阅" }
+        let unit = count == 1 ? "SUBSCRIPTION" : "SUBSCRIPTIONS"
+        return "\(monthlyText) / MONTH · \(count) \(unit)"
     }
 
     @ViewBuilder
@@ -154,13 +198,21 @@ struct HomeView: View {
             emptyState
         } else {
             ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(subscriptions) { sub in
-                        Button { selected = sub } label: {
-                            SubscriptionRow(subscription: sub)
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    ForEach(HomeSectionBuilder.build(from: subscriptions), id: \.kind) { section in
+                        PixelText(HomeSectionBuilder.title(for: section.kind),
+                                  size: TrackrTypography.Scale.sectionLabel,
+                                  color: TrackrColors.fg2,
+                                  tracking: 2)
+                            .padding(.top, 16)
+                            .padding(.bottom, 4)
+                        ForEach(section.items) { sub in
+                            Button { selected = sub } label: {
+                                SubscriptionRow(subscription: sub)
+                            }
+                            .buttonStyle(.plain)
+                            DashedDivider()
                         }
-                        .buttonStyle(.plain)
-                        DashedDivider()
                     }
                 }
             }

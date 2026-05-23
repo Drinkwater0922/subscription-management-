@@ -26,10 +26,17 @@ struct SubscriptionRow: View {
 
             Spacer()
 
-            PixelText(AmountFormatter.format(subscription.amount, currency: subscription.currency),
-                      size: TrackrTypography.Scale.value,
-                      color: subscription.isActive ? TrackrColors.fg : TrackrColors.fg3,
-                      tracking: 1)
+            VStack(alignment: .trailing, spacing: 2) {
+                PixelText(AmountFormatter.format(subscription.amount,
+                                                  currency: subscription.currency),
+                          size: TrackrTypography.Scale.value,
+                          color: subscription.isActive ? TrackrColors.fg : TrackrColors.fg3,
+                          tracking: 1)
+                PixelText(renewalLine,
+                          size: TrackrTypography.Scale.sectionLabel,
+                          color: renewalColor,
+                          tracking: 1.5)
+            }
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 4)
@@ -47,5 +54,32 @@ struct SubscriptionRow: View {
             return "\(cycle) · \(plan.uppercased())"
         }
         return cycle
+    }
+
+    /// v1.1: "RENEWS IN 3 DAYS" line under the amount. For trials,
+    /// reads the trial conversion date instead of the next billing date.
+    private var renewalLine: String {
+        let target = subscription.isTrial()
+            ? (subscription.trialEndsAt ?? subscription.nextBillingDate)
+            : subscription.nextBillingDate
+        return RelativeRenewalText.shortLabel(
+            for: RelativeRenewalText.variant(nextBillingDate: target),
+            locale: .current
+        )
+    }
+
+    /// Use accent lime when the renewal is today or tomorrow — those
+    /// are the rows the triage view wants to draw the eye to. Everything
+    /// else stays muted so the section doesn't visually shout.
+    private var renewalColor: Color {
+        let variant = RelativeRenewalText.variant(
+            nextBillingDate: subscription.isTrial()
+                ? (subscription.trialEndsAt ?? subscription.nextBillingDate)
+                : subscription.nextBillingDate
+        )
+        switch variant {
+        case .today, .tomorrow, .overdue: return TrackrColors.accent
+        case .inDays: return TrackrColors.fg2
+        }
     }
 }
