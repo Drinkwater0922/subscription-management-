@@ -12,6 +12,8 @@ struct InsightsView: View {
     @Query(sort: \Subscription.nextBillingDate, order: .forward)
     private var subscriptions: [Subscription]
 
+    @Query private var fxTables: [FXRateTable]
+
     /// InsightsView is itself presented as a sheet from `HomeView`. Routing
     /// the paywall through the shared `PaywallTriggerCoordinator` would ask
     /// HomeView to present a second sheet while this one is still up — which
@@ -64,7 +66,9 @@ struct InsightsView: View {
 
     private var proBody: some View {
         let currency = currentCurrency
-        let monthly = MonthlyTotalCalculator.total(of: subscriptions, in: currency)
+        let monthly = MonthlyTotalCalculator.total(of: subscriptions,
+                                                   in: currency,
+                                                   rateTable: fxTables.first)
         let yearly = monthly * 12
         let count = subscriptions.filter { $0.isActive }.count
         return VStack(alignment: .leading, spacing: 24) {

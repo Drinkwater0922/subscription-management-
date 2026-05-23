@@ -8,6 +8,11 @@ struct HomeView: View {
     @Query(sort: \Subscription.nextBillingDate, order: .forward)
     private var subscriptions: [Subscription]
 
+    /// v1.1: persisted FX rate table used to convert foreign-currency subs
+    /// into the display currency at render time. Single row in practice —
+    /// `FXRateTableRepository.replace` enforces it. Always take `.first`.
+    @Query private var fxTables: [FXRateTable]
+
     @Environment(\.modelContext) private var context
     @Environment(AppDeepLinkRouter.self) private var router
     @Environment(\.notificationCoordinator) private var coordinator
@@ -129,7 +134,9 @@ struct HomeView: View {
 
     private var heroAmount: some View {
         let currency = defaultCurrency
-        let total = MonthlyTotalCalculator.total(of: subscriptions, in: currency)
+        let total = MonthlyTotalCalculator.total(of: subscriptions,
+                                                 in: currency,
+                                                 rateTable: fxTables.first)
         return VStack(alignment: .leading, spacing: 6) {
             PixelText("MONTHLY · \(currency.uppercased())",
                       size: TrackrTypography.Scale.sectionLabel,

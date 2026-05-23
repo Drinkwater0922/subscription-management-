@@ -66,4 +66,91 @@ final class MonthlyTotalCalculatorTests: XCTestCase {
         ]
         XCTAssertEqual(MonthlyTotalCalculator.total(of: list, in: "USD"), 82)
     }
+
+    // MARK: - v1.1: FXRateTable-driven cross-currency conversion
+
+    private func makeTable(base: String = "USD",
+                           rates: [String: Decimal]) -> FXRateTable {
+        let data = try! JSONEncoder().encode(rates)
+        return FXRateTable(baseCurrency: base, ratesJSON: data)
+    }
+
+    func test_foreignCurrency_isConverted_viaRateTable() {
+        let table = makeTable(rates: ["CNY": 8.0])
+        // 80 CNY/month with USD-base table where 1 USD = 8 CNY → 10 USD
+        let list = [sub(80, currency: "CNY")]
+        XCTAssertEqual(
+            MonthlyTotalCalculator.total(of: list, in: "USD", rateTable: table),
+            10
+        )
+    }
+
+    func test_displayCurrencySwitch_includesEveryActiveSub() {
+        // Reproduces the v1.1 spec bug: switching display currency from USD
+        // to CNY used to silently drop USD subs because no rate was pinned.
+        // With the new table-driven model, both subs contribute.
+        let table = makeTable(rates: ["CNY": 8.0])
+        let list = [
+            sub(10, currency: "USD"),   // 10 USD = 80 CNY
+            sub(80, currency: "CNY"),   // 80 CNY = 80 CNY
+        ]
+        XCTAssertEqual(
+            MonthlyTotalCalculator.total(of: list, in: "CNY", rateTable: table),
+            160
+        )
+    }
+
+    func test_foreignCurrency_withoutTable_isSkipped() {
+        // No table supplied → behaves the same as legacy code: skip
+        // foreign-currency subs rather than invent a rate.
+        let list = [sub(10, currency: "USD"), sub(99, currency: "CNY")]
+        XCTAssertEqual(
+            MonthlyTotalCalculator.total(of: list, in: "USD"),
+            10
+        )
+    }
+
+    func test_foreignCurrency_missingFromTable_isSkipped() {
+        // Table exists but lacks the sub's currency — skip that sub.
+        let table = makeTable(rates: ["EUR": 0.9])
+        let list = [sub(10, currency: "USD"), sub(99, currency: "CNY")]
+        XCTAssertEqual(
+            MonthlyTotalCalculator.total(of: list, in: "USD", rateTable: table),
+            10
+        )
+    }
+
+    func test_pinnedRateFields_areIgnored_inV11Mode() {
+        // Legacy TestFlight rows kept their `exchangeRateToHome` /
+        // `homeCurrencyAtCreation` fields after migration. The new
+        // calculator must NOT consult those fields; conversion is only via
+        // the supplied rate table. With no table, the legacy CNY sub is
+        // skipped even though it carries a pinned rate.
+        let legacy = sub(10, currency: "CNY")
+        legacy.exchangeRateToHome = Decimal(string: "0.15")!
+        legacy.homeCurrencyAtCreation = "USD"
+        XCTAssertEqual(
+            MonthlyTotalCalculator.total(of: [legacy], in: "USD"),
+            0,
+            "pinned-rate fields must not contribute when no rate table is supplied"
+        )
+    }
+
+    // MARK: - AnnualSpendCalculator
+
+    func test_annualSpend_isTwelveTimesMonthly() {
+        let list = [sub(20), sub(120, cycle: .yearly)]
+        XCTAssertEqual(AnnualSpendCalculator.total(of: list, in: "USD"),
+                       (20 + 10) * 12)
+    }
+
+    func test_annualSpend_withTable_convertsForeign() {
+        let table = makeTable(rates: ["CNY": 8.0])
+        let list = [sub(8, currency: "CNY")]
+        // 8 CNY/month = 1 USD/month → 12 USD/year
+        XCTAssertEqual(
+            AnnualSpendCalculator.total(of: list, in: "USD", rateTable: table),
+            12
+        )
+    }
 }

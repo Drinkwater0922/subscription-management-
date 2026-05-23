@@ -3,53 +3,57 @@ import Foundation
 /// Sums a collection of `Subscription` into a per-month `Decimal` total in the
 /// caller-supplied `targetCurrency`.
 ///
-/// **M11 multi-currency rules:**
+/// **v1.1 multi-currency rules (replaces the M11 "pinned at creation" model):**
 /// - Subs whose `currency` already matches `targetCurrency` contribute their
 ///   monthly equivalent directly.
-/// - Subs in a *different* currency contribute via the pinned FX rate
-///   (`exchangeRateToHome × homeCurrencyAtCreation == targetCurrency`).
-/// - Subs in a different currency with no pinned rate are skipped, same as
-///   pre-M11 behavior — better to under-count than to invent a rate.
+/// - Subs in a *different* currency are converted via the supplied
+///   `FXRateTable`. If no table is supplied, or the table is missing one of
+///   the currencies, the sub is skipped (under-count beats invent-a-rate).
 /// - Paused / inactive subs are always skipped.
 ///
 /// Custom-day cycles approximate via `amount * 30 / days`.
+///
+/// **Migration from M11.** The legacy `Subscription.exchangeRateToHome` /
+/// `homeCurrencyAtCreation` fields stay on the model but no longer drive
+/// aggregation. The whole-table FX rework is the v1.1 fix for the bug
+/// where switching display currency silently dropped foreign-currency subs.
 enum MonthlyTotalCalculator {
 
-    static func total(of subs: [Subscription], in targetCurrency: String) -> Decimal {
-        let target = targetCurrency.uppercased()
-        return subs.reduce(into: Decimal(0)) { running, sub in
-            guard sub.isActive else { return }
-            let monthly = monthlyEquivalent(amount: sub.amount, cycle: sub.billingCycle)
-            if sub.currency.uppercased() == target {
-                running += monthly
-            } else if let rate = sub.exchangeRateToHome,
-                      let pinnedHome = sub.homeCurrencyAtCreation?.uppercased(),
-                      pinnedHome == target {
-                running += monthly * rate
+    static func total(of subs: [Subscription],
+                      in targetCurrency: String,
+                      rateTable: FXRateTable? = nil) -> Decimal {
+        subs.reduce(into: Decimal(0)) { running, sub in
+            if let contribution = monthlyContribution(of: sub,
+                                                       in: targetCurrency,
+                                                       rateTable: rateTable) {
+                running += contribution
             }
-            // else: foreign currency without a rate — skip.
         }
     }
 
-    /// Per-sub helper: the monthly contribution this subscription makes towards
-    /// the target currency total. Returns `nil` if the sub can't be converted
-    /// (so the caller can show "—" or omit the row).
-    static func monthlyContribution(of sub: Subscription, in targetCurrency: String) -> Decimal? {
+    /// Per-sub helper: the monthly contribution this subscription makes
+    /// towards the target currency total. Returns `nil` when the sub is
+    /// inactive, or when it's in a foreign currency we cannot convert.
+    static func monthlyContribution(of sub: Subscription,
+                                    in targetCurrency: String,
+                                    rateTable: FXRateTable? = nil) -> Decimal? {
         guard sub.isActive else { return nil }
         let target = targetCurrency.uppercased()
         let monthly = monthlyEquivalent(amount: sub.amount, cycle: sub.billingCycle)
-        if sub.currency.uppercased() == target {
+        let source = sub.currency.uppercased()
+        if source == target {
             return monthly
         }
-        if let rate = sub.exchangeRateToHome,
-           let pinnedHome = sub.homeCurrencyAtCreation?.uppercased(),
-           pinnedHome == target {
-            return monthly * rate
-        }
-        return nil
+        guard let table = rateTable else { return nil }
+        return FXRateTableRepository.convert(amount: monthly,
+                                             from: source,
+                                             to: target,
+                                             using: table)
     }
 
-    private static func monthlyEquivalent(amount: Decimal, cycle: BillingCycle) -> Decimal {
+    /// Pure conversion of a single (amount, cycle) into its per-month value
+    /// in the same currency. Used by `total` and by `AnnualSpendCalculator`.
+    static func monthlyEquivalent(amount: Decimal, cycle: BillingCycle) -> Decimal {
         switch cycle {
         case .monthly:
             return amount

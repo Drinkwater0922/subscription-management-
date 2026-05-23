@@ -65,10 +65,13 @@ struct FXRateTableRepository {
 
     /// Pure-function variant — handy for tests + callers that already
     /// have the table in hand and want to avoid a per-row fetch.
-    static func convert(amount: Decimal,
-                        from source: String,
-                        to target: String,
-                        using table: FXRateTable) -> Decimal? {
+    /// Explicitly `nonisolated` so `MonthlyTotalCalculator` (sync,
+    /// nonisolated) can call it from background contexts without forcing
+    /// every aggregation call site through the main actor.
+    nonisolated static func convert(amount: Decimal,
+                                    from source: String,
+                                    to target: String,
+                                    using table: FXRateTable) -> Decimal? {
         let from = source.uppercased()
         let to = target.uppercased()
         if from == to { return amount }
