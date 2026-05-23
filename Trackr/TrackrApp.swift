@@ -63,6 +63,13 @@ struct TrackrApp: App {
             repository: FXRateTableRepository(context: seedContext)
         )
 
+        // v1.1 price-history backfill: legacy v1.0 / TestFlight subs have
+        // no PriceHistoryEntry rows. Write one .initial baseline per
+        // legacy sub so the Detail price-history list has an anchor from
+        // first launch. Idempotent — subsequent launches see all subs
+        // already have history and no-op.
+        PriceHistoryBackfill.run(context: seedContext)
+
         let catalogURL = BrandConfig.presetCatalogURL
         let pushPublisher = PriceChangePushPublisher(center: SystemNotificationCenter())
         self.presetSync = PresetSync(
