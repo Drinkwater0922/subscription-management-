@@ -158,6 +158,7 @@
       }
     },
     "EMAIL FEEDBACK" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -225,6 +226,7 @@
       }
     },
     "FEEDBACK" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -274,22 +276,6 @@
         }
       }
     },
-    "GITHUB ISSUE" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GITHUB ISSUE"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub Issue"
-          }
-        }
-      }
-    },
     "GET NOTIFIED BEFORE EVERY RENEWAL" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -320,6 +306,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开始使用"
+          }
+        }
+      }
+    },
+    "GITHUB ISSUE" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GITHUB ISSUE"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Issue"
           }
         }
       }
@@ -569,6 +572,7 @@
       }
     },
     "RATE ON APP STORE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

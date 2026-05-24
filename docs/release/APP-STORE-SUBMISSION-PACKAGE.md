@@ -13,7 +13,7 @@ This file is the operational source for copying metadata into App Store Connect.
 | SKU | `pennyloop-ios-001` |
 | Apple Developer Team ID | `Y5NK4T6CXG` |
 | Version | `1.0.0` |
-| Build | `13` |
+| Build | `15` |
 | Primary Language | English (U.S.) |
 | Primary Category | Finance |
 | Secondary Category | Productivity |
