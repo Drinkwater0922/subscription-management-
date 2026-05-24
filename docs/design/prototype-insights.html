@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PennyLoop — Insights v1.1 prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+  /* ── PennyLoop design tokens (from Trackr/DesignSystem/Colors.swift) ── */
+  :root{
+    --bg:#000000; --bg2:#0E0E10; --bg3:#1A1A1D; --border:#2A2A2D;
+    --fg:#F5F5F7; --fg2:#8A8A8D; --fg3:#4A4A4D;
+    --accent:#C7F284; --onAccent:#000000; --warn:#A8453D;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:#161618; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    padding:28px 12px 60px;
+    font-family:'VT323',monospace;
+    -webkit-font-smoothing:none;
+  }
+  .caption{color:#7a7a7e; font-size:20px; letter-spacing:1px; text-align:center; max-width:520px;}
+  .caption b{color:var(--accent);}
+  .caption.small{font-size:16px; color:#5a5a5e;}
+
+  /* ── phone frame ── */
+  .phone{
+    width:390px; height:844px; background:var(--bg);
+    border:2px solid #3a3a3e; border-radius:46px;
+    overflow:hidden; position:relative;
+    box-shadow:0 24px 60px rgba(0,0,0,.6);
+  }
+  .screen{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    overflow-y:auto; padding:54px 0 24px;
+  }
+  .screen::-webkit-scrollbar{width:0;}
+  .sans{font-family:-apple-system,'Segoe UI',sans-serif; letter-spacing:0;}
+  .divider{height:1px; background:var(--border); margin:14px 20px;}
+  .dashed{border-top:1px dashed var(--border); margin:14px 20px;}
+
+  /* ── INSIGHTS top bar (matches existing InsightsView shape) ── */
+  .topbar{display:flex; align-items:center; padding:6px 20px 0;}
+  .closebtn{background:transparent;border:none;color:var(--fg2);font-size:18px;
+    cursor:pointer; letter-spacing:1.5px;font-family:'VT323',monospace;}
+  .toptitle{flex:1; text-align:center; color:var(--fg); font-size:22px;
+    letter-spacing:2px;}
+  .topspacer{width:60px;}
+
+  /* ── HERO: NEXT 30 DAYS DUE ── */
+  .hero{padding:24px 20px 8px;}
+  .hero .hlabel{color:var(--fg2); font-size:16px; letter-spacing:2px;}
+  .hero .bignum{color:var(--fg); font-size:54px; line-height:.95;
+    letter-spacing:1px; margin:5px 0 6px;}
+  .hero .hcount{color:var(--accent); font-size:18px; letter-spacing:1.5px;}
+
+  /* ── currency switcher ── */
+  .cswitch{display:flex; gap:8px; padding:14px 20px 4px;}
+  .cpill{
+    flex:1; padding:7px 0; text-align:center; font-family:'VT323',monospace;
+    font-size:18px; letter-spacing:2px; cursor:pointer;
+    border:1px solid var(--border); background:transparent; color:var(--fg2);
+  }
+  .cpill.active{border-color:var(--accent); color:var(--accent); background:rgba(199,242,132,.06);}
+
+  /* ── stat strip (THIS MONTH / THIS YEAR / ACTIVE SUBS) ── */
+  .stats{display:flex; padding:14px 20px 8px; gap:14px;}
+  .stat{flex:1;}
+  .stat .sk{color:var(--fg3); font-size:13px; letter-spacing:1.5px;}
+  .stat .sv{color:var(--fg); font-size:22px; letter-spacing:1px; margin-top:2px;}
+
+  /* ── section header ── */
+  .sec{display:flex; align-items:center; justify-content:space-between;
+    padding:10px 20px 4px;}
+  .sec .sname{color:var(--fg2); font-size:17px; letter-spacing:2px;}
+  .sec .sinfo{color:var(--fg3); font-size:14px; letter-spacing:1px;}
+
+  /* ── suspect ranking ── */
+  .rank{display:flex; align-items:flex-start; gap:12px; padding:11px 20px;
+    cursor:pointer; background:transparent; border:none; width:100%; text-align:left;}
+  .rank:active{background:var(--bg2);}
+  .rk{color:var(--accent); font-size:22px; min-width:22px; letter-spacing:1px;}
+  .rmid{flex:1; min-width:0;}
+  .rname{color:var(--fg); font-size:19px; letter-spacing:1.5px;}
+  .ramt{color:var(--fg2); font-size:14px; letter-spacing:1.5px; margin-top:2px;}
+  .tags{margin-top:5px; display:flex; flex-wrap:wrap; gap:5px;}
+  .tag{font-size:11px; letter-spacing:1.5px; padding:2px 6px;
+    border:1px solid var(--border); color:var(--fg2);}
+  .tag.exp{color:var(--accent); border-color:var(--accent);}
+  .tag.due{color:var(--warn); border-color:var(--warn);}
+  .tag.stale{color:var(--fg2); border-color:var(--fg3);}
+  .rankdash{border-top:1px dashed var(--border); margin:0 20px;}
+
+  /* ── breakdown bar ── */
+  .bar{padding:7px 20px;}
+  .bline{display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:4px;}
+  .bname{color:var(--fg); font-size:17px; letter-spacing:1.5px;}
+  .bvals{color:var(--fg2); font-size:14px; letter-spacing:1px;}
+  .bvals .bpct{color:var(--fg3); margin-left:6px;}
+  .btrack{height:6px; background:var(--bg3); position:relative;}
+  .bfill{height:100%; background:var(--accent);}
+
+  /* ── currency row (slightly different than category bar) ── */
+  .crow{display:flex; align-items:center; justify-content:space-between;
+    padding:8px 20px;}
+  .crow .ccode{color:var(--fg); font-size:18px; letter-spacing:2px; min-width:48px;}
+  .crow .cmid{flex:1; color:var(--fg2); font-size:15px; letter-spacing:1px;
+    text-align:right; padding-right:14px;}
+  .crow .capprox{color:var(--fg3); font-size:14px; letter-spacing:1px; min-width:80px; text-align:right;}
+
+  /* ── highlight: where the user can click in the prototype ── */
+  .hint{
+    position:absolute; left:50%; transform:translateX(-50%);
+    bottom:-26px; color:var(--fg3); font-size:13px; letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="caption">
+  PennyLoop · <b>Insights 重做原型(v1.1)</b> · 新 thesis:「最该看一眼的几笔」<br>
+  <span class="small">点币种切换器换显示币种 · 点排行榜任意一行模拟跳详情</span>
+</div>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- ── Top bar ── -->
+    <div class="topbar">
+      <button class="closebtn">CLOSE</button>
+      <div class="toptitle">INSIGHTS</div>
+      <div class="topspacer"></div>
+    </div>
+
+    <!-- ── HERO: NEXT 30 DAYS DUE ── -->
+    <div class="hero">
+      <div class="hlabel">未来 30 天扣款</div>
+      <div class="bignum" id="hero-amt">$107</div>
+      <div class="hcount" id="hero-count">10 charges incoming</div>
+    </div>
+
+    <!-- ── currency switcher ── -->
+    <div class="cswitch">
+      <button class="cpill active" data-cur="USD" onclick="setCur('USD')">USD $</button>
+      <button class="cpill" data-cur="CNY" onclick="setCur('CNY')">CNY ¥</button>
+      <button class="cpill" data-cur="EUR" onclick="setCur('EUR')">EUR €</button>
+    </div>
+
+    <!-- ── stat strip ── -->
+    <div class="stats">
+      <div class="stat">
+        <div class="sk">THIS MONTH</div>
+        <div class="sv" id="s-month">$130</div>
+      </div>
+      <div class="stat">
+        <div class="sk">THIS YEAR</div>
+        <div class="sv" id="s-year">$1,560</div>
+      </div>
+      <div class="stat">
+        <div class="sk">ACTIVE</div>
+        <div class="sv">12</div>
+      </div>
+    </div>
+
+    <div class="dashed"></div>
+
+    <!-- ── SECTION 1: suspect ranking ── -->
+    <div class="sec">
+      <div class="sname">最该看一眼的 5 笔</div>
+      <div class="sinfo">按 SUSPECT 排序</div>
+    </div>
+
+    <!-- top-5 hardcoded from the design's 40/30/30 score formula:
+         priceWeight (0–40) + imminence (0–30) + stagnation (0–30) -->
+    <button class="rank" onclick="alert('在真 app 里:跳到这条订阅的详情页')">
+      <div class="rk">1</div>
+      <div class="rmid">
+        <div class="rname">CHATGPT PLUS</div>
+        <div class="ramt"><span class="r-mo" data-usd="20">$20</span>/mo · <span class="r-day" data-usd="0.67">$0.67</span>/天</div>
+        <div class="tags">
+          <span class="tag exp">EXPENSIVE</span>
+        </div>
+      </div>
+    </button>
+    <div class="rankdash"></div>
+
+    <button class="rank" onclick="alert('在真 app 里:跳到这条订阅的详情页')">
+      <div class="rk">2</div>
+      <div class="rmid">
+        <div class="rname">NETFLIX PREMIUM</div>
+        <div class="ramt"><span class="r-mo" data-usd="15.49">$15.49</span>/mo · <span class="r-day" data-usd="0.52">$0.52</span>/天</div>
+        <div class="tags">
+          <span class="tag due">RENEWS IN 2 DAYS</span>
+          <span class="tag exp">EXPENSIVE</span>
+        </div>
+      </div>
+    </button>
+    <div class="rankdash"></div>
+
+    <button class="rank" onclick="alert('在真 app 里:跳到这条订阅的详情页')">
+      <div class="rk">3</div>
+      <div class="rmid">
+        <div class="rname">CLAUDE PRO</div>
+        <div class="ramt"><span class="r-mo" data-usd="20">$20</span>/mo · <span class="r-day" data-usd="0.67">$0.67</span>/天</div>
+        <div class="tags">
+          <span class="tag due">RENEWS IN 9 DAYS</span>
+          <span class="tag exp">EXPENSIVE</span>
+        </div>
+      </div>
+    </button>
+    <div class="rankdash"></div>
+
+    <button class="rank" onclick="alert('在真 app 里:跳到这条订阅的详情页')">
+      <div class="rk">4</div>
+      <div class="rmid">
+        <div class="rname">ICLOUD 200</div>
+        <div class="ramt"><span class="r-mo" data-usd="2.99">$2.99</span>/mo · <span class="r-day" data-usd="0.10">$0.10</span>/天</div>
+        <div class="tags">
+          <span class="tag due">RENEWS IN 5 DAYS</span>
+          <span class="tag stale">200 天没动过</span>
+        </div>
+      </div>
+    </button>
+    <div class="rankdash"></div>
+
+    <button class="rank" onclick="alert('在真 app 里:跳到这条订阅的详情页')">
+      <div class="rk">5</div>
+      <div class="rmid">
+        <div class="rname">DISNEY+</div>
+        <div class="ramt"><span class="r-mo" data-usd="9.99">$9.99</span>/mo · <span class="r-day" data-usd="0.33">$0.33</span>/天</div>
+        <div class="tags">
+          <span class="tag stale">90 天没动过</span>
+        </div>
+      </div>
+    </button>
+
+    <div class="dashed"></div>
+
+    <!-- ── SECTION 2: by category ── -->
+    <div class="sec">
+      <div class="sname">按分类</div>
+      <div class="sinfo">月成本</div>
+    </div>
+
+    <!-- Category percentages computed from $130/mo total -->
+    <div class="bar">
+      <div class="bline">
+        <div class="bname">AI</div>
+        <div class="bvals"><span class="b-amt" data-usd="40">$40</span><span class="bpct">31%</span></div>
+      </div>
+      <div class="btrack"><div class="bfill" style="width:31%"></div></div>
+    </div>
+
+    <div class="bar">
+      <div class="bline">
+        <div class="bname">STREAMING</div>
+        <div class="bvals"><span class="b-amt" data-usd="35">$35</span><span class="bpct">27%</span></div>
+      </div>
+      <div class="btrack"><div class="bfill" style="width:27%"></div></div>
+    </div>
+
+    <div class="bar">
+      <div class="bline">
+        <div class="bname">DEV</div>
+        <div class="bvals"><span class="b-amt" data-usd="30">$30</span><span class="bpct">23%</span></div>
+      </div>
+      <div class="btrack"><div class="bfill" style="width:23%"></div></div>
+    </div>
+
+    <div class="bar">
+      <div class="bline">
+        <div class="bname">MUSIC</div>
+        <div class="bvals"><span class="b-amt" data-usd="13">$13</span><span class="bpct">10%</span></div>
+      </div>
+      <div class="btrack"><div class="bfill" style="width:10%"></div></div>
+    </div>
+
+    <div class="bar">
+      <div class="bline">
+        <div class="bname">PRODUCTIVITY</div>
+        <div class="bvals"><span class="b-amt" data-usd="8">$8</span><span class="bpct">6%</span></div>
+      </div>
+      <div class="btrack"><div class="bfill" style="width:6%"></div></div>
+    </div>
+
+    <div class="bar">
+      <div class="bline">
+        <div class="bname">CLOUD</div>
+        <div class="bvals"><span class="b-amt" data-usd="3">$3</span><span class="bpct">2%</span></div>
+      </div>
+      <div class="btrack"><div class="bfill" style="width:2%"></div></div>
+    </div>
+
+    <div class="dashed"></div>
+
+    <!-- ── SECTION 3: by currency (only shown when multi-currency) ── -->
+    <div class="sec">
+      <div class="sname">按币种</div>
+      <div class="sinfo">原币 · 月成本</div>
+    </div>
+
+    <!-- These rows keep their ORIGINAL currency (the user's actual ledger by
+         currency), with an approx in the display currency on the right. -->
+    <div class="crow">
+      <div class="ccode">USD</div>
+      <div class="cmid">$128 /mo</div>
+      <div class="capprox" id="usd-approx">≈ $1,536/yr</div>
+    </div>
+    <div class="crow">
+      <div class="ccode">CNY</div>
+      <div class="cmid">¥18 /mo</div>
+      <div class="capprox" id="cny-approx">≈ $30/yr</div>
+    </div>
+
+    <div style="height:20px;"></div>
+  </div>
+
+  <div class="hint">▴ 拖动手机内的内容滚动 ▴</div>
+</div>
+
+<div class="caption small" style="margin-top:30px; max-width:520px;">
+  待你拍的产品细节(代码里可调):<br>
+  ① Suspect score 权重(目前 价 40 / 即将续费 30 / 久未动 30) ·
+  ② 板块标题(「最该看一眼的 5 笔」/「该砍的」/「最贵的」/...) ·
+  ③ Hero 单卡(NEXT 30 DAYS DUE)还是双卡(再加 MONTHLY) ·
+  ④ 「久未动」阈值(90/180/270 天)
+</div>
+
+<script>
+  // USD-base rates (matches the bundled fx-fallback.json shape — illustrative)
+  const RATES = { USD:1, CNY:7.20, EUR:0.92 };
+  const SYM   = { USD:'$', CNY:'¥', EUR:'€' };
+
+  let cur = 'USD';
+
+  function fmt(usdValue, target, opts={}){
+    const v = usdValue * RATES[target];
+    // CNY: no decimal for big amounts, JPY-like feel
+    // USD/EUR: one decimal for small, none for big
+    const dec = opts.forceDec ?? (Math.abs(v) >= 100 ? 0 : (target === 'CNY' ? 0 : 2));
+    const rounded = v.toFixed(dec);
+    return SYM[target] + rounded;
+  }
+
+  function setCur(target){
+    cur = target;
+    document.querySelectorAll('.cpill').forEach(b => {
+      b.classList.toggle('active', b.dataset.cur === target);
+    });
+
+    // hero
+    document.getElementById('hero-amt').textContent = fmt(107, target);
+
+    // stat strip
+    document.getElementById('s-month').textContent = fmt(130, target);
+    document.getElementById('s-year').textContent  = fmt(1560, target);
+
+    // ranking rows
+    document.querySelectorAll('.r-mo').forEach(el => {
+      el.textContent = fmt(parseFloat(el.dataset.usd), target);
+    });
+    document.querySelectorAll('.r-day').forEach(el => {
+      el.textContent = fmt(parseFloat(el.dataset.usd), target, {forceDec: target === 'CNY' ? 1 : 2});
+    });
+
+    // category bars
+    document.querySelectorAll('.b-amt').forEach(el => {
+      el.textContent = fmt(parseFloat(el.dataset.usd), target);
+    });
+
+    // currency-breakdown approximations (these keep original currency in the
+    // middle column; only the right "≈ /yr" approximation re-renders).
+    document.getElementById('usd-approx').textContent = '≈ ' + fmt(128*12, target) + '/yr';
+    document.getElementById('cny-approx').textContent = '≈ ' + fmt((18/RATES.CNY)*12, target) + '/yr';
+  }
+</script>
+
+</body>
+</html>
