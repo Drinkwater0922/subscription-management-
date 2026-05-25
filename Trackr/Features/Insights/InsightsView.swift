@@ -3,10 +3,11 @@ import SwiftData
 
 /// Pro-gated insights dashboard.
 ///
-/// **v1.2 (this commit, C1):** demoted stat strip (THIS MONTH / THIS YEAR /
-/// ACTIVE) + top-5 SuspectRanker ranking with cross-sheet routing to Detail.
-/// NEXT 30 DAYS DUE hero + currency switcher + category / currency
-/// breakdowns land in C2.
+/// **v1.2 (C1 + C2):** NEXT 30 DAYS DUE hero, persisted currency switcher,
+/// demoted THIS MONTH / THIS YEAR / ACTIVE stat strip, top-5 SuspectRanker
+/// ranking with cross-sheet routing to Detail, by-category fill bars,
+/// by-currency rows. The last two render only when ≥2 distinct
+/// categories / currencies exist (PRD thresholds).
 struct InsightsView: View {
 
     @Environment(ProEntitlement.self) private var entitlement
@@ -23,6 +24,12 @@ struct InsightsView: View {
 
     @Query private var fxTables: [FXRateTable]
 
+    /// Observe `UserSettings` so changes to `defaultCurrency` from the
+    /// switcher trigger a view refresh (the switcher persists via
+    /// `SettingsRepository`, which mutates the same SwiftData row this
+    /// query watches).
+    @Query private var allSettings: [UserSettings]
+
     /// InsightsView is itself presented as a sheet from `HomeView`. Routing
     /// the paywall through the shared `PaywallTriggerCoordinator` would ask
     /// HomeView to present a second sheet while this one is still up — which
@@ -31,10 +38,21 @@ struct InsightsView: View {
     @State private var showUpgradePaywall = false
 
     private var currentCurrency: String {
+        allSettings.first?.defaultCurrency ?? "USD"
+    }
+
+    /// Persist a new display currency via `SettingsRepository`. SwiftData
+    /// fires a change on `UserSettings`, the `@Query` re-runs, and every
+    /// FX-aware section on this view re-renders against the new currency.
+    private func selectCurrency(_ code: String) {
         do {
-            return try SettingsRepository(context: context).currentSettings().defaultCurrency
+            let settings = try SettingsRepository(context: context).currentSettings()
+            settings.defaultCurrency = code.uppercased()
+            try context.save()
         } catch {
-            return "USD"
+            // Persisting the choice is the best-effort path; failing here
+            // would only leave the switcher visually out of sync, which
+            // the user can correct by tapping again. Don't crash Insights.
         }
     }
 
@@ -75,16 +93,32 @@ struct InsightsView: View {
 
     private var proBody: some View {
         let currency = currentCurrency
+        let table = fxTables.first
         let monthly = MonthlyTotalCalculator.total(of: subscriptions,
                                                    in: currency,
-                                                   rateTable: fxTables.first)
+                                                   rateTable: table)
         let yearly = monthly * 12
         let activeCount = subscriptions.filter { $0.isActive }.count
+        let upcoming = UpcomingChargesCalculator.upcoming(
+            subscriptions, in: currency, rateTable: table
+        )
         let ranked = SuspectRanker.rank(subscriptions,
                                          in: currency,
-                                         rateTable: fxTables.first)
+                                         rateTable: table)
+        let categories = CategoryBreakdown.breakdown(
+            subscriptions, in: currency, rateTable: table
+        )
+        let currencies = CurrencyBreakdown.breakdown(
+            subscriptions, in: currency, rateTable: table
+        )
 
         return VStack(alignment: .leading, spacing: 20) {
+            InsightsHero(upcoming: upcoming, displayCurrency: currency)
+
+            CurrencySwitcher(current: currency, onSelect: selectCurrency)
+
+            stripDivider
+
             statStrip(monthly: monthly, yearly: yearly,
                        activeCount: activeCount, currency: currency)
 
@@ -100,6 +134,22 @@ struct InsightsView: View {
                     dismiss()
                 }
             )
+
+            // Threshold: render BY CATEGORY only when ≥2 categories
+            // exist. Single-category users get this block hidden per PRD.
+            if categories.count >= 2 {
+                stripDivider
+                CategoryBreakdownSection(rows: categories,
+                                          displayCurrency: currency)
+            }
+
+            // Threshold: render BY CURRENCY only when ≥2 distinct
+            // currencies exist. Single-currency users hide this block.
+            if currencies.count >= 2 {
+                stripDivider
+                CurrencyBreakdownSection(rows: currencies,
+                                          displayCurrency: currency)
+            }
         }
         .padding(.top, 16)
         .padding(.bottom, 32)
