@@ -17,7 +17,7 @@ struct SuspectRankingSection: View {
             sectionHeader
 
             if ranked.isEmpty {
-                PixelText("NO ACTIVE SUBSCRIPTIONS TO RANK",
+                PixelText(InsightsCopy.emptyRanking(),
                           size: TrackrTypography.Scale.body,
                           color: TrackrColors.fg3,
                           tracking: 1.5)
@@ -29,6 +29,9 @@ struct SuspectRankingSection: View {
                         rowContent(row)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(accessibilityLabel(row))
+                    .accessibilityAddTraits(.isButton)
                     if idx < ranked.count - 1 {
                         rowDivider
                     }
@@ -37,16 +40,32 @@ struct SuspectRankingSection: View {
         }
     }
 
+    /// Build a single, well-formed VoiceOver label that announces the
+    /// rank, name, cost-per-month, and every visible tag. Per-element a11y
+    /// is collapsed via `.ignore` above so the row reads as one chunk.
+    private func accessibilityLabel(_ row: SuspectRanker.Ranked) -> String {
+        var parts: [String] = []
+        parts.append("Rank \(row.rank)")
+        parts.append(row.subscription.name)
+        let monthly = AmountFormatter.format(row.monthlyContribution,
+                                              currency: displayCurrency)
+        parts.append("\(monthly) per month")
+        for tag in row.tags {
+            parts.append(InsightsCopy.tag(tag, lang: .en))
+        }
+        return parts.joined(separator: ", ")
+    }
+
     // MARK: - Subviews
 
     private var sectionHeader: some View {
         HStack {
-            PixelText("TOP 5",
+            PixelText(InsightsCopy.sectionLabel(.topFiveTitle),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
             Spacer()
-            PixelText("BY SUSPECT",
+            PixelText(InsightsCopy.sectionLabel(.topFiveSubtitle),
                       size: TrackrTypography.Scale.caption,
                       color: TrackrColors.fg3,
                       tracking: 1.5)
@@ -121,13 +140,11 @@ struct SuspectRankingSection: View {
     }
 
     private func tagStyle(_ tag: SuspectRanker.Tag) -> (text: String, color: Color) {
+        let text = InsightsCopy.tag(tag)
         switch tag {
-        case .expensive:
-            return ("EXPENSIVE", TrackrColors.accent)
-        case .renewsIn(let days):
-            return ("RENEWS IN \(days) DAYS", TrackrColors.warn)
-        case .notTouchedIn(let days):
-            return ("NOT TOUCHED IN \(days) DAYS", TrackrColors.fg2)
+        case .expensive:        return (text, TrackrColors.accent)
+        case .renewsIn:         return (text, TrackrColors.warn)
+        case .notTouchedIn:     return (text, TrackrColors.fg2)
         }
     }
 }

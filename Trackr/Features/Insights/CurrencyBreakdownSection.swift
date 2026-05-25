@@ -25,12 +25,12 @@ struct CurrencyBreakdownSection: View {
 
     private var sectionHeader: some View {
         HStack {
-            PixelText("BY CURRENCY",
+            PixelText(InsightsCopy.sectionLabel(.byCurrencyTitle),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
             Spacer()
-            PixelText("ORIGINAL · MONTHLY",
+            PixelText(InsightsCopy.sectionLabel(.byCurrencySubtitle),
                       size: TrackrTypography.Scale.caption,
                       color: TrackrColors.fg3,
                       tracking: 1.5)

@@ -39,5 +39,8 @@ struct CurrencySwitcher: View {
                 .overlay(Rectangle().stroke(border, lineWidth: 1))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(code) currency")
+        .accessibilityValue(isActive ? "selected" : "")
+        .accessibilityAddTraits(isActive ? [.isButton, .isSelected] : .isButton)
     }
 }

@@ -10,7 +10,7 @@ struct InsightsHero: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            PixelText("NEXT 30 DAYS DUE",
+            PixelText(InsightsCopy.heroTitle(),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
@@ -18,21 +18,13 @@ struct InsightsHero: View {
                                               currency: displayCurrency),
                       size: TrackrTypography.Scale.hero,
                       tracking: 1)
-            PixelText(chargesLabel,
+            PixelText(InsightsCopy.chargesSubtitle(count: upcoming.chargeCount),
                       size: TrackrTypography.Scale.caption,
                       color: chargesColor,
                       tracking: 1.5)
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 4)
-    }
-
-    private var chargesLabel: String {
-        switch upcoming.chargeCount {
-        case 0: return "NO CHARGES IN THE NEXT 30 DAYS"
-        case 1: return "1 CHARGE INCOMING"
-        default: return "\(upcoming.chargeCount) CHARGES INCOMING"
-        }
     }
 
     private var chargesColor: Color {

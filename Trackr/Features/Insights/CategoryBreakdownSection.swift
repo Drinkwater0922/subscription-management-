@@ -23,12 +23,12 @@ struct CategoryBreakdownSection: View {
 
     private var sectionHeader: some View {
         HStack {
-            PixelText("BY CATEGORY",
+            PixelText(InsightsCopy.sectionLabel(.byCategoryTitle),
                       size: TrackrTypography.Scale.sectionLabel,
                       color: TrackrColors.fg2,
                       tracking: 2)
             Spacer()
-            PixelText("MONTHLY",
+            PixelText(InsightsCopy.sectionLabel(.byCategorySubtitle),
                       size: TrackrTypography.Scale.caption,
                       color: TrackrColors.fg3,
                       tracking: 1.5)

@@ -160,11 +160,12 @@ struct InsightsView: View {
     private func statStrip(monthly: Decimal, yearly: Decimal,
                             activeCount: Int, currency: String) -> some View {
         HStack(alignment: .top, spacing: 14) {
-            statColumn(label: "THIS MONTH",
+            statColumn(label: InsightsCopy.sectionLabel(.statThisMonth),
                         value: AmountFormatter.format(monthly, currency: currency))
-            statColumn(label: "THIS YEAR",
+            statColumn(label: InsightsCopy.sectionLabel(.statThisYear),
                         value: AmountFormatter.format(yearly, currency: currency))
-            statColumn(label: "ACTIVE", value: "\(activeCount)")
+            statColumn(label: InsightsCopy.sectionLabel(.statActive),
+                        value: "\(activeCount)")
         }
         .padding(.horizontal, 20)
     }
