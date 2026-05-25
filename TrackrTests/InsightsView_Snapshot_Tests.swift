@@ -46,6 +46,10 @@ final class InsightsViewSnapshotTests: XCTestCase {
             .modelContainer(container)
             .environment(entitlement)
             .environment(PaywallTriggerCoordinator())
+            // v1.2 (C1): InsightsView reads the shared deep-link router so
+            // SuspectRanking row taps can hand off to HomeView's Detail
+            // sheet. Snapshot host must supply one or @Environment fatals.
+            .environment(AppDeepLinkRouter())
             .frame(width: 390, height: 844)
             .preferredColorScheme(.dark)
         assertSnapshot(of: view, as: .image)
@@ -65,6 +69,10 @@ final class InsightsViewSnapshotTests: XCTestCase {
             .modelContainer(container)
             .environment(entitlement)
             .environment(PaywallTriggerCoordinator())
+            // v1.2 (C1): InsightsView reads the shared deep-link router so
+            // SuspectRanking row taps can hand off to HomeView's Detail
+            // sheet. Snapshot host must supply one or @Environment fatals.
+            .environment(AppDeepLinkRouter())
             .frame(width: 390, height: 844)
             .preferredColorScheme(.dark)
         assertSnapshot(of: view, as: .image)

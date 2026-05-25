@@ -1,13 +1,22 @@
 import SwiftUI
 import SwiftData
 
-/// Pro-gated insights dashboard. V1 shows totals only — trends and category
-/// breakdowns ship in a later milestone.
+/// Pro-gated insights dashboard.
+///
+/// **v1.2 (this commit, C1):** demoted stat strip (THIS MONTH / THIS YEAR /
+/// ACTIVE) + top-5 SuspectRanker ranking with cross-sheet routing to Detail.
+/// NEXT 30 DAYS DUE hero + currency switcher + category / currency
+/// breakdowns land in C2.
 struct InsightsView: View {
 
     @Environment(ProEntitlement.self) private var entitlement
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    /// v1.2: when a SuspectRanking row is tapped, request the sub's Detail
+    /// via the shared router and dismiss this sheet. HomeView's
+    /// `.sheet(item: $selected)` picks up the request and presents Detail.
+    /// This avoids stacking a second sheet on top of Insights.
+    @Environment(AppDeepLinkRouter.self) private var router
 
     @Query(sort: \Subscription.nextBillingDate, order: .forward)
     private var subscriptions: [Subscription]
@@ -70,29 +79,64 @@ struct InsightsView: View {
                                                    in: currency,
                                                    rateTable: fxTables.first)
         let yearly = monthly * 12
-        let count = subscriptions.filter { $0.isActive }.count
-        return VStack(alignment: .leading, spacing: 24) {
-            metricCard(label: "MONTHLY",
-                       value: AmountFormatter.format(monthly, currency: currency))
-            metricCard(label: "YEARLY",
-                       value: AmountFormatter.format(yearly, currency: currency))
-            metricCard(label: "ACTIVE SUBS",
-                       value: "\(count)")
+        let activeCount = subscriptions.filter { $0.isActive }.count
+        let ranked = SuspectRanker.rank(subscriptions,
+                                         in: currency,
+                                         rateTable: fxTables.first)
+
+        return VStack(alignment: .leading, spacing: 20) {
+            statStrip(monthly: monthly, yearly: yearly,
+                       activeCount: activeCount, currency: currency)
+
+            stripDivider
+
+            SuspectRankingSection(
+                ranked: ranked,
+                displayCurrency: currency,
+                onSelect: { sub in
+                    // Hand off to HomeView via the shared router; the sheet
+                    // dismiss lets HomeView's .sheet(item:) take over.
+                    router.requestOpen(subscriptionID: sub.id)
+                    dismiss()
+                }
+            )
         }
-        .padding(20)
+        .padding(.top, 16)
+        .padding(.bottom, 32)
     }
 
-    private func metricCard(label: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            PixelText(label,
-                      size: TrackrTypography.Scale.sectionLabel,
-                      color: TrackrColors.fg2,
-                      tracking: 2)
-            PixelText(value,
-                      size: TrackrTypography.Scale.hero,
-                      tracking: 1)
-            Rectangle().fill(TrackrColors.border).frame(height: 1)
+    /// Horizontal three-column strip replacing the three full-bleed metric
+    /// cards. Stays in C1; the v1.2 hero (NEXT 30 DAYS DUE) lands in C2.
+    private func statStrip(monthly: Decimal, yearly: Decimal,
+                            activeCount: Int, currency: String) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            statColumn(label: "THIS MONTH",
+                        value: AmountFormatter.format(monthly, currency: currency))
+            statColumn(label: "THIS YEAR",
+                        value: AmountFormatter.format(yearly, currency: currency))
+            statColumn(label: "ACTIVE", value: "\(activeCount)")
         }
+        .padding(.horizontal, 20)
+    }
+
+    private func statColumn(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            PixelText(label,
+                      size: TrackrTypography.Scale.caption,
+                      color: TrackrColors.fg3,
+                      tracking: 1.5)
+            PixelText(value,
+                      size: TrackrTypography.Scale.value,
+                      tracking: 1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var stripDivider: some View {
+        Rectangle()
+            .fill(TrackrColors.border)
+            .frame(height: 1)
+            .padding(.horizontal, 20)
     }
 
     private var lockedBody: some View {
@@ -110,4 +154,7 @@ struct InsightsView: View {
     }
 }
 
-#Preview { InsightsView() }
+#Preview {
+    InsightsView()
+        .environment(AppDeepLinkRouter())
+}
