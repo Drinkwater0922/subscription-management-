@@ -10,8 +10,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.10"
-    MARKETING_VERSION: "1.1.0"
-    CURRENT_PROJECT_VERSION: "17"
+    MARKETING_VERSION: "1.2.0"
+    CURRENT_PROJECT_VERSION: "18"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     # Apple Developer Team ID — drives code signing for all targets.
     # Found at https://developer.apple.com/account → Membership details.
